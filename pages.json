@@ -14,7 +14,7 @@
             "path" : "pages/stock-in/stockIn",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "入库查询",
                 "enablePullDownRefresh": false
             }
             

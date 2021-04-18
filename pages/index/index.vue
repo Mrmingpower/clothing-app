@@ -89,7 +89,7 @@
 			</view>
 		
 	
-		<view class="loading">{{loadingText}}</view>
+		<!-- <view class="loading">{{loadingText}}</view> -->
 		<view class="ymBbottom"></view>
 	</view>
 </template>

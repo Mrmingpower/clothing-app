@@ -6,14 +6,42 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "首页",
+				"navigationBarTextStyle":"white"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/stock-in/stockIn",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#2c92fd",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color":"#8a8a8a",
+		"selectedColor":"#66ccff",
+		"list":[
+			{
+				"pagePath":"pages/index/index",
+				"selectedIconPath":"static/iconfont/home1.png",
+				"iconPath":"static/iconfont/home.png",
+				"text":"首页"
+			},
+			{
+				"pagePath":"pages/mine/mine",
+				"selectedIconPath":"static/iconfont/person1.png",
+				"iconPath":"static/iconfont/person.png",
+				"text":"个人"
+			}
+		]
 	}
 }

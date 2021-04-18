@@ -1,8 +1,8 @@
 <template>
 	<view class="YmContent">
 			<view class="clothing_services_1">
-				<view class="clothing_services_2">
-				</view>
+				<!-- <view class="clothing_services_2">
+				</view> -->
 				<view class="clothing_services_3">
 					<image v-on:click="clothing_services_4_4_click()"  src="/static/clothing_services/images/clothing_services_4_4.jpg" mode="scaleToFill" border="0"    class="clothing_services_4"></image>
 					<text decode="true" class="clothing_services_5">标题</text>
@@ -15,69 +15,76 @@
 					</view>
 					<text decode="true" class="clothing_services_10">入库模块</text>
 				</view>
-				<view class="clothing_services_11">
-					<view class="clothing_services_26">
-						<view class="clothing_services_28">
-							<image v-on:click="clothing_services_29_29_click()"  src="/static/clothing_services/images/clothing_services_29_29.jpg" mode="scaleToFill" border="0"    class="clothing_services_29"></image>
-							<text decode="true" class="clothing_services_30">入库1</text>
-						</view>
-						<view class="clothing_services_31">
-							<image v-on:click="clothing_services_32_32_click()"  src="/static/clothing_services/images/clothing_services_32_32.jpg" mode="scaleToFill" border="0"    class="clothing_services_32"></image>
-							<text decode="true" class="clothing_services_33">入库2</text>
-						</view>
-						<view class="clothing_services_34">
-							<image v-on:click="clothing_services_35_35_click()"  src="/static/clothing_services/images/clothing_services_35_35.jpg" mode="scaleToFill" border="0"    class="clothing_services_35"></image>
-							<text decode="true" class="clothing_services_36">入库3</text>
-						</view>
-						<view class="clothing_services_37">
-							<image v-on:click="clothing_services_38_38_click()"  src="/static/clothing_services/images/clothing_services_38_38.jpg" mode="scaleToFill" border="0"    class="clothing_services_38"></image>
-							<text decode="true" class="clothing_services_39">入库4</text>
-						</view>
-					</view>
-					<view class="clothing_services_27">
-						<view class="clothing_services_40">
-							<image v-on:click="clothing_services_41_41_click()"  src="/static/clothing_services/images/clothing_services_41_41.jpg" mode="scaleToFill" border="0"    class="clothing_services_41"></image>
-							<text decode="true" class="clothing_services_42">入库5</text>
-						</view>
-						<view class="clothing_services_43">
-							<image v-on:click="clothing_services_44_44_click()"  src="/static/clothing_services/images/clothing_services_44_44.jpg" mode="scaleToFill" border="0"    class="clothing_services_44"></image>
-							<text decode="true" class="clothing_services_45">入库6</text>
-						</view>
-					</view>
-				</view>
-				<view class="clothing_services_14">
-					<view class="clothing_services_15">
-					</view>
-					<text decode="true" class="clothing_services_16">出库模块</text>
-				</view>
+				<!-- clothing_services_11是两行的  clothing_services_17是单行的-->
 				<view class="clothing_services_17">
-					<view class="clothing_services_47">
-						<image v-on:click="clothing_services_48_48_click()"  src="/static/clothing_services/images/clothing_services_48_48.jpg" mode="scaleToFill" border="0"    class="clothing_services_48"></image>
-						<text decode="true" class="clothing_services_49">出库1</text>
+					<u-grid :col="3" :border="true">
+						<u-grid-item @click="toPage('../stock-in/stockIn')">
+							<u-icon name="info-circle-fill" color="#ffaa00" :size="47"></u-icon>
+							<view class="grid-text">入库查询</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="tags-fill" color="#ffaa00" :size="47"></u-icon>
+							<view class="grid-text">到货入库</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="lock-fill" color="#ffaa00" :size="47"></u-icon>
+							<view class="grid-text">其他入库</view>
+						</u-grid-item>
+					</u-grid>
+				</view>
+				<view class="clothing_services_20">
+					<view class="clothing_services_21">
 					</view>
-					<view class="clothing_services_50">
-						<image v-on:click="clothing_services_51_51_click()"  src="/static/clothing_services/images/clothing_services_51_51.jpg" mode="scaleToFill" border="0"    class="clothing_services_51"></image>
-						<text decode="true" class="clothing_services_52">出库2</text>
-					</view>
-					<view class="clothing_services_53">
-						<image v-on:click="clothing_services_54_54_click()"  src="/static/clothing_services/images/clothing_services_54_54.jpg" mode="scaleToFill" border="0"    class="clothing_services_54"></image>
-						<text decode="true" class="clothing_services_55">出库3</text>
-					</view>
+					<text decode="true" class="clothing_services_22">出库模块</text>
+				</view>
+				<view class="clothing_services_11">
+					<u-grid :col="3" :border="true">
+						<u-grid-item>
+							<u-icon name="grid-fill" color="#ff5500" :size="47"></u-icon>
+							<view class="grid-text">出库查询</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="star-fill" color="#ff5500" :size="47"></u-icon>
+							<view class="grid-text">生产领用</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="shopping-cart-fill" color="#ff5500" :size="47"></u-icon>
+							<view class="grid-text">销售单</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="plus-circle-fill" color="#ff5500" :size="47"></u-icon>
+							<view class="grid-text">其他出库</view>
+						</u-grid-item>
+					</u-grid>
 				</view>
 				<view class="clothing_services_20">
 					<view class="clothing_services_21">
 					</view>
 					<text decode="true" class="clothing_services_22">生产模块</text>
 				</view>
-				<view class="clothing_services_23">
-					<view class="clothing_services_64">
-						<image v-on:click="clothing_services_58_58_click()"  src="/static/clothing_services/images/clothing_services_58_58.jpg" mode="scaleToFill" border="0"    class="clothing_services_58"></image>
-						<text decode="true" class="clothing_services_61">生产1</text>
-					</view>
-					<view class="clothing_services_65">
-						<image v-on:click="clothing_services_59_59_click()"  src="/static/clothing_services/images/clothing_services_59_59.jpg" mode="scaleToFill" border="0"    class="clothing_services_59"></image>
-						<text decode="true" class="clothing_services_62">生产2</text>
-					</view>
+				<view class="clothing_services_11">
+					<u-grid :col="3" :border="true">
+						<u-grid-item>
+							<u-icon name="car-fill" color="#55aaff" :size="47"></u-icon>
+							<view class="grid-text">生产模块1</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="setting-fill" color="#55aaff" :size="47"></u-icon>
+							<view class="grid-text">生产模块2</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="bag-fill" color="#55aaff" :size="47"></u-icon>
+							<view class="grid-text">生产模块3</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="plus-square-fill" color="#55aaff" :size="47"></u-icon>
+							<view class="grid-text">生产模块4</view>
+						</u-grid-item>
+						<u-grid-item>
+							<u-icon name="gift-fill" color="#55aaff" :size="47"></u-icon>
+							<view class="grid-text">生产模块5</view>
+						</u-grid-item>
+					</u-grid>
 				</view>
 			</view>
 		
@@ -98,37 +105,21 @@
 
 		},
 		methods: {
-
+			toPage(url) {
+				uni.navigateTo({
+					url: url
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+	.grid-text {
+			font-size: 28rpx;
+			margin-top: 4rpx;
+			color: $u-type-info;
+		}
 	@import './index.scss'
 </style>

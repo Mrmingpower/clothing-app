@@ -1,6 +1,6 @@
-const BASE_URL = 'http://127.0.0.1:21616'
+const BASE_URL = 'http://192.168.0.98:21616'
 // import store from '../store/index.js'
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYTIxZjRmZS0xZGIyLTRlOGUtYjA3ZC0yY2NiMDk1ZGZhNDIiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjE4NzI3MDE3LCJleHAiOjE2MTg4MTM0MTcsInVzZXJuYW1lIjoiY2FycmllciJ9.N9zzntY7fP6b1BReaG835RoPYtddxB56LRx_YvSm1L0"
+const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2YzdlMWM5Ni1lMzVkLTQ2NDMtOTVjYS0wZjc5NzMwYzg5YzkiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjE5NzQ1MjE0LCJleHAiOjE2MTk4MzE2MTQsInVzZXJuYW1lIjoiY2FycmllciJ9.GHmLp-JSYzeDMDkm7aQ7-P0wfG5L0xBDoa8LGvDlDsU"
 export const myRequest = (options) => {
 	return new Promise((resolve,reject) => {
 		uni.request({
@@ -12,7 +12,15 @@ export const myRequest = (options) => {
 			method: options.method || 'GET',
 			data: options.data || {},
 			success: (res) => {
-				resolve(res)
+				if(res.data.code === 200) {
+					resolve(res.data.result)
+				} else {
+					uni.showToast({
+						title: res.data.message || '请求失败',
+						icon: 'none'
+					})
+					return
+				}
 			},
 			fail: (err) => {
 				// uni.hideLoading();

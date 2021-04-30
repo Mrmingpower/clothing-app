@@ -7,6 +7,8 @@ Vue.config.productionTip = false
 // 11
 App.mpType = 'app'
 
+import { myRequest } from './util/api.js';
+Vue.prototype.$myRequest = myRequest
 const app = new Vue({
     ...App
 })

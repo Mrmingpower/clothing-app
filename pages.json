@@ -14,7 +14,7 @@
             "path" : "pages/stock-in/stockIn",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "入库查询",
+                "navigationBarTitleText": "入库订单",
                 "enablePullDownRefresh": true
             }
             
@@ -24,6 +24,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "入库明细",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/stockInSearch",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "入库查询",
                 "enablePullDownRefresh": false
             }
             

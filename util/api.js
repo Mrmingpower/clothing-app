@@ -1,6 +1,6 @@
 const BASE_URL = 'http://192.168.0.98:21616'
 // import store from '../store/index.js'
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2YzdlMWM5Ni1lMzVkLTQ2NDMtOTVjYS0wZjc5NzMwYzg5YzkiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjE5NzQ1MjE0LCJleHAiOjE2MTk4MzE2MTQsInVzZXJuYW1lIjoiY2FycmllciJ9.GHmLp-JSYzeDMDkm7aQ7-P0wfG5L0xBDoa8LGvDlDsU"
+const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNmJkYWJiZi03YTNiLTQzNzgtYjhkOS0wOTUzZTNjYTYyMGYiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIwMjYxNDg1LCJleHAiOjE2MjAzNDc4ODUsInVzZXJuYW1lIjoiY2FycmllciJ9.07V2TVoKu232gBc7bf7mktX0TqBUwPbnp0HHzQRaS44"
 export const myRequest = (options) => {
 	return new Promise((resolve,reject) => {
 		uni.request({
@@ -13,7 +13,7 @@ export const myRequest = (options) => {
 			data: options.data || {},
 			success: (res) => {
 				if(res.data.code === 200) {
-					resolve(res.data.result)
+					resolve(res.data.result || 200)
 				} else {
 					uni.showToast({
 						title: res.data.message || '请求失败',

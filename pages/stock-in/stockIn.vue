@@ -4,83 +4,101 @@
 			<view style="width: 700rpx;">
 				<view class="input-vieww">
 					<uni-icons type="search" size="22" color="#666666" />
-					<input v-model="searchText" confirm-type="search" class="inputt" type="text" placeholder="输入查询信息">
+					<input v-model="searchText" @focus="startSearch" confirm-type="search" class="inputt" type="text" placeholder="输入查询信息">
 					<uni-icons :color="'#999999'" v-if="searchText!==''" class="icon-clear" type="clear" size="22"
 						@click="clearSearch" />
 				</view>
 			</view>
 		</uni-nav-bar>
-		<view v-for="(item,index) in stockInList" :key="index" :index="index" style="margin-bottom: 10rpx">
-			<u-card margin="20rpx 0rpx" :title-size="35" border-radius="0" :title="formatSourceType(item.sourceType)"
-				:sub-title="item.datetime" :thumb="`/static/stockIn/${formatSourceTypeImg(item.sourceType)}`"
-				thumb-width="40">
-				<view @click="toDetail(item.id)"  class="audit-card-content" slot="body">
-					<view>
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">入库单号</view>
-							</u-col>
-							<u-col span="4">
-								<view>{{item.no}}</view>
-							</u-col>
-						</u-row>
-					</view>
-					<view class="line-cla">
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">仓库</view>
-							</u-col>
-							<u-col span="4">
-								<view>{{item.warehouse}}</view>
-							</u-col>
-						</u-row>
-					</view>
-					<view class="line-cla">
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">总数量</view>
-							</u-col>
-							<u-col span="4">
-								<view>{{item.quantity}}</view>
-							</u-col>
-						</u-row>
-					</view>
-					<view class="line-cla">
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">总金额</view>
-							</u-col>
-							<u-col span="4">
-								<view>{{item.amount}}</view>
-							</u-col>
-						</u-row>
-					</view>
-					<view class="line-cla">
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">属性</view>
-							</u-col>
-							<u-col span="4">
-								<u-tag :text="formatProperties(item.properties)"
-									:type="formatPropertiesType(item.properties)" mode="dark" size="mini"
-									shape="square" />
-							</u-col>
-						</u-row>
-					</view>
-					<view class="line-cla">
-						<u-row gutter="16">
-							<u-col span="3">
-								<view class="flex-item-20">审核状态</view>
-							</u-col>
-							<u-col span="4">
-								<u-tag :text="formatStockInStatus(item.status)"
-									:type="formatStockInStatusType(item.status)" mode="dark" size="mini"
-									shape="circle" />
-							</u-col>
-						</u-row>
-					</view>
+		<!-- <uni-nav-bar :fixed="true" background-color="#20a0ff" :border="false">
+			<view style="width: 700rpx;z-index: 999999;">
+				<u-dropdown inactive-color="#ffffff">
+					<u-dropdown-item v-model="value1" title="距离" :options="options1"></u-dropdown-item>
+					<u-dropdown-item v-model="value2" title="温度" :options="options2"></u-dropdown-item>
+				</u-dropdown>
+			</view>
+		</uni-nav-bar> -->
+		<view>
+			<!-- <view style="z-index: 99;width: 750rpx;background-color: #20a0ff;position: fixed;top: 170rpx;">
+				<u-dropdown inactive-color="#ffffff">
+					<u-dropdown-item v-model="value1" title="距离" :options="options1"></u-dropdown-item>
+					<u-dropdown-item v-model="value2" title="温度" :options="options2"></u-dropdown-item>
+				</u-dropdown>
+			</view> -->
+			<view>
+				<view v-for="(item,index) in stockInList" :key="index" :index="index" style="margin-bottom: 10rpx">
+					<u-card margin="20rpx 0rpx" :title-size="35" border-radius="0"
+						:title="formatSourceType(item.sourceType)" :sub-title="item.datetime"
+						:thumb="`/static/stockIn/${formatSourceTypeImg(item.sourceType)}`" thumb-width="40">
+						<view @click="toDetail(item.id)" class="audit-card-content" slot="body">
+							<view>
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">入库单号</view>
+									</u-col>
+									<u-col span="4">
+										<view>{{item.no}}</view>
+									</u-col>
+								</u-row>
+							</view>
+							<view class="line-cla">
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">仓库</view>
+									</u-col>
+									<u-col span="4">
+										<view>{{item.warehouse}}</view>
+									</u-col>
+								</u-row>
+							</view>
+							<view class="line-cla">
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">总数量</view>
+									</u-col>
+									<u-col span="4">
+										<view>{{item.quantity}}</view>
+									</u-col>
+								</u-row>
+							</view>
+							<view class="line-cla">
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">总金额</view>
+									</u-col>
+									<u-col span="4">
+										<view>{{item.amount}}</view>
+									</u-col>
+								</u-row>
+							</view>
+							<view class="line-cla">
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">属性</view>
+									</u-col>
+									<u-col span="4">
+										<u-tag :text="formatProperties(item.properties)"
+											:type="formatPropertiesType(item.properties)" mode="dark" size="mini"
+											shape="square" />
+									</u-col>
+								</u-row>
+							</view>
+							<view class="line-cla">
+								<u-row gutter="16">
+									<u-col span="3">
+										<view class="flex-item-20">审核状态</view>
+									</u-col>
+									<u-col span="4">
+										<u-tag :text="formatStockInStatus(item.status)"
+											:type="formatStockInStatusType(item.status)" mode="dark" size="mini"
+											shape="circle" />
+									</u-col>
+								</u-row>
+							</view>
+						</view>
+					</u-card>
 				</view>
-			</u-card>
+			</view>
 		</view>
 		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 	</view>
@@ -104,6 +122,30 @@
 		},
 		data() {
 			return {
+				value1: 1,
+				value2: 2,
+				options1: [{
+						label: '默认排序',
+						value: 1,
+					},
+					{
+						label: '距离优先',
+						value: 2,
+					},
+					{
+						label: '价格优先',
+						value: 3,
+					}
+				],
+				options2: [{
+						label: '去冰',
+						value: 1,
+					},
+					{
+						label: '加冰',
+						value: 2,
+					},
+				],
 				searchText: '',
 				stockInList: [],
 				pageNo: 0,
@@ -117,7 +159,11 @@
 				},
 			}
 		},
-		onLoad() {
+		// onLoad() {
+		// 	this.getList()
+		// },
+		onShow() {
+			this.initData()
 			this.getList()
 		},
 		async onReachBottom() {
@@ -136,13 +182,27 @@
 			formatProperties,
 			formatPropertiesType,
 
+			initData() {
+				this.finished = false
+				this.pageNo = 0
+				this.pageSize = 5
+				this.total = 0
+				this.status = 'loadmore'
+				this.searchText = ''
+				this.stockInList = []
+			},
 			clearSearch() {
 				this.searchText = ''
 			},
 			toDetail(id) {
 				console.log(id)
 				uni.navigateTo({
-					url: 'stockInDetail?id='+id
+					url: 'stockInDetail?id=' + id
+				})
+			},
+			startSearch() {
+				uni.navigateTo({
+					url: 'stockInSearch'
 				})
 			},
 			async loadmore() {
@@ -155,6 +215,7 @@
 			},
 			async getList() {
 				if (this.finished) return;
+				console.log('执行了')
 				this.pageNo++;
 				let result = await this.$myRequest({
 					url: '/stock-in/search',

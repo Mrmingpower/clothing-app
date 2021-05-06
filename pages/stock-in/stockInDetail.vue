@@ -139,56 +139,59 @@
 			<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" thumb-width="40" :title-size="35"
 				border-radius="0" :title="item.productName">
 				<view slot="body">
-					<view style="width: 500rpx;" class="u-border-right">
-						<view>
+					<view style="width: 350rpx;" class="u-border-right">
+						<view style="width: 380rpx;">
 							<u-row gutter="7">
-								<u-col span="4">
+								<u-col span="5">
 									<view class="flex-item-20">产品款号</view>
 								</u-col>
-								<u-col span="3">
-									<view>{{item.productNo}}</view>
+								<u-col span="2">
+									<view style="width: 180rpx;">{{item.productNo}}</view>
 								</u-col>
 							</u-row>
 						</view>
-						<view class="line-cla2">
-							<u-row gutter="7">
-								<u-col span="4">
+						<view class="line-cla2" style="width: 380rpx;">
+							<u-row gutter="8">
+								<u-col span="5">
 									<view class="flex-item-20">计量单位</view>
 								</u-col>
 								<u-col span="3">
-									<view>{{item.unit}}</view>
+									<view style="width: 180rpx;">{{item.unit}}</view>
 								</u-col>
 							</u-row>
 						</view>
-						<view class="line-cla2">
+						<view class="line-cla2" style="width: 400rpx;">
 							<u-row gutter="7">
-								<u-col span="4">
-									<view class="flex-item-20">金额</view>
-								</u-col>
-								<u-col span="3">
-									<view>{{item.amount}}</view>
-								</u-col>
-							</u-row>
-						</view>
-						<view class="line-cla2">
-							<u-row gutter="7">
-								<u-col span="4">
+								<u-col span="5">
 									<view class="flex-item-20">副计量单位</view>
 								</u-col>
-								<u-col span="3">
-									<view>{{item.assistantUnit}}</view>
+								<u-col span="2">
+									<view style="width: 180rpx;">{{item.assistantUnit}}</view>
+								</u-col>
+							</u-row>
+						</view>
+						<view class="line-cla2" style="width: 380rpx;">
+							<u-row gutter="7">
+								<u-col span="5">
+									<view class="flex-item-20">金额</view>
+								</u-col>
+								<u-col span="2">
+									<view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view>
 								</u-col>
 							</u-row>
 						</view>
 					</view>
-					<view style="position: absolute;right: 80rpx;top: 120rpx;">
+					<view style="position: absolute;right: 80rpx;top: 120rpx;" v-if="canEdit">
 						<view class="line-cla2">
 							<u-row gutter="7">
 								<u-col span="4">
-									<view class="flex-item-20">数量</view>
+									<view>数量</view>
 								</u-col>
 								<u-col span="3">
-									<view>{{item.quantity}}</view>
+									<!-- <view>{{item.quantity}}</view> -->
+									<view>
+										<u-number-box bg-color="#efe5fe" v-model="item.quantity"></u-number-box>
+									</view>
 								</u-col>
 							</u-row>
 						</view>
@@ -198,17 +201,50 @@
 									<view class="flex-item-20">单价</view>
 								</u-col>
 								<u-col span="3">
-									<view>{{item.price}}</view>
+									<!-- <view>{{item.price}}</view> -->
+								<view>
+									<u-number-box bg-color="#efe5fe" v-model="item.price"></u-number-box>
+								</view>
+								</u-col>
+							</u-row>
+						</view>
+						<view class="line-cla2">
+							<view>副计量单位数量</view>
+							<view style="margin-top: 14rpx;position: relative;right: -90rpx;">
+								<u-number-box bg-color="#efe5fe" v-model="item.quantityByAssistant"></u-number-box>
+							</view>
+						</view>
+					</view>
+					<view style="position: absolute;right: 140rpx;top: 120rpx;" v-if="!canEdit">
+						<view class="line-cla2">
+							<u-row gutter="7">
+								<u-col span="4">
+									<view>数量</view>
+								</u-col>
+								<u-col span="3">
+									<view style="margin-left: 30rpx;">{{item.quantity}}</view>
 								</u-col>
 							</u-row>
 						</view>
 						<view class="line-cla2">
 							<u-row gutter="7">
 								<u-col span="4">
-									<view class="flex-item-20">副计量单位数量</view>
+									<view class="flex-item-20">单价</view>
 								</u-col>
-								<u-col span="3">
-									<view>{{item.quantityByAssistant}}</view>
+								<u-col span="3" style="margin-left: 30rpx;">
+									<view style="width: 100rpx;">{{item.price}}</view>
+								</u-col>
+							</u-row>
+						</view>
+						<view class="line-cla2">
+							<u-row gutter="12">
+								<u-col span="12">
+									<view>副计量单位数量</view>
+								</u-col>
+							</u-row>
+							<u-row gutter="12">
+								<u-col span="12">
+									<view style="margin-top: 14rpx;">{{item.quantityByAssistant}}</view>
 								</u-col>
 							</u-row>
 						</view>
@@ -216,9 +252,19 @@
 				</view>
 			</u-card>
 		</view>
-		<view style="height: 80rpx;"></view>
-		<view style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
-			<uni-goods-nav :options="options" :button-group="buttonGroup" />
+		<u-divider>没有更多了</u-divider>
+		<view style="height: 100rpx;"></view>
+		<view v-if="stockInDetail.status === -1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick" :button-group="buttonGroup" />
+		</view>
+		<view v-if="stockInDetail.status === 0" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick0" :button-group="buttonGroup0" />
+		</view>
+		<view v-if="stockInDetail.status === 1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick1" :button-group="buttonGroup1" />
+		</view>
+		<view v-if="canEdit" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick2" :button-group="buttonGroup2" />
 		</view>
 	</view>
 </template>
@@ -240,18 +286,37 @@
 					text: '调整'
 				}],
 				buttonGroup: [{
-						text: '拒绝',
+						text: '删除',
 						backgroundColor: '#e54d42',
+						color: '#fff'
+					}
+				],
+				buttonGroup0: [{
+						text: '取消',
+						backgroundColor: '#ffaa00',
 						color: '#fff'
 					},
 					{
-						text: '通过',
+						text: '审核',
 						backgroundColor: '#39b54a',
+						color: '#fff'
+					}
+				],
+				buttonGroup1: [{
+						text: '撤销审核',
+						backgroundColor: '#ffaa00',
+						color: '#fff'
+					}
+				],
+				buttonGroup2: [{
+						text: '确认修改',
+						backgroundColor: '#20a0ff',
 						color: '#fff'
 					}
 				],
 				stockInDetail: {},
 				thumb: '/static/stockIn/product.png',
+				canEdit: false
 			}
 		},
 		onLoad(e) {
@@ -266,12 +331,102 @@
 			formatProperties,
 			formatPropertiesType,
 			async getDetailList(id) {
+				this.canEdit = false
 				let result = await this.$myRequest({
 					url: '/stock-in/' + id
 				})
 				console.log(result)
 				this.stockInDetail = result
-			}
+			},
+			editClick(e) {
+				console.log(e)
+				if(this.stockInDetail.status === 0) {
+					this.canEdit = !this.canEdit
+				} else {
+					uni.showToast({
+						title: '当前单据已取消或者已审核',
+						icon: 'none'
+					})
+					return
+				}
+			},
+			async buttonClick(e) {
+				let result = await this.$myRequest({
+					url: '/stock-in/'+this.stockInDetail.id,
+					method: 'delete'
+				})
+				if(result === 200) {
+					uni.showToast({
+						title: '删除成功',
+						icon: 'success'
+					})
+					setTimeout(function() {
+						uni.switchTab({
+							url:'../index/index'
+						})
+					}, 800);
+				}
+			},
+			async buttonClick0(e) {
+				if(e.index === 0) {
+					uni.showToast({
+						title: '后端没有取消接口',
+						icon: 'none'
+					})
+				}
+				if(e.index === 1) {
+					let result = await this.$myRequest({
+						url: '/stock-in/check/'+this.stockInDetail.id,
+						method: 'put'
+					})
+					if(result === 200) {
+						uni.showToast({
+							title: '审核成功',
+							icon: 'success'
+						})
+						// setTimeout(function() {
+						// 	uni.switchTab({
+						// 		url:'../index/index'
+						// 	})
+						// }, 800);
+						this.getDetailList(this.stockInDetail.id)
+					}
+				}
+			},
+			async buttonClick1(e) {
+				let result = await this.$myRequest({
+					url: '/stock-in/uncheck/'+this.stockInDetail.id,
+					method: 'put'
+				})
+				if(result === 200) {
+					uni.showToast({
+						title: '撤销审核成功',
+						icon: 'success'
+					})
+					// setTimeout(function() {
+					// 	uni.switchTab({
+					// 		url:'../index/index'
+					// 	})
+					// }, 800);
+					this.getDetailList(this.stockInDetail.id)
+				}
+			},
+			async buttonClick2(e) {
+				let result = await this.$myRequest({
+					url: '/stock-in/',
+					method: 'put',
+					data: {
+						 
+					}
+				})
+				if(result === 200) {
+					uni.showToast({
+						title: '修改成功',
+						icon: 'success'
+					})
+					this.getDetailList(this.stockInDetail.id)
+				}
+			},
 		}
 	}
 </script>
@@ -291,5 +446,8 @@
 	}
 	.line-cla2 {
 		margin: 14rpx 0;
+	}
+	.edit-num {
+		text-align: center;
 	}
 </style>

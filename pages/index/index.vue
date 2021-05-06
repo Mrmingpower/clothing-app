@@ -20,7 +20,7 @@
 					<u-grid :col="3" :border="true">
 						<u-grid-item @click="toPage('../stock-in/stockIn')">
 							<u-icon name="info-circle-fill" color="#ffaa00" :size="47"></u-icon>
-							<view class="grid-text">入库查询</view>
+							<view class="grid-text">入库订单</view>
 						</u-grid-item>
 						<u-grid-item>
 							<u-icon name="tags-fill" color="#ffaa00" :size="47"></u-icon>

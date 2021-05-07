@@ -157,14 +157,29 @@
 					loading: '努力加载中',
 					nomore: '没有更多了'
 				},
+				queryParams: '',
 			}
 		},
 		// onLoad() {
 		// 	this.getList()
 		// },
 		onShow() {
+			let queryParams = this.$map.get('stockInQueryParams') || {}
+			// let queryParams = uni.getStorageSync('stockInQueryParams')
+			console.log('queryParams')
+			console.log(queryParams)
+			this.queryParams = queryParams
+			// uni.removeStorage({
+			//     key: 'stockInQueryParams'
+			// });
 			this.initData()
 			this.getList()
+		},
+		onUnload() {
+			// uni.removeStorage({
+			//     key: 'stockInQueryParams'
+			// });
+			this.$map.delete('stockInQueryParams')
 		},
 		async onReachBottom() {
 			if (parseInt(this.total) === this.stockInList.length) {
@@ -202,7 +217,7 @@
 			},
 			startSearch() {
 				uni.navigateTo({
-					url: 'stockInSearch'
+					url: 'stockInSearch?queryParams='+JSON.stringify(this.queryParams)
 				})
 			},
 			async loadmore() {
@@ -217,12 +232,38 @@
 				if (this.finished) return;
 				console.log('执行了')
 				this.pageNo++;
+				let queryData = {
+					pageNo: this.pageNo, // 传入页码
+					pageSize: this.pageSize// 传入每页条数
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.begin)) {
+					queryData.begin = this.queryParams.begin
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.end)) {
+					queryData.end = this.queryParams.end
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.no)) {
+					queryData.no = this.queryParams.no
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.orderCol)) {
+					// 排序的还没加
+				}
+				
+				
+				
+				if(!this.$u.test.isEmpty(this.queryParams.statuses)) {
+					queryData.statuses = this.queryParams.statuses
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.supplierIds)) {
+					queryData.supplierIds = this.queryParams.supplierIds
+				}
+				if(!this.$u.test.isEmpty(this.queryParams.warehouseIds)) {
+					queryData.warehouseIds = this.queryParams.warehouseIds
+				}
+				console.log(queryData)
 				let result = await this.$myRequest({
 					url: '/stock-in/search',
-					data: {
-						pageNo: this.pageNo, // 传入页码
-						pageSize: this.pageSize // 传入每页条数
-					}
+					data: queryData
 				})
 				this.stockInList = [...this.stockInList, ...result.items]
 				this.total = result.count;

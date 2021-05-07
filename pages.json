@@ -37,6 +37,33 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-in/selectSupplier",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择供应商",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/selectWarehouse",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择仓库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/selectSort",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "设置排序",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

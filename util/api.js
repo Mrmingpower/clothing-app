@@ -1,6 +1,6 @@
 const BASE_URL = 'http://192.168.0.98:21616'
 // import store from '../store/index.js'
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNmJkYWJiZi03YTNiLTQzNzgtYjhkOS0wOTUzZTNjYTYyMGYiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIwMjYxNDg1LCJleHAiOjE2MjAzNDc4ODUsInVzZXJuYW1lIjoiY2FycmllciJ9.07V2TVoKu232gBc7bf7mktX0TqBUwPbnp0HHzQRaS44"
+const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1ZTBmZDExOC01M2E5LTRkODEtOWMwYy0xYTFlMzI3ZDFjZWUiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIwMzQ3NzA1LCJleHAiOjE2MjA0MzQxMDUsInVzZXJuYW1lIjoiY2FycmllciJ9.2RtCLRSbahpVbJo1C475a6YU3mnV5qwBv-Iv6bpXIsE"
 export const myRequest = (options) => {
 	return new Promise((resolve,reject) => {
 		uni.request({

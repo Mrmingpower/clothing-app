@@ -64,6 +64,42 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-in/add/material-add",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "面料入库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/add/selectSupplierByAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择供应商",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/add/selectWarehouseByAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择仓库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/add/material-add-add",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "添加面料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

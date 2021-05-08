@@ -22,13 +22,13 @@
 							<u-icon name="info-circle-fill" color="#ffaa00" :size="47"></u-icon>
 							<view class="grid-text">入库订单</view>
 						</u-grid-item>
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-in/add/material-add')">
 							<u-icon name="tags-fill" color="#ffaa00" :size="47"></u-icon>
-							<view class="grid-text">到货入库</view>
+							<view class="grid-text">面料入库</view>
 						</u-grid-item>
 						<u-grid-item>
 							<u-icon name="lock-fill" color="#ffaa00" :size="47"></u-icon>
-							<view class="grid-text">其他入库</view>
+							<view class="grid-text">辅料入库</view>
 						</u-grid-item>
 					</u-grid>
 				</view>

@@ -2,9 +2,9 @@
 	<view>
 		<uni-nav-bar :fixed="true" background-color="#20a0ff" :border="false">
 			<view style="width: 700rpx;">
-				<view class="input-vieww">
+				<view class="input-vieww" @click="startSearch">
 					<uni-icons type="search" size="22" color="#666666" />
-					<input v-model="searchText" @focus="startSearch" confirm-type="search" class="inputt" type="text" placeholder="输入查询信息">
+					<input v-model="searchText" :disabled="true" confirm-type="search" class="inputt" type="text" placeholder="输入查询信息">
 					<uni-icons :color="'#999999'" v-if="searchText!==''" class="icon-clear" type="clear" size="22"
 						@click="clearSearch" />
 				</view>

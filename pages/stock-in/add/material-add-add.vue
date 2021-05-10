@@ -2,7 +2,6 @@
 <template>
 	<view class="YmContent">
 			<view class="all_orders_1">
-				<!-- <text decode="true" class="all_orders_2">全部订单</text> -->
 				<view class="orders">
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item">
 						<view class="all_orders_5">
@@ -20,7 +19,6 @@
 								<text decode="true" class="orderNo">{{item_orders.orderNo}}</text>
 							</view>
 						</view>
-						<!-- <image v-on:click="all_orders_6_6_click(item_orders)"  src="/static/all_orders/images/all_orders_6_6.jpg" mode="scaleToFill" border="0"    class="all_orders_6"></image> -->
 					</view>
 				</view>
 			</view>

@@ -52,3 +52,25 @@ export const formatPropertiesType = function(properties) {
 		return 'warning'
 	}
 }
+
+export const sumQuantity = function(item) {
+	let quantityArr = []
+	let amount = 0
+	let quantityByAssistant = 0
+	let quantity = 0
+	for (var i = 0; i < item.exchangeRate.length; i++) {
+		quantityArr.push(item.exchangeRate[i] * item.quantityByAssistant[i])
+		amount = amount + (item.exchangeRate[i] * item.quantityByAssistant[i] * item.price)
+		quantityByAssistant = quantityByAssistant + item.quantityByAssistant[i]
+		quantity = quantity + (item.exchangeRate[i] * item.quantityByAssistant[i])
+	}
+	item.quantity = quantity
+	item.allQuantityByAssistant = quantityByAssistant
+	// item.amount = item.price * item.quantity
+	item.amount = amount
+	return quantity
+}
+
+// export const formatArr = function(arr) {
+	
+// }

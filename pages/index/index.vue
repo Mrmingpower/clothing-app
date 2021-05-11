@@ -26,7 +26,7 @@
 							<u-icon name="tags-fill" color="#ffaa00" :size="47"></u-icon>
 							<view class="grid-text">面料入库</view>
 						</u-grid-item>
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-in/accessoryAdd/accessoryAdd')">
 							<u-icon name="lock-fill" color="#ffaa00" :size="47"></u-icon>
 							<view class="grid-text">辅料入库</view>
 						</u-grid-item>

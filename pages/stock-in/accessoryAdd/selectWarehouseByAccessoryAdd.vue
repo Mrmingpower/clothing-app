@@ -74,11 +74,11 @@
 				}
 				console.log(a)
 				uni.setStorage({
-					key: 'selectStockInWarehouseByAdd',
+					key: 'selectStockInWarehouseByAccessoryAdd',
 					data: a[0]
 				})
 				uni.navigateBack({
-					url: 'material-add'
+					url: 'accessoryAdd'
 				})
 			},
 			comback() {
@@ -99,7 +99,7 @@
 				let result = await this.$myRequest({
 					url: '/warehouse/search',
 					data: {
-						prop: '0'
+						prop: '1'
 					}
 				})
 				let supplier = result.items
@@ -113,7 +113,7 @@
 				let result = await this.$myRequest({
 					url: '/warehouse/search',
 					data: {
-						prop: '0'
+						prop: '1'
 					}
 				})
 				let supplier = result.items

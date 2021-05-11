@@ -95,7 +95,61 @@
             "path" : "pages/stock-in/add/material-add-add",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "添加面料",
+                "navigationBarTitleText": "选择面料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/add/material-add-addOther",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择面料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/accessoryAdd/accessoryAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "辅料入库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/accessoryAdd/selectSupplierByAccessoryAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择供应商",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/accessoryAdd/selectWarehouseByAccessoryAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择仓库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/accessoryAdd/accessory-add-add",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择辅料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-in/accessoryAdd/accessory-add-addOther",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择辅料",
                 "enablePullDownRefresh": false
             }
             

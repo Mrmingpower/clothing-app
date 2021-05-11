@@ -11,7 +11,7 @@
 		<view class="cu-bar search bg-white">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input type="text" v-model="ipt" @input="toSearch" placeholder="仓库名称" confirm-type="search">
+				<input type="text" v-model="ipt" @input="toSearch" placeholder="供应商名称" confirm-type="search">
 					<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3" size="30"></u-icon>
 				</input>
 			</view>
@@ -74,11 +74,11 @@
 				}
 				console.log(a)
 				uni.setStorage({
-					key: 'selectStockInWarehouseByAdd',
+					key: 'selectStockInSupplierByAccessoryAdd',
 					data: a[0]
 				})
 				uni.navigateBack({
-					url: 'material-add'
+					url: 'accessoryAdd'
 				})
 			},
 			comback() {
@@ -97,9 +97,9 @@
 			},
 			async getSupplierList() {
 				let result = await this.$myRequest({
-					url: '/warehouse/search',
+					url: '/supplier/search',
 					data: {
-						prop: '0'
+						prop: '1'
 					}
 				})
 				let supplier = result.items
@@ -111,9 +111,9 @@
 			},
 			async getSupplierListt(b) {
 				let result = await this.$myRequest({
-					url: '/warehouse/search',
+					url: '/supplier/search',
 					data: {
-						prop: '0'
+						prop: '1'
 					}
 				})
 				let supplier = result.items

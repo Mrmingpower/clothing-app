@@ -62,7 +62,6 @@
 		data() {
 			return {
 				ipt: '',
-				supplierId: '',
 				loadingText: '123',
 				list_orders: [],
 				page: 0, //当前分页页码
@@ -71,14 +70,13 @@
 				del_id: '' //方便存在本地的locakStorage  
 			}
 		},
-		onLoad(e) {
-			this.supplierId = e.supplierId
+		onLoad() {
 			this.getData()
 		},
 		methods: {
 			toSubmit(item) {
 				uni.setStorage({
-					key: 'add-material',
+					key: 'addOther-material',
 					data: item
 				})
 				uni.navigateBack({
@@ -91,9 +89,10 @@
 			},
 			async toSearch(e) {
 				let result = await this.$myRequest({
-					url: '/purchase-arrival/supplier/'+this.supplierId+'/product-query',
+					url: '/stock-in/product-query',
 					data: {
-						query: e.target.value
+						query: e.target.value,
+						properties: 0
 					}
 				})
 				this.list_orders = result
@@ -105,7 +104,10 @@
 			},
 			async getData() {
 				let result = await this.$myRequest({
-					url: '/purchase-arrival/supplier/'+this.supplierId+'/product-query'
+					url: '/stock-in/product-query',
+					data: {
+						properties: 0
+					}
 				})
 				this.list_orders = result
 				console.log(result)

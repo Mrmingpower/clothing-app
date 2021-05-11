@@ -71,6 +71,10 @@ export const sumQuantity = function(item) {
 	return quantity
 }
 
+export const sumAmount = function(item) {
+	return item.quantity * item.price
+}
+
 // export const formatArr = function(arr) {
 	
 // }

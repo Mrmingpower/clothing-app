@@ -12,7 +12,7 @@
 		</view>
 		<view style="margin-top: 15rpx;">
 			<view class="u-border-bottom" style="background-color: #FFFFFF;text-align: center;">
-				<text style="font-size: 50rpx;">面料信息</text>
+				<text style="font-size: 50rpx;">辅料信息</text>
 			</view>
 			<view v-for="(item,index) in materialList" :key="index" :index="index">
 				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40" :title-size="35"
@@ -59,21 +59,12 @@
 									</u-col>
 								</u-row>
 							</view>
-							<view class="line-cla2" style="width: 380rpx;">
-								<u-row gutter="7">
-									<u-col span="5">
-										<view class="flex-item-20">金额</view>
-									</u-col>
-									<u-col span="2">
-										<view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view>
-									</u-col>
-								</u-row>
-							</view>
+							
 						</view>
 						<view style="position: absolute;right: 80rpx;top: 120rpx;">
 							<view class="line-cla2">
 								<u-row gutter="7">
-									<u-col span="6">
+									<u-col span="7">
 										<view class="flex-item-20">单价</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
@@ -83,8 +74,8 @@
 							</view>
 							<view class="line-cla2">
 								<u-row gutter="7">
-									<u-col span="6">
-										<view class="flex-item-20">匹数</view>
+									<u-col span="7">
+										<view class="flex-item-20">辅助数量</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
 										<view style="width: 10rpx;color: #00aaff;" v-if="item.quantityByAssistant.length < 3">{{item.quantityByAssistant.join('|')}}</view>
@@ -94,7 +85,7 @@
 									</u-col>
 								</u-row>
 							</view>
-							<view class="line-cla2">
+							<!-- <view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="6">
 										<view class="flex-item-20">单匹重量</view>
@@ -106,8 +97,8 @@
 										</view>
 									</u-col>
 								</u-row>
-							</view>
-							<view class="line-cla2">
+							</view> -->
+							<!-- <view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="6">
 										<view class="flex-item-20">总匹数</view>
@@ -116,18 +107,37 @@
 										<view style="width: 100rpx;color: #ff0000;">{{item.allQuantityByAssistant.toString()}}</view>
 									</u-col>
 								</u-row>
-							</view>
+							</view> -->
 							<view class="line-cla2">
 								<u-row gutter="7">
-									<u-col span="6">
+									<u-col span="7">
 										<view class="flex-item-20">总数量</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;color: #ff0000;">{{sumQuantity(item)}}</view>
+										<view style="width: 100rpx;color: #00aaff;">{{item.quantity}}</view>
 									</u-col>
 								</u-row>
 							</view>
-							
+							<!-- <view class="line-cla2">
+								<u-row gutter="7">
+									<u-col span="7">
+										<view class="flex-item-20">金额</view>
+									</u-col>
+									<u-col span="1">
+										<view style="width: 100rpx;color: #ff0000;">{{sumAmount(item)}}</view>
+									</u-col>
+								</u-row>
+							</view> -->
+							<view class="line-cla2">
+								<u-row gutter="7">
+									<u-col span="7">
+										<view class="flex-item-20">金额</view>
+									</u-col>
+									<u-col span="1" style="margin-left: 30rpx;">
+										<view style="width: 100rpx;color: #ff0000;">{{sumAmount(item)}}</view>
+									</u-col>
+								</u-row>
+							</view>
 						</view>
 					</view>
 					<view slot="foot" v-if="item.clickChecked">
@@ -180,14 +190,14 @@
 			<u-popup v-model="editShow" mode="bottom" border-radius="14" length="70%" @close="popClose">
 				<view class="u-demo-wrap">
 					<view style="height: 50rpx;"></view>
-					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">单匹重量 & 匹数</view>
+					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量 & 单价</view>
 					<view style="margin-top: 20rpx;">
 						<u-cell-group>
-							<u-field v-model="editRow.productName"label="面料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.productNo"label="面料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.price"label="单价" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.coloringNo"label="缸号" placeholder="请输入缸号" label-width="150" :clearable="false" :required="false" type="text"></u-field>
-							<u-table>
+							<u-field v-model="editRow.productName"label="辅料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productNo"label="辅料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.quantity"label="数量" label-width="150" :clearable="true" :required="false" type="text"></u-field>
+							<u-field v-model="editRow.price"label="单价" label-width="150" :clearable="true" :required="false" type="text"></u-field>
+							<!-- <u-table>
 									<u-tr>
 										<u-th>单匹重量</u-th>
 										<u-th>匹数</u-th>
@@ -206,10 +216,9 @@
 											</u-td>
 										</u-tr>
 									</view>
-								</u-table>
+								</u-table> -->
 						</u-cell-group>
 						<view class="close-btn">
-							<u-button @tap="addLine" size="medium" type="warning">添加</u-button>
 							<u-button @tap="editExchangeRate" size="medium" type="primary">确定</u-button>
 							<u-button @tap="closeBtn" size="medium">取消</u-button>
 						</view>
@@ -247,7 +256,7 @@
 
 <script>
 	import {
-		sumQuantity
+		sumAmount
 	} from '@/util/index.js'
 	export default {
 		data() {
@@ -275,8 +284,8 @@
 				arrivalNo: '',
 				orderId: '',
 				orderNo: '',
-				propertiesName: '面料',
-				properties: 0,
+				propertiesName: '辅料',
+				properties: 1,
 				status: '',
 				details: [],
 				sourceTypeList: [{
@@ -303,7 +312,7 @@
 			}
 		},
 		onShow() {
-			let that = this   
+			let that = this
 			uni.getStorage({
 				key: 'addOther-material',
 				success(res) {
@@ -339,7 +348,7 @@
 				}
 			})
 			uni.getStorage({
-				key: 'add-material',
+				key: 'add-accessory',
 				success(res) {
 					let a = {
 						color: res.data.color,
@@ -354,7 +363,7 @@
 						exchangeRate: [1],
 						quantityByAssistant: [1],
 						allQuantityByAssistant: '',
-						quantity: '',
+						quantity: 1,
 						amount: '',
 						coloringNo: '',
 						clickChecked: true
@@ -368,12 +377,12 @@
 					that.tempMaterialList.push(only)
 					that.materialList.push(a)
 					uni.removeStorage({
-						key: 'add-material'
+						key: 'add-accessory'
 					});
 				}
 			})
 			uni.getStorage({
-				key: 'selectStockInSupplierByAdd',
+				key: 'selectStockInSupplierByAccessoryAdd',
 				async success(res) {
 					that.supplierName = res.data.name
 					that.supplierId = res.data.id
@@ -389,12 +398,12 @@
 					}
 					that.purchaseList = data
 					uni.removeStorage({
-						key: 'selectStockInSupplierByAdd'
+						key: 'selectStockInSupplierByAccessoryAdd'
 					});
 				}
 			})
 			uni.getStorage({
-				key: 'selectStockInWarehouseByAdd',
+				key: 'selectStockInWarehouseByAccessoryAdd',
 				success(res) {
 					console.log('res')
 					console.log(res)
@@ -407,13 +416,13 @@
 					that.warehouseName = res.data.name
 					that.warehouseId = res.data.id
 					uni.removeStorage({
-						key: 'selectStockInWarehouseByAdd'
+						key: 'selectStockInWarehouseByAccessoryAdd'
 					});
 				}
 			})
 		},
 		methods: {
-			sumQuantity,
+			sumAmount,
 			seeClick(item) {
 				this.seeRow = {
 					exchangeRate: item.exchangeRate,
@@ -481,7 +490,7 @@
 			},
 			selectSupplier() {
 				uni.navigateTo({
-					url: 'selectSupplierByAdd?supplierNames=' + this.supplierName
+					url: 'selectSupplierByAccessoryAdd?supplierNames=' + this.supplierName
 				})
 			},
 			calendarChange(e) {
@@ -495,7 +504,7 @@
 			},
 			warehouseClick() {
 				uni.navigateTo({
-					url: 'selectWarehouseByAdd?supplierNames=' + this.warehouseName
+					url: 'selectWarehouseByAccessoryAdd?supplierNames=' + this.warehouseName
 				})
 			},
 			sourceTypeClick() {
@@ -672,7 +681,7 @@
 						exchangeRate: [1],
 						quantityByAssistant: [1],
 						allQuantityByAssistant: '',
-						quantity: '',
+						quantity: 1,
 						amount: '',
 						coloringNo: '',
 						clickChecked: true
@@ -684,12 +693,12 @@
 					if(this.sourceType === '0') {
 						if(this.$u.test.isEmpty(this.arrivalNo) && !this.$u.test.isEmpty(this.supplierId) ) {
 							uni.navigateTo({
-								url: 'material-add-add?supplierId='+this.supplierId
+								url: 'accessory-add-add?supplierId='+this.supplierId
 							})
 						}
 					} else {
 						uni.navigateTo({
-							url: 'material-add-addOther'
+							url: 'accessory-add-addOther'
 						})
 					}
 				}

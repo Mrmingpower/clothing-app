@@ -190,7 +190,7 @@
 								<u-col span="3">
 									<!-- <view>{{item.quantity}}</view> -->
 									<view>
-										<u-number-box bg-color="#efe5fe" v-model="item.quantity"></u-number-box>
+										<u-number-box :positive-integer="false" bg-color="#efe5fe" v-model="item.quantity"></u-number-box>
 									</view>
 								</u-col>
 							</u-row>
@@ -203,7 +203,7 @@
 								<u-col span="3">
 									<!-- <view>{{item.price}}</view> -->
 								<view>
-									<u-number-box bg-color="#efe5fe" v-model="item.price"></u-number-box>
+									<u-number-box :positive-integer="false" bg-color="#efe5fe" v-model="item.price"></u-number-box>
 								</view>
 								</u-col>
 							</u-row>
@@ -211,7 +211,7 @@
 						<view class="line-cla2">
 							<view>副计量单位数量</view>
 							<view style="margin-top: 14rpx;position: relative;right: -90rpx;">
-								<u-number-box bg-color="#efe5fe" v-model="item.quantityByAssistant"></u-number-box>
+								<u-number-box :positive-integer="false" bg-color="#efe5fe" v-model="item.quantityByAssistant"></u-number-box>
 							</view>
 						</view>
 					</view>

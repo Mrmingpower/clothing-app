@@ -96,6 +96,26 @@ export const sumAmount = function(item) {
 	return item.quantity * item.price
 }
 
+export const formatReceiverType = function(receiverType) {
+	if (receiverType === 0) {
+		return 'primary'
+	} else if (receiverType === 1) {
+		return 'warning'
+	} else {
+		return 'success'
+	}
+}
+
+export const formatReceiver = function(receiverType) {
+	if (receiverType === 0) {
+		return '车间'
+	} else if (receiverType === 1) {
+		return '外协厂'
+	} else {
+		return '仓库'
+	}
+}
+
 // export const formatArr = function(arr) {
 	
 // }

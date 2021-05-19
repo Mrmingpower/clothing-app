@@ -24,7 +24,7 @@
 		<view class="wrap" style="margin-top: 15rpx;">
 			<!-- <u-field v-model="supplierNames" icon="man" @click="supplierClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择供应商" label="供应商"></u-field> -->
 			<u-field v-model="warehouseNames" icon="home" @click="warehouseClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择仓库" label="仓库"></u-field>
-			<u-field v-model="receiverTypeName" icon="coupon" @click="receiverTypeClick" label-width="230" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择收货单位类型" label="收货单位类型"></u-field>
+			<u-field v-model="receiverTypeName" icon="coupon" @click="receiverTypeClick" label-width="220" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择收货单位类型" label="收货单位类型"></u-field>
 			<u-field v-model="sourceTypeName" icon="coupon" @click="sourceTypeClick" label-width="200" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择出库类型" label="出库类型"></u-field>
 		</view>
 		<view style="position: relative;left: 30rpx;top: 20rpx;">
@@ -41,10 +41,10 @@
 			</view>
 			<!-- <u-button type="primary" shape="circle" :custom-style="customStyle">查询</u-button> -->
 		</view>
-		<multiple-select v-model="statusesShow" :data="statusList" @confirm="statusConfirm"></multiple-select>
-		<multiple-select v-model="propertiesShow" :data="propertiesList" @confirm="propertiesConfirm"></multiple-select>
-		<multiple-select v-model="receiverTypeShow" :data="receiverTypeList" @confirm="receiverTypeConfirm"></multiple-select>
-		<multiple-select v-model="sourceTypeShow" :data="sourceTypeList" @confirm="sourceTypeConfirm"></multiple-select>
+		<multiple-select v-model="statusesShow" :default-selected="statusesDefaultSelected" :data="statusList" @confirm="statusConfirm"></multiple-select>
+		<multiple-select v-model="propertiesShow" :default-selected="propertiesDefaultSelected" :data="propertiesList" @confirm="propertiesConfirm"></multiple-select>
+		<multiple-select v-model="receiverTypeShow" :default-selected="receiverDefaultSelected" :data="receiverTypeList" @confirm="receiverTypeConfirm"></multiple-select>
+		<multiple-select v-model="sourceTypeShow" :default-selected="sourceTypeDefaultSelected" :data="sourceTypeList" @confirm="sourceTypeConfirm"></multiple-select>
 		<u-calendar v-model="startShow" mode="date" @change="startChange"></u-calendar>
 		<u-calendar v-model="endShow" mode="date" @change="endChange"></u-calendar>
 	</view>
@@ -85,56 +85,60 @@
 				warehouseIds: '',
 				warehouseNames: '',
 				sortList: [],
+				receiverDefaultSelected: [],
+				statusesDefaultSelected: [],
+				propertiesDefaultSelected: [],
+				sourceTypeDefaultSelected: [],
 				statusList: [
 				{
 					label: "未审核",
-					value: "0",
+					value: 0,
 				},
 				{
 					label: "已审核",
-					value: "1",
+					value: 1,
 				}],
 				propertiesList: [
 				{
 					label: "面料",
-					value: "0",
+					value: 0,
 				},
 				{
 					label: "辅料",
-					value: "1",
+					value: 1,
 				},{
 					label: "成品",
-					value: "2",
+					value: 2,
 				}],
 				receiverTypeList: [
 					{
 						label: "车间",
-						value: "0",
+						value: 0,
 					},
 					{
 						label: "外协厂",
-						value: "1",
+						value: 1,
 					},{
 						label: "仓库",
-						value: "2",
+						value: 2,
 					}
 				],
 				sourceTypeList: [
 					{
 						label: "生产领用",
-						value: "0",
+						value: 0,
 					},
 					{
 						label: "销售出库",
-						value: "1",
+						value: 1,
 					},
 					{
 						label: "其他出库",
-						value: "2",
+						value: 2,
 					},
 					{
-						label: "调拨出库",
-						value: "3",
+						label: 调拨出库,
+						value: 3,
 					}
 				]
 			}
@@ -161,6 +165,7 @@
 			}
 			if(!this.$u.test.isEmpty(queryParams.statuses)) {
 				this.statuses = queryParams.statuses
+				this.statusesDefaultSelected = queryParams.statuses.split(',')
 			}
 			if(!this.$u.test.isEmpty(queryParams.statusesName)) {
 				this.statusesName = queryParams.statusesName
@@ -173,6 +178,7 @@
 			// }
 			if(!this.$u.test.isEmpty(queryParams.properties)) {
 				this.properties = queryParams.properties
+				this.propertiesDefaultSelected = queryParams.properties.split(',')
 			}
 			if(!this.$u.test.isEmpty(queryParams.propertiesName)) {
 				this.propertiesName = queryParams.propertiesName
@@ -185,12 +191,14 @@
 			}
 			if(!this.$u.test.isEmpty(queryParams.receiverType)) {
 				this.receiverType = queryParams.receiverType
+				this.receiverDefaultSelected = queryParams.receiverType.split(',')
 			}
 			if(!this.$u.test.isEmpty(queryParams.receiverTypeName)) {
 				this.receiverTypeName = queryParams.receiverTypeName
 			}
 			if(!this.$u.test.isEmpty(queryParams.sourceType)) {
 				this.sourceType = queryParams.sourceType
+				this.sourceTypeDefaultSelected = queryParams.sourceType.split(',')
 			}
 			if(!this.$u.test.isEmpty(queryParams.sourceTypeName)) {
 				this.sourceTypeName = queryParams.sourceTypeName

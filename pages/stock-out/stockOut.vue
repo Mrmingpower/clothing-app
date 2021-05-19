@@ -86,11 +86,10 @@
 							<view class="line-cla">
 								<u-row gutter="16">
 									<u-col span="3">
-										<view class="flex-item-20">收货单位类型</view>
+										<view class="flex-item-20">收货单位</view>
 									</u-col>
 									<u-col span="4">
-										<u-tag :text="
-										(item.receiverType)"
+										<u-tag :text="formatReceiver(item.receiverType)"
 											:type="formatReceiverType(item.receiverType)" mode="dark" size="mini"
 											shape="square" />
 									</u-col>
@@ -126,7 +125,9 @@
 		formatStockInStatus,
 		formatStockInStatusType,
 		formatProperties,
-		formatPropertiesType
+		formatPropertiesType,
+		formatReceiverType,
+		formatReceiver
 	} from '@/util/index.js'
 	export default {
 		components: {
@@ -209,7 +210,8 @@
 			formatStockInStatusType,
 			formatProperties,
 			formatPropertiesType,
-
+			formatReceiverType,
+			formatReceiver,
 			initData() {
 				this.finished = false
 				this.pageNo = 0

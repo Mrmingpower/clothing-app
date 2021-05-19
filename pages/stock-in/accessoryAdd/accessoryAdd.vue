@@ -5,9 +5,9 @@
 				placeholder="请选择入库类型" label="入库类型">
 				<u-button @click="sourceTypeClick" slot="right" size="mini" type="primary">选择</u-button>
 			</u-field>
-			<u-field v-if="sourceType==='0'" v-model="supplierName" @click="selectSupplier" icon="coupon" right-icon="arrow-down-fill"
+			<u-field v-if="sourceType===0" v-model="supplierName" @click="selectSupplier" icon="coupon" right-icon="arrow-down-fill"
 				:disabled="true" label-width="200" placeholder="请选择供应商" label="供应商"></u-field>
-			<u-field v-if="sourceType==='0'"  v-model="arrivalNo" icon="calendar" @click="purchaseClick" right-icon="arrow-down-fill"
+			<u-field v-if="sourceType===0"  v-model="arrivalNo" icon="calendar" @click="purchaseClick" right-icon="arrow-down-fill"
 				:disabled="true" label-width="200" placeholder="请选择采购单" label="采购单"></u-field>
 		</view>
 		<view style="margin-top: 15rpx;">
@@ -272,10 +272,10 @@
 				status: '',
 				details: [],
 				sourceTypeList: [{
-					value: '0',
+					value: 0,
 					label: '采购入库'
 				}, {
-					value: '2',
+					value: 2,
 					label: '其他入库'
 				}],
 				sourceTypeShow: false,
@@ -440,7 +440,7 @@
 			},
 			purchaseClick() {
 				console.log(this.sourceType)
-				if(!this.$u.test.isEmpty(this.supplierId) && this.sourceType === '0') {
+				if(!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
 					this.purchaseOrderShow = true
 				}
 			},
@@ -493,7 +493,7 @@
 					})
 					return
 				}
-				if(this.sourceType === '0') {
+				if(this.sourceType === 0) {
 					let detailsArr = []
 					for (var i = 0; i < this.materialList.length; i++) {
 						detailsArr.push({
@@ -645,7 +645,7 @@
 			},
 			toAddProduct() {
 				if(!this.$u.test.isEmpty(this.sourceType)) {
-					if(this.sourceType === '0') {
+					if(this.sourceType === 0) {
 						if(this.$u.test.isEmpty(this.arrivalNo) && !this.$u.test.isEmpty(this.supplierId) ) {
 							uni.navigateTo({
 								url: 'accessory-add-add?supplierId='+this.supplierId

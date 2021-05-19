@@ -198,6 +198,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-out/add/material-add",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "面料出库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-out/add/selectWarehouseByAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择仓库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

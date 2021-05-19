@@ -38,7 +38,7 @@
 			</view>
 			<!-- <u-button type="primary" shape="circle" :custom-style="customStyle">查询</u-button> -->
 		</view>
-		<multiple-select v-model="statusesShow" :data="statusList" @confirm="statusConfirm"></multiple-select>
+		<multiple-select v-model="statusesShow" :default-selected="statusesDefaultSelected" :data="statusList" @confirm="statusConfirm"></multiple-select>
 		<u-calendar v-model="startShow" mode="date" @change="startChange"></u-calendar>
 		<u-calendar v-model="endShow" mode="date" @change="endChange"></u-calendar>
 	</view>
@@ -70,14 +70,15 @@
 				warehouseIds: '',
 				warehouseNames: '',
 				sortList: [],
+				statusesDefaultSelected: [],
 				statusList: [
 				{
 					label: "未审核",
-					value: "0",
+					value: 0,
 				},
 				{
 					label: "已审核",
-					value: "1",
+					value: 1,
 				}]
 			}
 		},
@@ -103,6 +104,7 @@
 			}
 			if(!this.$u.test.isEmpty(queryParams.statuses)) {
 				this.statuses = queryParams.statuses
+				this.statusesDefaultSelected = queryParams.statuses.split(',')
 			}
 			if(!this.$u.test.isEmpty(queryParams.statusesName)) {
 				this.statusesName = queryParams.statusesName

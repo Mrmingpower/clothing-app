@@ -43,17 +43,17 @@
 							<u-icon name="grid-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">出库查询</view>
 						</u-grid-item>
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-out/add/material-add')">
 							<u-icon name="star-fill" color="#ff5500" :size="47"></u-icon>
-							<view class="grid-text">生产领用</view>
+							<view class="grid-text">面料出库</view>
 						</u-grid-item>
 						<u-grid-item>
 							<u-icon name="shopping-cart-fill" color="#ff5500" :size="47"></u-icon>
-							<view class="grid-text">销售单</view>
+							<view class="grid-text">辅料出库</view>
 						</u-grid-item>
 						<u-grid-item>
 							<u-icon name="plus-circle-fill" color="#ff5500" :size="47"></u-icon>
-							<view class="grid-text">其他出库</view>
+							<view class="grid-text">成品出库</view>
 						</u-grid-item>
 					</u-grid>
 				</view>

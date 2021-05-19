@@ -76,11 +76,11 @@
 		methods: {
 			toSubmit(item) {
 				uni.setStorage({
-					key: 'addOther-material',
+					key: 'addOther-accessory',
 					data: item
 				})
 				uni.navigateBack({
-					url: 'material-add'
+					url: 'accessoryAdd'
 				})
 			},
 			delQuery() {

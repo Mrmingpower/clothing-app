@@ -154,6 +154,50 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-out/stockOut",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "出库订单",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-out/stockOutSearch",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "出库查询",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-out/selectWarehouseOut",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "选择仓库",
+                "enablePullDownRefresh": false
+            }
+        }
+        ,{
+            "path" : "pages/stock-out/selectSortOut",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "设置排序",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-out/stockOutDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "出库明细",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

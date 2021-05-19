@@ -1,12 +1,25 @@
 export const formatSourceType = function(sourceType) {
 	if (sourceType === 0) {
-		return '采购入口'
+		return '采购入库'
 	} else if (sourceType === 1) {
 		return '期初入库'
 	} else {
 		return '其他入库'
 	}
 }
+
+export const formatSourceTypeOut = function(sourceType) {
+	if (sourceType === 0) {
+		return '生产领用'
+	} else if (sourceType === 1) {
+		return '销售出库'
+	} else if (sourceType === 2) {
+		return '其他出库'
+	} else {
+		return '调拨出库'
+	}
+}
+
 export const formatSourceTypeImg = function(sourceType) {
 	if (sourceType === 0) {
 		return 'purchase.png'
@@ -40,16 +53,20 @@ export const formatStockInStatusType = function(status) {
 export const formatProperties = function(properties) {
 	if (properties === 0) {
 		return '面料'
-	} else {
+	} else if (properties === 1) {
 		return '辅料'
+	} else {
+		return '成品'
 	}
 }
 
 export const formatPropertiesType = function(properties) {
 	if (properties === 0) {
 		return 'primary'
-	} else {
+	} else if (properties === 1) {
 		return 'warning'
+	} else {
+		return 'success'
 	}
 }
 
@@ -72,6 +89,10 @@ export const sumQuantity = function(item) {
 }
 
 export const sumAmount = function(item) {
+	if(item.exchangeRate !== '' && item.exchangeRate !== undefined && item.exchangeRate !== null) {
+		item.quantityByAssistant = item.quantity / item.exchangeRate
+	}
+	item.amount = item.quantity * item.price
 	return item.quantity * item.price
 }
 

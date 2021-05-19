@@ -13,7 +13,8 @@
 			<text style="font-size: 30rpx;margin-left: 15rpx;">基本信息</text>
 		</view>
 		<view class="wrap" style="margin-top: 15rpx;">
-			<u-field v-model="no" icon="coupon" label-width="200" placeholder="请输入单号" label="单号"></u-field>
+			<!-- <u-field v-model="no" icon="coupon" label-width="200" placeholder="请输入单号" label="单号"></u-field> -->
+			<u-field v-model="propertiesName" icon="coupon" @click="propertiesClick" label-width="200" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择属性" label="属性"></u-field>
 			<u-field v-model="statusesName" icon="tags" @click="statusClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择单据状态" label="单据状态"></u-field>
 		</view>
 		<view style="position: relative;left: 30rpx;top: 20rpx;">
@@ -21,8 +22,10 @@
 			<text style="font-size: 30rpx;margin-left: 15rpx;">其他信息</text>
 		</view>
 		<view class="wrap" style="margin-top: 15rpx;">
-			<u-field v-model="supplierNames" icon="man" @click="supplierClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择供应商" label="供应商"></u-field>
+			<!-- <u-field v-model="supplierNames" icon="man" @click="supplierClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择供应商" label="供应商"></u-field> -->
 			<u-field v-model="warehouseNames" icon="home" @click="warehouseClick" :disabled="true" right-icon="arrow-down-fill" label-width="200" placeholder="请选择仓库" label="仓库"></u-field>
+			<u-field v-model="receiverTypeName" icon="coupon" @click="receiverTypeClick" label-width="230" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择收货单位类型" label="收货单位类型"></u-field>
+			<u-field v-model="sourceTypeName" icon="coupon" @click="sourceTypeClick" label-width="200" :disabled="true" right-icon="arrow-down-fill"  placeholder="请选择出库类型" label="出库类型"></u-field>
 		</view>
 		<view style="position: relative;left: 30rpx;top: 20rpx;">
 			<u-icon name="rewind-right-fill" color="#2979ff" size="36"></u-icon>
@@ -39,6 +42,9 @@
 			<!-- <u-button type="primary" shape="circle" :custom-style="customStyle">查询</u-button> -->
 		</view>
 		<multiple-select v-model="statusesShow" :data="statusList" @confirm="statusConfirm"></multiple-select>
+		<multiple-select v-model="propertiesShow" :data="propertiesList" @confirm="propertiesConfirm"></multiple-select>
+		<multiple-select v-model="receiverTypeShow" :data="receiverTypeList" @confirm="receiverTypeConfirm"></multiple-select>
+		<multiple-select v-model="sourceTypeShow" :data="sourceTypeList" @confirm="sourceTypeConfirm"></multiple-select>
 		<u-calendar v-model="startShow" mode="date" @change="startChange"></u-calendar>
 		<u-calendar v-model="endShow" mode="date" @change="endChange"></u-calendar>
 	</view>
@@ -53,6 +59,9 @@
 		data() {
 			return {
 				statusesShow: false,
+				propertiesShow: false,
+				receiverTypeShow: false,
+				sourceTypeShow: false,
 				startShow: false,
 				endShow: false,
 				customStyle: {
@@ -61,6 +70,12 @@
 				begin: '',
 				end: '',
 				no: '',
+				propertiesName: '',
+				properties: '',
+				receiverTypeName: '',
+				receiverType: '',
+				sourceTypeName: '',
+				sourceType: '',
 				statuses: '',
 				statusesName: '',
 				orderColName: '',
@@ -78,7 +93,50 @@
 				{
 					label: "已审核",
 					value: "1",
-				}]
+				}],
+				propertiesList: [
+				{
+					label: "面料",
+					value: "0",
+				},
+				{
+					label: "辅料",
+					value: "1",
+				},{
+					label: "成品",
+					value: "2",
+				}],
+				receiverTypeList: [
+					{
+						label: "车间",
+						value: "0",
+					},
+					{
+						label: "外协厂",
+						value: "1",
+					},{
+						label: "仓库",
+						value: "2",
+					}
+				],
+				sourceTypeList: [
+					{
+						label: "生产领用",
+						value: "0",
+					},
+					{
+						label: "销售出库",
+						value: "1",
+					},
+					{
+						label: "其他出库",
+						value: "2",
+					},
+					{
+						label: "调拨出库",
+						value: "3",
+					}
+				]
 			}
 		},
 		onLoad(e) {
@@ -89,9 +147,9 @@
 			if(!this.$u.test.isEmpty(queryParams.end)) {
 				this.end = queryParams.end
 			}
-			if(!this.$u.test.isEmpty(queryParams.no)) {
-				this.no = queryParams.no
-			}
+			// if(!this.$u.test.isEmpty(queryParams.no)) {
+			// 	this.no = queryParams.no
+			// }
 			if(!this.$u.test.isEmpty(queryParams.orderCol)) {
 				this.orderCol = queryParams.orderCol
 			}
@@ -107,17 +165,35 @@
 			if(!this.$u.test.isEmpty(queryParams.statusesName)) {
 				this.statusesName = queryParams.statusesName
 			}
-			if(!this.$u.test.isEmpty(queryParams.supplierIds)) {
-				this.supplierIds = queryParams.supplierIds
+			// if(!this.$u.test.isEmpty(queryParams.supplierIds)) {
+			// 	this.supplierIds = queryParams.supplierIds
+			// }
+			// if(!this.$u.test.isEmpty(queryParams.supplierNames)) {
+			// 	this.supplierNames = queryParams.supplierNames
+			// }
+			if(!this.$u.test.isEmpty(queryParams.properties)) {
+				this.properties = queryParams.properties
 			}
-			if(!this.$u.test.isEmpty(queryParams.supplierNames)) {
-				this.supplierNames = queryParams.supplierNames
+			if(!this.$u.test.isEmpty(queryParams.propertiesName)) {
+				this.propertiesName = queryParams.propertiesName
 			}
 			if(!this.$u.test.isEmpty(queryParams.warehouseIds)) {
 				this.warehouseIds = queryParams.warehouseIds
 			}
 			if(!this.$u.test.isEmpty(queryParams.warehouseNames)) {
 				this.warehouseNames = queryParams.warehouseNames
+			}
+			if(!this.$u.test.isEmpty(queryParams.receiverType)) {
+				this.receiverType = queryParams.receiverType
+			}
+			if(!this.$u.test.isEmpty(queryParams.receiverTypeName)) {
+				this.receiverTypeName = queryParams.receiverTypeName
+			}
+			if(!this.$u.test.isEmpty(queryParams.sourceType)) {
+				this.sourceType = queryParams.sourceType
+			}
+			if(!this.$u.test.isEmpty(queryParams.sourceTypeName)) {
+				this.sourceTypeName = queryParams.sourceTypeName
 			}
 		},
 		onShow() {
@@ -139,7 +215,7 @@
 				}
 			}),
 			uni.getStorage({
-				key: 'selectStockInWarehouse',
+				key: 'selectStockOutWarehouse',
 				success(res) {
 					let textStr = []
 					let textId = []
@@ -150,12 +226,12 @@
 					that.warehouseNames = textStr.toString()
 					that.warehouseIds = textId.toString()
 					uni.removeStorage({
-					    key: 'selectStockInWarehouse'
+					    key: 'selectStockOutWarehouse'
 					});
 				}
 			}),
 			uni.getStorage({
-				key: 'stockInSort',
+				key: 'stockOutSort',
 				success(res) {
 					console.log('res')
 					console.log(res)
@@ -163,7 +239,7 @@
 					that.orderCol = res.data.arr
 					that.sortList = res.data.sortList
 					uni.removeStorage({
-					    key: 'stockInSort'
+					    key: 'stockOutSort'
 					});
 				}
 			})
@@ -171,20 +247,26 @@
 		methods: {
 			orderClick() {
 				uni.navigateTo({
-					url: 'selectSort?sortList=' + JSON.stringify(this.sortList)
+					url: 'selectSortOut?sortList=' + JSON.stringify(this.sortList)
 				})
 			},
 			searchData() {
 				let queryParams = {
 					begin: this.begin,
 					end: this.end,
-					no: this.no,
+					// no: this.no,
+					properties: this.properties,
+					propertiesName: this.propertiesName,
 					statuses: this.statuses,
 					statusesName: this.statusesName,
-					supplierIds: this.supplierIds,
-					supplierNames: this.supplierNames,
+					// supplierIds: this.supplierIds,
+					// supplierNames: this.supplierNames,
 					warehouseIds: this.warehouseIds,
 					warehouseNames: this.warehouseNames,
+					receiverTypeName: this.receiverTypeName,
+					receiverType: this.receiverType,
+					sourceType: this.sourceType,
+					sourceTypeName: this.sourceTypeName,
 					orderCol: this.orderCol,
 					orderColName: this.orderColName,
 					sortList: this.sortList
@@ -193,24 +275,31 @@
 				// 	key: 'stockInQueryParams',
 				// 	data: queryParams
 				// })
-				this.$map.set('stockInQueryParams',queryParams)
+				console.log(queryParams)
+				this.$map.set('stockOutQueryParams',queryParams)
 				uni.navigateBack({
-					url:'stockIn'
+					url:'stockOut'
 				})
 			},
 			clearData() {
 				this.begin = ''
 				this.end = ''
-				this.no = ''
+				// this.no = ''
 				this.statusesName = ''
 				this.statuses = ''
-				this.supplierIds = ''
-				this.supplierNames = ''
+				// this.supplierIds = ''
+				// this.supplierNames = ''
 				this.warehouseIds = ''
 				this.warehouseNames = ''
 				this.orderCol = ''
 				this.orderColName = ''
+				this.properties = ''
+				this.propertiesName = ''
 				this.sortList = []
+				this.receiverTypeName = ''
+				this.receiverType = ''
+				this.sourceType = ''
+				this.sourceTypeName = ''
 			},
 			startChange(e) {
 				this.begin = e.result
@@ -234,8 +323,41 @@
 				this.statusesName = label.toString()
 				this.statuses = value.toString()
 			},
+			receiverTypeConfirm(e) {
+				let label = []
+				let value = []
+				for (var i = 0; i < e.length; i++) {
+					label.push(e[i].label)
+					value.push(e[i].value)
+				}
+				this.receiverTypeName = label.toString()
+				this.receiverType = value.toString()
+			},
+			sourceTypeConfirm(e) {
+				let label = []
+				let value = []
+				for (var i = 0; i < e.length; i++) {
+					label.push(e[i].label)
+					value.push(e[i].value)
+				}
+				this.sourceTypeName = label.toString()
+				this.sourceType = value.toString()
+			},
+			propertiesConfirm(e) {
+				let label = []
+				let value = []
+				for (var i = 0; i < e.length; i++) {
+					label.push(e[i].label)
+					value.push(e[i].value)
+				}
+				this.propertiesName = label.toString()
+				this.properties = value.toString()
+			},
 			statusClick() {
 				this.statusesShow = true
+			},
+			propertiesClick() {
+				this.propertiesShow = true
 			},
 			supplierClick() {
 				uni.navigateTo({
@@ -244,9 +366,15 @@
 			},
 			warehouseClick() {
 				uni.navigateTo({
-					url: 'selectWarehouse?supplierNames='+ this.warehouseNames
+					url: 'selectWarehouseOut?supplierNames='+ this.warehouseNames
 				})
 			},
+			receiverTypeClick() {
+				this.receiverTypeShow = true
+			},
+			sourceTypeClick() {
+				this.sourceTypeShow = true
+			}
 		}
 	}
 </script>

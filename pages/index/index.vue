@@ -39,7 +39,7 @@
 				</view>
 				<view class="clothing_services_11">
 					<u-grid :col="3" :border="true">
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-out/stockOut')">
 							<u-icon name="grid-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">出库查询</view>
 						</u-grid-item>

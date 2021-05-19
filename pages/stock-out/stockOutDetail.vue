@@ -9,10 +9,10 @@
 						</view>
 					</u-col>
 					<u-col span="3">
-						<view class="flex-item-30">入库单号</view>
+						<view class="flex-item-30">出库单号</view>
 					</u-col>
 					<u-col span="4">
-						<view class="flex-item-70">{{stockInDetail.no}}</view>
+						<view class="flex-item-70">{{stockOutDetail.no}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -24,10 +24,10 @@
 						</view>
 					</u-col>
 					<u-col span="3">
-						<view class="flex-item-30">入库时间</view>
+						<view class="flex-item-30">出库时间</view>
 					</u-col>
 					<u-col span="8">
-						<view class="flex-item-70">{{stockInDetail.datetime}}</view>
+						<view class="flex-item-70">{{stockOutDetail.date}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -43,7 +43,7 @@
 						<view class="flex-item-30">仓库</view>
 					</u-col>
 					<u-col span="4">
-						<view class="flex-item-70">{{stockInDetail.warehouse}}</view>
+						<view class="flex-item-70">{{stockOutDetail.warehouseName}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -59,7 +59,7 @@
 						<view class="flex-item-30">总数量</view>
 					</u-col>
 					<u-col span="4">
-						<view class="flex-item-70">{{stockInDetail.quantity}}</view>
+						<view class="flex-item-70">{{stockOutDetail.quantity}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -74,7 +74,7 @@
 						<view class="flex-item-30">总金额</view>
 					</u-col>
 					<u-col span="4">
-						<view class="flex-item-70">{{stockInDetail.amount}}</view>
+						<view class="flex-item-70">{{stockOutDetail.amount}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -90,8 +90,8 @@
 					</u-col>
 					<u-col span="4">
 						<view class="flex-item-70">
-							<u-tag :text="formatProperties(stockInDetail.properties)"
-								:type="formatPropertiesType(stockInDetail.properties)" mode="dark" 
+							<u-tag :text="formatProperties(stockOutDetail.properties)"
+								:type="formatPropertiesType(stockOutDetail.properties)" mode="dark" 
 								shape="square"/>
 						</view>
 					</u-col>
@@ -109,8 +109,8 @@
 					</u-col>
 					<u-col span="4">
 						<view class="flex-item-70">
-							<u-tag :text="formatStockInStatus(stockInDetail.status)"
-								:type="formatStockInStatusType(stockInDetail.status)" mode="dark"
+							<u-tag :text="formatStockInStatus(stockOutDetail.status)"
+								:type="formatStockInStatusType(stockOutDetail.status)" mode="dark"
 								shape="circle" />
 						</view>
 					</u-col>
@@ -124,18 +124,18 @@
 						</view>
 					</u-col>
 					<u-col span="3">
-						<view class="flex-item-30">入库类型</view>
+						<view class="flex-item-30">出库类型</view>
 					</u-col>
 					<u-col span="4">
 						<view class="flex-item-70">
-							<u-tag :text="formatSourceType(stockInDetail.sourceType)" mode="dark"
+							<u-tag :text="formatSourceType(stockOutDetail.sourceType)" mode="dark"
 								shape="circle" />
 						</view>
 					</u-col>
 				</u-row>
 			</view>
 		</view>
-		<view v-for="(item,index) in stockInDetail.details" :key="index" :index="index">
+		<view v-for="(item,index) in stockOutDetail.details" :key="index" :index="index">
 			<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" thumb-width="40" :title-size="35"
 				border-radius="0" :title="item.productName">
 				<view slot="body">
@@ -254,13 +254,13 @@
 		</view>
 		<u-divider>没有更多了</u-divider>
 		<view style="height: 100rpx;"></view>
-		<view v-if="stockInDetail.status === -1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+		<view v-if="stockOutDetail.status === -1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
 			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick" :button-group="buttonGroup" />
 		</view>
-		<view v-if="stockInDetail.status === 0" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+		<view v-if="stockOutDetail.status === 0" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
 			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick0" :button-group="buttonGroup0" />
 		</view>
-		<view v-if="stockInDetail.status === 1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
+		<view v-if="stockOutDetail.status === 1" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
 			<uni-goods-nav :options="options" @click="editClick" @buttonClick="buttonClick1" :button-group="buttonGroup1" />
 		</view>
 		<view v-if="canEdit" style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
@@ -314,7 +314,7 @@
 						color: '#fff'
 					}
 				],
-				stockInDetail: {},
+				stockOutDetail: {},
 				thumb: '/static/stockIn/product.png',
 				canEdit: false
 			}
@@ -333,14 +333,15 @@
 			async getDetailList(id) {
 				this.canEdit = false
 				let result = await this.$myRequest({
-					url: '/stock-in/' + id
+					url: '/stock-out/' + id
 				})
+				console.log('result')
 				console.log(result)
-				this.stockInDetail = result
+				this.stockOutDetail = result
 			},
 			editClick(e) {
 				console.log(e)
-				if(this.stockInDetail.status === 0) {
+				if(this.stockOutDetail.status === 0) {
 					this.canEdit = !this.canEdit
 				} else {
 					uni.showToast({
@@ -352,7 +353,7 @@
 			},
 			async buttonClick(e) {
 				let result = await this.$myRequest({
-					url: '/stock-in/'+this.stockInDetail.id,
+					url: '/stock-in/'+this.stockOutDetail.id,
 					method: 'delete'
 				})
 				if(result === 200) {
@@ -370,7 +371,7 @@
 			async buttonClick0(e) {
 				if(e.index === 0) {
 					let result = await this.$myRequest({
-						url: '/stock-in/'+this.stockInDetail.id,
+						url: '/stock-in/'+this.stockOutDetail.id,
 						method: 'delete'
 					})
 					if(result === 200) {
@@ -387,7 +388,7 @@
 				}
 				if(e.index === 1) {
 					let result = await this.$myRequest({
-						url: '/stock-in/check/'+this.stockInDetail.id,
+						url: '/stock-in/check/'+this.stockOutDetail.id,
 						method: 'put'
 					})
 					if(result === 200) {
@@ -400,13 +401,13 @@
 						// 		url:'../index/index'
 						// 	})
 						// }, 800);
-						this.getDetailList(this.stockInDetail.id)
+						this.getDetailList(this.stockOutDetail.id)
 					}
 				}
 			},
 			async buttonClick1(e) {
 				let result = await this.$myRequest({
-					url: '/stock-in/uncheck/'+this.stockInDetail.id,
+					url: '/stock-in/uncheck/'+this.stockOutDetail.id,
 					method: 'put'
 				})
 				if(result === 200) {
@@ -419,7 +420,7 @@
 					// 		url:'../index/index'
 					// 	})
 					// }, 800);
-					this.getDetailList(this.stockInDetail.id)
+					this.getDetailList(this.stockOutDetail.id)
 				}
 			},
 			async buttonClick2(e) {
@@ -435,7 +436,7 @@
 						title: '修改成功',
 						icon: 'success'
 					})
-					this.getDetailList(this.stockInDetail.id)
+					this.getDetailList(this.stockOutDetail.id)
 				}
 			},
 		}

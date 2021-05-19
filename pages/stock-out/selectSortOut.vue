@@ -50,22 +50,28 @@
 						"name": "单号","value": "no","asc": false
 					},
 					{
-						"name": "单据状态","value": "status","asc": false
+						"name": "出库时间","value": "date","asc": false
 					},
 					{
-						"name": "供应商","value": "supplierId","asc": false
+						"name": "出库类型","value": "sourceType","asc": false
 					},
 					{
-						"name": "仓库","value": "warehouseId","asc": false
-					},
-					{
-						"name": "订单日期","value": "datetime","asc": false
+						"name": "属性","value": "properties","asc": false
 					},
 					{
 						"name": "数量","value": "quantity","asc": false
 					},
 					{
 						"name": "金额","value": "amount","asc": false
+					},
+					{
+						"name": "仓库","value": "warehouseId","asc": false
+					},
+					{
+						"name": "收货单位类型","value": "receiverType","asc": false
+					},
+					{
+						"name": "状态","value": "status","asc": false
 					}],
 				sortList: [{
 						"name": "id","value": "id","asc": false
@@ -98,22 +104,28 @@
 						"name": "单号","value": "no","asc": false
 					},
 					{
-						"name": "单据状态","value": "status","asc": false
+						"name": "出库时间","value": "date","asc": false
 					},
 					{
-						"name": "供应商","value": "supplierId","asc": false
+						"name": "出库类型","value": "sourceType","asc": false
 					},
 					{
-						"name": "仓库","value": "warehouseId","asc": false
-					},
-					{
-						"name": "订单日期","value": "datetime","asc": false
+						"name": "属性","value": "properties","asc": false
 					},
 					{
 						"name": "数量","value": "quantity","asc": false
 					},
 					{
 						"name": "金额","value": "amount","asc": false
+					},
+					{
+						"name": "仓库","value": "warehouseId","asc": false
+					},
+					{
+						"name": "收货单位类型","value": "receiverType","asc": false
+					},
+					{
+						"name": "状态","value": "status","asc": false
 					}],
 			}
 		},
@@ -126,8 +138,6 @@
 		},
 		methods: {
 			onclick(e) {
-				console.log('e')
-				console.log(e)
 				console.log('=== onclick start ===');
 				console.log("被点击行: " + JSON.stringify(e.value));
 				console.log("被点击下标: " + JSON.stringify(e.index));
@@ -145,22 +155,28 @@
 						"name": "单号","value": "no","asc": false
 					},
 					{
-						"name": "单据状态","value": "status","asc": false
+						"name": "出库时间","value": "date","asc": false
 					},
 					{
-						"name": "供应商","value": "supplierId","asc": false
+						"name": "出库类型","value": "sourceType","asc": false
 					},
 					{
-						"name": "仓库","value": "warehouseId","asc": false
-					},
-					{
-						"name": "订单日期","value": "datetime","asc": false
+						"name": "属性","value": "properties","asc": false
 					},
 					{
 						"name": "数量","value": "quantity","asc": false
 					},
 					{
 						"name": "金额","value": "amount","asc": false
+					},
+					{
+						"name": "仓库","value": "warehouseId","asc": false
+					},
+					{
+						"name": "收货单位类型","value": "receiverType","asc": false
+					},
+					{
+						"name": "状态","value": "status","asc": false
 					}]
 				this.sortList = [{
 						"name": "id","value": "id","asc": false
@@ -169,22 +185,28 @@
 						"name": "单号","value": "no","asc": false
 					},
 					{
-						"name": "单据状态","value": "status","asc": false
+						"name": "出库时间","value": "date","asc": false
 					},
 					{
-						"name": "供应商","value": "supplierId","asc": false
+						"name": "出库类型","value": "sourceType","asc": false
 					},
 					{
-						"name": "仓库","value": "warehouseId","asc": false
-					},
-					{
-						"name": "订单日期","value": "datetime","asc": false
+						"name": "属性","value": "properties","asc": false
 					},
 					{
 						"name": "数量","value": "quantity","asc": false
 					},
 					{
 						"name": "金额","value": "amount","asc": false
+					},
+					{
+						"name": "仓库","value": "warehouseId","asc": false
+					},
+					{
+						"name": "收货单位类型","value": "receiverType","asc": false
+					},
+					{
+						"name": "状态","value": "status","asc": false
 					}]
 					// console.log('执行了')
 					// setTimeout(()=> {
@@ -204,7 +226,7 @@
 					}
 				}
 				uni.setStorage({
-					key: 'stockInSort',
+					key: 'stockOutSort',
 					data: {
 						arr: arr.toString(),
 						arrName: arrName.toString(),
@@ -212,7 +234,7 @@
 					}
 				})
 				uni.navigateBack({
-					url:'stockInSearch'
+					url:'stockOutSearch'
 				})
 				console.log(arr.toString())
 				console.log(arrName.toString())
@@ -234,7 +256,6 @@
 				console.log('=== confirm end ===');
 			},
 			changeAsc(e) {
-				console.log(e)
 				e.asc = !e.asc
 				for (var i = 0; i < this.list.length; i++) {
 					if(e.value === this.list[i].value) {
@@ -242,7 +263,6 @@
 					}
 				}
 				this.sortList = this.list
-				console.log(this.list)
 			}
 		}
 	}

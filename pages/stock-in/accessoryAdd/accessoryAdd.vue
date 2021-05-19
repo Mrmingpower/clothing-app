@@ -77,11 +77,14 @@
 									<u-col span="7">
 										<view class="flex-item-20">辅助数量</view>
 									</u-col>
-									<u-col span="1" style="margin-left: 30rpx;">
+									<!-- <u-col span="1" style="margin-left: 30rpx;">
 										<view style="width: 10rpx;color: #00aaff;" v-if="item.quantityByAssistant.length < 3">{{item.quantityByAssistant.join('|')}}</view>
 										<view v-if="item.quantityByAssistant.length >= 3">
 											<u-button type="primary" size="mini" @click="seeClick(item)">查看</u-button>
 										</view>
+									</u-col> -->
+									<u-col span="1" style="margin-left: 30rpx;">
+										<view style="width: 100rpx;color: #00aaff;">{{item.quantityByAssistant}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -193,30 +196,10 @@
 					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量 & 单价</view>
 					<view style="margin-top: 20rpx;">
 						<u-cell-group>
-							<u-field v-model="editRow.productName"label="辅料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.productNo"label="辅料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.quantity"label="数量" label-width="150" :clearable="true" :required="false" type="text"></u-field>
-							<u-field v-model="editRow.price"label="单价" label-width="150" :clearable="true" :required="false" type="text"></u-field>
-							<!-- <u-table>
-									<u-tr>
-										<u-th>单匹重量</u-th>
-										<u-th>匹数</u-th>
-									</u-tr>
-									<view v-for="(item,index) in tempExchangeRate" :key="index">
-										<u-tr>
-											<u-td>
-												<view>
-													<u-number-box :min="1" align="center" v-model="item.exchangeRate"></u-number-box>
-												</view>
-											</u-td>
-											<u-td>
-												<view>
-													<u-number-box :min="1" align="center" v-model="item.quantityByAssistant"></u-number-box>
-												</view>
-											</u-td>
-										</u-tr>
-									</view>
-								</u-table> -->
+							<u-field v-model="editRow.productName" label="辅料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productNo" label="辅料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="tempQuantity" label="数量" label-width="150" :clearable="true" :required="false" type="text"></u-field>
+							<u-field v-model="tempPrice"label="单价" label-width="150" :clearable="true" :required="false" type="text"></u-field>
 						</u-cell-group>
 						<view class="close-btn">
 							<u-button @tap="editExchangeRate" size="medium" type="primary">确定</u-button>
@@ -305,16 +288,16 @@
 				thumb: '/static/stockIn/open.png',
 				editShow: false,
 				editRow: '',
-				tempExchangeRate: [],
-				tempQuantityByAssistant: [],
 				seeShow: false,
-				seeRow: ''
+				seeRow: '',
+				tempQuantity: '',
+				tempPrice: ''
 			}
 		},
 		onShow() {
 			let that = this
 			uni.getStorage({
-				key: 'addOther-material',
+				key: 'addOther-accessory',
 				success(res) {
 					let a = {
 						color: res.data.color,
@@ -326,10 +309,10 @@
 						productId: res.data.spuId,
 						productName: res.data.productName,
 						productNo: res.data.productNo,
-						exchangeRate: [1],
-						quantityByAssistant: [1],
+						exchangeRate: res.data.exchangeRate || 1,
+						quantityByAssistant: '',
 						allQuantityByAssistant: '',
-						quantity: '',
+						quantity: 1,
 						amount: '',
 						coloringNo: '',
 						clickChecked: true
@@ -343,7 +326,7 @@
 					that.tempMaterialList.push(only)
 					that.materialList.push(a)
 					uni.removeStorage({
-						key: 'addOther-material'
+						key: 'addOther-accessory'
 					});
 				}
 			})
@@ -360,8 +343,8 @@
 						productId: res.data.spuId,
 						productName: res.data.productName,
 						productNo: res.data.productNo,
-						exchangeRate: [1],
-						quantityByAssistant: [1],
+						exchangeRate: res.data.exchangeRate || 1,
+						quantityByAssistant: '',
 						allQuantityByAssistant: '',
 						quantity: 1,
 						amount: '',
@@ -437,49 +420,22 @@
 				this.editShow = false
 			},
 			popClose() {
-				this.tempExchangeRate = []
+				this.editShow = false
 			},
 			toEdit(item) {
+				console.log(item)
 				this.editShow = true
 				this.editRow = item
-				for (var i = 0; i < item.exchangeRate.length; i++) {
-					this.tempExchangeRate.push({
-						exchangeRate: item.exchangeRate[i],
-						quantityByAssistant: item.quantityByAssistant[i]
-					})
-				}
+				this.tempPrice = item.price
+				this.tempQuantity = item.quantity
 			},
 			toDel(index) {
 				console.log('执行了')
 				this.materialList.splice(index,1)
 			},
-			addLine() {
-				console.log(this.tempExchangeRate)
-				this.tempExchangeRate.push({
-					exchangeRate: 1,
-					quantityByAssistant: 1
-				})
-			},
 			editExchangeRate() {
-				let arr = []
-				let finalData = []
-				for (var i = 0; i < this.tempExchangeRate.length; i++) {
-					if(arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
-						let index = arr.indexOf(this.tempExchangeRate[i].exchangeRate)
-						finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this.tempExchangeRate[i].quantityByAssistant
-					} else {
-						finalData.push(this.tempExchangeRate[i])
-						arr.push(this.tempExchangeRate[i].exchangeRate)
-					}
-				}
-				let exchangeRate = []
-				let quantityByAssistant = []
-				for (var i = 0; i < finalData.length; i++) {
-					exchangeRate.push(finalData[i].exchangeRate)
-					quantityByAssistant.push(finalData[i].quantityByAssistant)
-				}
-				this.editRow.exchangeRate = exchangeRate
-				this.editRow.quantityByAssistant = quantityByAssistant
+				this.editRow.price = this.tempPrice
+				this.editRow.quantity = this.tempQuantity
 				this.editShow = false
 			},
 			purchaseClick() {
@@ -528,8 +484,6 @@
 				this.materialList = []
 				this.tempMaterialList = []
 				this.editRow = ''
-				this.tempExchangeRate = []
-				this.tempQuantityByAssistant = []
 			},
 			async submit() {
 				if(this.$u.test.isEmpty(this.warehouseId)) {
@@ -542,28 +496,26 @@
 				if(this.sourceType === '0') {
 					let detailsArr = []
 					for (var i = 0; i < this.materialList.length; i++) {
-						for (var j = 0; j < this.materialList[i].exchangeRate.length; j++) {
-							detailsArr.push({
-								// allQuantityByAssistant: this.materialList[i].allQuantityByAssistant,
-								amount: this.materialList[i].amount,
-								assistantUnit: this.materialList[i].assistantUnit,
-								color: this.materialList[i].color,
-								coloringNo: this.materialList[i].coloringNo,
-								exchangeRate: this.materialList[i].exchangeRate[j],
-								price: this.materialList[i].price,
-								productId: this.materialList[i].productId,
-								productName: this.materialList[i].productName,
-								productNo: this.materialList[i].productNo,
-								properties: this.properties,
-								purchaseArrivalId: this.arrivalId,
-								purchaseOrderDetailId: this.materialList[i].arrivalDetailId,
-								quantity: this.materialList[i].quantity,
-								quantityByAssistant: this.materialList[i].quantityByAssistant[j],
-								specification: this.materialList[i].specification,
-								unit: this.materialList[i].unit,
-								spuId: this.materialList[i].spuId || '',
-							})
-						}
+						detailsArr.push({
+							// allQuantityByAssistant: this.materialList[i].allQuantityByAssistant,
+							amount: this.materialList[i].amount,
+							assistantUnit: this.materialList[i].assistantUnit,
+							color: this.materialList[i].color,
+							coloringNo: this.materialList[i].coloringNo,
+							exchangeRate: this.materialList[i].exchangeRate,
+							price: this.materialList[i].price,
+							productId: this.materialList[i].productId,
+							productName: this.materialList[i].productName,
+							productNo: this.materialList[i].productNo,
+							properties: this.properties,
+							purchaseArrivalId: this.arrivalId,
+							purchaseOrderDetailId: this.materialList[i].arrivalDetailId,
+							quantity: this.materialList[i].quantity,
+							quantityByAssistant: this.materialList[i].quantityByAssistant,
+							specification: this.materialList[i].specification,
+							unit: this.materialList[i].unit,
+							spuId: this.materialList[i].spuId,
+						})
 					}
 					let params = {
 						arrivalDate: this.datetime,
@@ -573,6 +525,8 @@
 						warehouseId: this.warehouseId,
 						details: detailsArr
 					}
+					console.log('params')
+					console.log(params)
 					let result = await this.$myRequest({
 						url: '/purchase-arrival/',
 						method: 'POST',
@@ -599,26 +553,24 @@
 				} else {
 					let detailsArr = []
 					for (var i = 0; i < this.materialList.length; i++) {
-						for (var j = 0; j < this.materialList[i].exchangeRate.length; j++) {
-							detailsArr.push({
-								arrivalDetailId: this.materialList[i].arrivalDetailId || '',
-								// allQuantityByAssistant: this.materialList[i].allQuantityByAssistant,
-								amount: this.materialList[i].amount,
-								assistantUnit: this.materialList[i].assistantUnit,
-								color: this.materialList[i].color,
-								coloringNo: this.materialList[i].coloringNo,
-								exchangeRate: this.materialList[i].exchangeRate[j],
-								price: this.materialList[i].price,
-								productName: this.materialList[i].productName,
-								productNo: this.materialList[i].productNo,
-								quantity: this.materialList[i].quantity,
-								quantityByAssistant: this.materialList[i].quantityByAssistant[j],
-								specification: this.materialList[i].specification,
-								unit: this.materialList[i].unit,
-								productId: this.materialList[i].productId,
-								spuId: this.materialList[i].spuId || ''
-							})
-						}
+						detailsArr.push({
+							arrivalDetailId: this.materialList[i].arrivalDetailId || '',
+							// allQuantityByAssistant: this.materialList[i].allQuantityByAssistant,
+							amount: this.materialList[i].amount,
+							assistantUnit: this.materialList[i].assistantUnit,
+							color: this.materialList[i].color,
+							coloringNo: this.materialList[i].coloringNo,
+							exchangeRate: this.materialList[i].exchangeRate,
+							price: this.materialList[i].price,
+							productName: this.materialList[i].productName,
+							productNo: this.materialList[i].productNo,
+							quantity: this.materialList[i].quantity,
+							quantityByAssistant: this.materialList[i].quantityByAssistant,
+							specification: this.materialList[i].specification,
+							unit: this.materialList[i].unit,
+							productId: this.materialList[i].productId,
+							spuId: this.materialList[i].spuId || ''
+						})
 					}
 					let params = {
 						arrivalId: this.arrivalId,
@@ -634,6 +586,8 @@
 						warehouseId: this.warehouseId,
 						details: detailsArr
 					}
+					console.log('params')
+					console.log(params)
 					let result = await this.$myRequest({
 						url: '/stock-in/',
 						method: 'POST',
@@ -663,6 +617,7 @@
 				let result = await this.$myRequest({
 					url: '/purchase-order/no/' + e[0].value
 				})
+				console.log(result)
 				this.arrivalNo = result.orderNo
 				this.arrivalId = result.id
 				this.materialList = []
@@ -678,8 +633,8 @@
 						spuId: result.details[i].productId,
 						productName: result.details[i].productName,
 						productNo: result.details[i].productNo,
-						exchangeRate: [1],
-						quantityByAssistant: [1],
+						exchangeRate: result.details[i].exchangeRate || 1,
+						quantityByAssistant: '',
 						allQuantityByAssistant: '',
 						quantity: 1,
 						amount: '',

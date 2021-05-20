@@ -72,9 +72,8 @@
 						}
 					}
 				}
-				console.log(a)
 				uni.setStorage({
-					key: 'selectStockInWarehouseByAdd',
+					key: 'selectStockOutWarehouseByAdd',
 					data: a[0]
 				})
 				uni.navigateBack({

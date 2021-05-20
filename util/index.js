@@ -116,6 +116,17 @@ export const formatReceiver = function(receiverType) {
 	}
 }
 
+export const formatStockAssistant = function(item) {
+	let quantity = 0
+	let quantityByAssistant = 0
+	for (var i = 0; i < item.materialSkuArr.length; i++) {
+		quantityByAssistant = quantityByAssistant + parseInt(item.materialSkuArr[i].quantityByAssistantEdit)
+		quantity = quantity + parseInt(item.materialSkuArr[i].quantityByAssistantEdit) * item.materialSkuArr[i].exchangeRate
+	}
+	item.quantity = quantity
+	item.amount = item.quantity * item.materialSkuArr[0].price
+	return quantityByAssistant
+}
 // export const formatArr = function(arr) {
 	
 // }

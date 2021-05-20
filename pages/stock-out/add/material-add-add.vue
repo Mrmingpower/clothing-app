@@ -21,8 +21,8 @@
 									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
 								<view decode="true" class="address_from">
-									<text style="font-size: 30rpx;color: #000000;">{{item_orders.productName}}</text>
-									<text style="padding-left: 30rpx;color: #c5c5c5;">{{item_orders.productNo}}</text>
+									<text style="font-size: 30rpx;color: #000000;">{{item_orders.name}}</text>
+									<text style="padding-left: 30rpx;color: #c5c5c5;">{{item_orders.no}}</text>
 								</view>
 							</view>
 							<image
@@ -62,7 +62,6 @@
 		data() {
 			return {
 				ipt: '',
-				supplierId: '',
 				loadingText: '123',
 				list_orders: [],
 				page: 0, //当前分页页码
@@ -71,14 +70,13 @@
 				del_id: '' //方便存在本地的locakStorage  
 			}
 		},
-		onLoad(e) {
-			this.supplierId = e.supplierId
+		onLoad() {
 			this.getData()
 		},
 		methods: {
 			toSubmit(item) {
 				uni.setStorage({
-					key: 'add-material',
+					key: 'out-add-material',
 					data: item
 				})
 				uni.navigateBack({
@@ -91,7 +89,7 @@
 			},
 			async toSearch(e) {
 				let result = await this.$myRequest({
-					url: '/purchase-arrival/supplier/'+this.supplierId+'/product-query',
+					url: '/stock-out/material-prompt',
 					data: {
 						query: e.target.value
 					}
@@ -105,7 +103,7 @@
 			},
 			async getData() {
 				let result = await this.$myRequest({
-					url: '/purchase-arrival/supplier/'+this.supplierId+'/product-query'
+					url: '/stock-out/material-prompt'
 				})
 				this.list_orders = result
 				console.log(result)

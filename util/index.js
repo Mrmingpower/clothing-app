@@ -125,6 +125,7 @@ export const formatStockAssistant = function(item) {
 	}
 	item.quantity = quantity
 	item.amount = item.quantity * item.materialSkuArr[0].price
+	item.quantityByAssistant = quantityByAssistant
 	return quantityByAssistant
 }
 // export const formatArr = function(arr) {

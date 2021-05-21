@@ -365,6 +365,40 @@
 		onShow() {
 			let that = this
 			uni.getStorage({
+				key: 'addOther-material',
+				success(res) {
+					let a = {
+						color: res.data.color,
+						specification: res.data.specification,
+						unit: res.data.unit,
+						assistantUnit: res.data.assistantUnit,
+						price: res.data.price,
+						spuId: res.data.spuId,
+						productId: res.data.spuId,
+						productName: res.data.productName,
+						productNo: res.data.productNo,
+						exchangeRate: [1],
+						quantityByAssistant: [1],
+						allQuantityByAssistant: '',
+						quantity: '',
+						amount: '',
+						coloringNo: '',
+						clickChecked: true
+					}
+					let only = res.data.productNo + '-' + res.data.color + '-' + res.data.specification
+					if (that.tempMaterialList.indexOf(only) > -1) {
+						let index = that.tempMaterialList.indexOf(only)
+						that.materialList.splice(index, 1)
+						that.tempMaterialList.splice(index, 1)
+					}
+					that.tempMaterialList.push(only)
+					that.materialList.push(a)
+					uni.removeStorage({
+						key: 'addOther-material'
+					});
+				}
+			})
+			uni.getStorage({
 				key: 'out-add-material',
 				async success(res) {
 					console.log('resoutaddmaterial')

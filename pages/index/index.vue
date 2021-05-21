@@ -47,7 +47,7 @@
 							<u-icon name="star-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">面料出库</view>
 						</u-grid-item>
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-out/accessoryAdd/accessoryAdd')">
 							<u-icon name="shopping-cart-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">辅料出库</view>
 						</u-grid-item>

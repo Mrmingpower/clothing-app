@@ -225,6 +225,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-out/accessoryAdd/accessoryAdd",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "辅料出库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

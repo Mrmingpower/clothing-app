@@ -1,18 +1,91 @@
 const BASE_URL = 'http://192.168.0.98:21616'
-// import store from '../store/index.js'
-const token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhYTI2NjJmNC05YTNmLTQ3ODMtODA1MC1lMTIzMjA2NDJmNjciLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIxNTU3MjYyLCJleHAiOjE2MjE2NDM2NjIsInVzZXJuYW1lIjoiY2FycmllciJ9.PpKeC0RFyhQv-V9N2zJV6YJPkYZ8g9_ZWOYA6tAlNt0"
+import store from '../store/index.js'
+// const token =
+// 	"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzMjhhZWRjMS0yMGE2LTQ1OTItODA0NC0yYWMzY2I3OWJjNjgiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIxOTEzNDI5LCJleHAiOjE2MjE5OTk4MjksInVzZXJuYW1lIjoiY2FycmllciJ9.HU5QQTZp2vc6v80_1JaCNp5vV9GirWAN39Ev6ge_iNk"
 export const myRequest = (options) => {
-	return new Promise((resolve,reject) => {
+	let token = store.state.accessToken.token
+	let refreshToken = store.state.accessToken.refreshToken
+	let expires = store.state.accessToken.expires
+	let refreshExpires = store.state.accessToken.refreshExpires
+	console.log('--------------')
+	console.log(token)
+	console.log(refreshToken)
+	console.log(expires)
+	console.log(refreshExpires)
+	console.log('--------------')
+	if (options.url !== '/users/login') {
+		if (!store.state.hasLogin) {
+			uni.showLoading({
+				 title: '请重新登陆'
+			})
+			setTimeout(function() {
+				uni.hideLoading()
+				uni.reLaunch({
+					url: '/pages/login/login'
+				})
+			}, 1000);
+			return
+		}
+		
+		let now = new Date().getTime()
+
+		if (parseFloat(expires) < parseFloat(now)) {
+			// token已经过期，开始判断刷新token
+			if (parseFloat(refreshExpires) < parseFloat(now)) {
+				// 刷新token也已经过期
+				uni.showToast({
+					title: '请重新登陆',
+					icon: 'none'
+				})
+				setTimeout(function() {
+					uni.reLaunch({
+						url: '/pages/login/login'
+					})
+				}, 1000);
+			} else {
+				// 说明刷新token没过期
+				uni.request({
+					url: BASE_URL + '/users/refresh',
+					method: 'GET',
+					data: {
+						header: 'Bearer ' + refreshToken
+					},
+					success: (res) => {
+						if (res.data.code === 200) {
+							store.commit('setToken', res.data.result)
+
+							// refreshExpires = res.result.refreshExpires
+							// expires = res.result.expires
+							// token = res.result.token
+							// refreshToken = res.result.refreshToken
+						} else {
+							uni.showToast({
+								title: res.data.message || '请重新登陆',
+								icon: 'none'
+							})
+							setTimeout(function() {
+								uni.reLaunch({
+									url: '/pages/login/login'
+								})
+							}, 1000);
+						}
+					}
+				})
+			}
+		}
+	}
+
+	return new Promise((resolve, reject) => {
 		uni.request({
 			header: {
-				"Clothing-Authorization": 'Bearer '+ token,
+				"Clothing-Authorization": 'Bearer ' + token,
 				"Content-Type": options.ContentType || 'application/x-www-form-urlencoded'
 			},
 			url: BASE_URL + options.url,
 			method: options.method || 'GET',
 			data: options.data || {},
 			success: (res) => {
-				if(res.data.code === 200) {
+				if (res.data.code === 200) {
 					resolve(res.data.result || 200)
 				} else {
 					uni.showToast({

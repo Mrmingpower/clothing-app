@@ -314,8 +314,8 @@
 				arrivalId: '',
 				arrivalNo: '',
 				orderId: '',
-				propertiesName: '面料',
-				properties: 0,
+				propertiesName: '辅料',
+				properties: 1,
 				status: '',
 				details: [],
 				receiverTypeList: [],
@@ -399,7 +399,7 @@
 				}
 			})
 			uni.getStorage({
-				key: 'out-add-material',
+				key: 'out-add-accessory',
 				async success(res) {
 					console.log('resoutaddmaterial')
 					console.log(res)
@@ -462,13 +462,13 @@
 					// that.tempMaterialList.push(only)
 					// that.materialList.push(a)
 					uni.removeStorage({
-						key: 'out-add-material'
+						key: 'out-add-accessory'
 					});
 				}
 			})
 
 			uni.getStorage({
-				key: 'selectStockOutWarehouseByAdd',
+				key: 'selectStockOutWarehouseByAccessoryAdd',
 				success(res) {
 					if (that.warehouseId !== res.data.id) {
 						that.materialList = []
@@ -476,7 +476,7 @@
 					that.warehouseName = res.data.name
 					that.warehouseId = res.data.id
 					uni.removeStorage({
-						key: 'selectStockOutWarehouseByAdd'
+						key: 'selectStockOutWarehouseByAccessoryAdd'
 					});
 				}
 			})
@@ -767,7 +767,7 @@
 			},
 			warehouseClick() {
 				uni.navigateTo({
-					url: 'selectWarehouseByAdd?supplierNames=' + this.warehouseName
+					url: 'selectWarehouseByAccessoryAdd?supplierNames=' + this.warehouseName
 				})
 			},
 			sourceTypeClick() {
@@ -928,7 +928,7 @@
 			toAddProduct() {
 				if (!this.$u.test.isEmpty(this.sourceType) && !this.$u.test.isEmpty(this.warehouseId) && this.$u.test.isEmpty(this.pickOrderId)) {
 					uni.navigateTo({
-						url: 'material-add-add'
+						url: 'accessory-add-add'
 					})
 				}
 

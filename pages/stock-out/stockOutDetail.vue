@@ -558,22 +558,30 @@
 					}
 				}
 				if(e.index === 1) {
-					let result = await this.$myRequest({
-						url: '/stock-out/check/'+this.stockOutDetail.id,
-						method: 'put'
-					})
-					if(result === 200) {
-						uni.showToast({
-							title: '审核成功',
-							icon: 'success'
+					console.log('开始审核')
+					console.log(this.stockOutDetail.detail)
+					if(this.stockOutDetail.properties === 0) {
+						uni.navigateTo({
+							url: 'auditStockOutDetail?detail='+JSON.stringify(this.stockOutDetail.detail)+'&id='+this.stockOutDetail.id 
 						})
-						// setTimeout(function() {
-						// 	uni.switchTab({
-						// 		url:'../index/index'
-						// 	})
-						// }, 800);
-						this.getDetailList(this.stockOutDetail.id)
 					}
+					if(this.stockOutDetail.properties === 1) {
+						uni.navigateTo({
+							url: 'auditStockOutDetailAccess?detail='+JSON.stringify(this.stockOutDetail.detail)+'&id='+this.stockOutDetail.id 
+						})
+					}
+					// return
+					// let result = await this.$myRequest({
+					// 	url: '/stock-out/check/'+this.stockOutDetail.id,
+					// 	method: 'put'
+					// })
+					// if(result === 200) {
+					// 	uni.showToast({
+					// 		title: '审核成功',
+					// 		icon: 'success'
+					// 	})
+					// 	this.getDetailList(this.stockOutDetail.id)
+					// }
 				}
 			},
 			async buttonClick1(e) {

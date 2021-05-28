@@ -16,12 +16,12 @@
 		</view>
 		<view style="margin-top: 15rpx;">
 			<view class="u-border-bottom" style="background-color: #FFFFFF;text-align: center;">
-				<text style="font-size: 50rpx;">面料信息</text>
+				<text style="font-size: 50rpx;">辅料信息</text>
 			</view>
 			<view v-for="(item,index) in materialList" :key="index" :index="index">
 				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
 					:title-size="35" border-radius="0" :title="item.productName" :sub-title="item.productNo">
-					<view slot="body">
+					<view slot="body" v-if="item.clickChecked">
 						<view style="width: 350rpx;" class="u-border-right">
 							<view style="width: 380rpx;">
 								<u-row gutter="8">
@@ -71,7 +71,7 @@
 										<view class="flex-item-20">单价</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.materialSkuArr[0].price}}</view>
+										<view style="width: 100rpx;">{{item.price}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -95,7 +95,7 @@
 									</u-col>
 								</u-row>
 							</view> -->
-							<view class="line-cla2">
+							<!-- <view class="line-cla2">
 								<u-row gutter="12">
 									<u-col span="11">
 										<view>辅助单位数量</view>
@@ -104,14 +104,15 @@
 										<view>{{formatStockAssistant(item)}}</view>
 									</u-col>
 								</u-row>
-							</view>
+							</view> -->
 							<view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="5">
 										<view class="flex-item-20">金额</view>
 									</u-col>
 									<u-col span="2">
-										<view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view>
+										<!-- <view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view> -->
+										<view style="width: 180rpx;color: #ff0000;">{{formatStockOutAmount(item)}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -173,62 +174,19 @@
 			<u-popup v-model="editShow" mode="bottom" border-radius="14" length="70%" @close="popClose">
 				<view class="u-demo-wrap">
 					<view style="height: 50rpx;"></view>
-					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">单匹重量 & 匹数</view>
+					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量 & 单价</view>
 					<view style="margin-top: 20rpx;">
 						<u-cell-group>
-							<u-field v-model="editRow.productName" label="面料名称" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.productNo" label="面料编号" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.unit" label="单位" label-width="150" :clearable="false" disabled
-								:required="false" type="text"></u-field>
-							<u-field v-model="editRow.assistantUnit" label="副计量单位" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
-
-							<u-table>
-								<u-tr>
-									<u-th>单匹重量</u-th>
-									<u-th>匹数</u-th>
-									<u-th>库存数量</u-th>
-									<u-th>库存匹数</u-th>
-								</u-tr>
-								<view v-for="(item,index) in editRow.materialSkuArr" :key="index">
-									<u-tr>
-										<u-td>
-											<view>
-												<text>{{item.exchangeRate}}</text>
-											</view>
-										</u-td>
-										<u-td>
-											<view @click="tempClick(item)">
-												<text>{{item.quantityByAssistantEdit}}</text>
-												<!-- <u-icon name="edit-pen" color="#2979ff" size="20"></u-icon> -->
-												<!-- <u-number-box :input-width="28" :input-height="30" align="center" 
-													v-model="item.quantityByAssistant || 0"></u-number-box> -->
-												<!-- <u-input v-model="item.quantityByAssistant" type="text" :border="border" /> -->
-											</view>
-										</u-td>
-										<u-td>
-											<view>
-												<text>{{item.quantity}}</text>
-											</view>
-										</u-td>
-										<u-td>
-											<view>
-												<text>{{item.quantityByAssistant}}</text>
-											</view>
-										</u-td>
-									</u-tr>
-								</view>
-							</u-table>
+							<u-field v-model="editRow.productName" label="辅料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productNo" label="辅料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="tempStockQuantity"label="库存数量" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
+							<u-field v-model="tempQuantity" label="数量" label-width="150" :clearable="true" :required="false" type="text"></u-field>
 						</u-cell-group>
-						<!-- <view class="close-btn">
-							<u-button @tap="addLine" size="medium" type="warning">添加</u-button>
+						<view class="close-btn">
 							<u-button @tap="editExchangeRate" size="medium" type="primary">确定</u-button>
 							<u-button @tap="closeBtn" size="medium">取消</u-button>
-						</view> -->
+						</view>
 					</view>
-					<u-divider>没有更多了</u-divider>
 				</view>
 			</u-popup>
 
@@ -295,11 +253,15 @@
 <script>
 	import {
 		sumQuantity,
-		formatStockAssistant
+		formatStockAssistant,
+		formatStockOutAmount
 	} from '@/util/index.js'
 	export default {
 		data() {
 			return {
+				tempQuantity: '',
+				tempStockQuantity: '',
+				tempPrice: '',
 				tempQuantityByAssistant: 0,
 				tempRow: '',
 				tempQuantityByAssistantShow: false,
@@ -403,40 +365,47 @@
 				async success(res) {
 					console.log('resoutaddmaterial')
 					console.log(res)
-					let only = res.data.productNo + '-' + res.data.color + '-' + res.data.specification
+					let only = res.data.no + '-' + res.data.color + '-' + res.data.specification
 					if (that.tempMaterialList.indexOf(only) > -1) {
 						let index = that.tempMaterialList.indexOf(only)
 						that.materialList.splice(index, 1)
 						that.tempMaterialList.splice(index, 1)
 					}
 					that.tempMaterialList.push(only)
-					let result1 = await that.$myRequest({
-						url: '/material-sku/' + res.data.id + '/' + that.warehouseId
+					let result3 = await that.$myRequest({
+						url: '/accessory/' + res.data.id + '/' + that.warehouseId
 					})
-					console.log('result1')
-					console.log(result1)
-					let materialSkuArr = []
-					for (var j = 0; j < result1.length; j++) {
-						materialSkuArr.push({
-							price: result1[j].price || 0,
-							productSkuId: result1[j].skuId || '',
-							coloringNo: result1[j].coloringNo || '',
-							exchangeRate: result1[j].skuQuantity || 0,
-							quantity: result1[j].quantity || 0,
-							quantityByAssistant: result1[j].quantityByAssistant || 0,
-							quantityByAssistantEdit: result1[j].quantityByAssistantEdit || 0,
-						})
-					}
+					// let result1 = await that.$myRequest({
+					// 	url: '/material-sku/' + res.data.id + '/' + that.warehouseId
+					// })
+					// console.log('result1')
+					// console.log(result1)
+					// let materialSkuArr = []
+					// for (var j = 0; j < result1.length; j++) {
+					// 	materialSkuArr.push({
+					// 		price: result1[j].price || 0,
+					// 		productSkuId: result1[j].skuId || '',
+					// 		coloringNo: result1[j].coloringNo || '',
+					// 		exchangeRate: result1[j].skuQuantity || 0,
+					// 		quantity: result1[j].quantity || 0,
+					// 		quantityByAssistant: result1[j].quantityByAssistant || 0,
+					// 		quantityByAssistantEdit: result1[j].quantityByAssistantEdit || 0,
+					// 	})
+					// }
 					that.materialList.push({
 						productName: res.data.name || '',
 						productNo: res.data.no || '',
 						productSpuId: res.data.id || '',
 						quantity: 0,
 						quantityByAssistant: 0,
-						unit: res.data.unit || '',
+						unit: res.data.defaultUnit || '',
 						assistantUnit: res.data.assistantUnit || '',
 						amount: 0,
-						materialSkuArr: materialSkuArr,
+						price: res.data.mainPrice,
+						exchangeRate: res.data.exchangeRate,
+						stockQuantity: result3.quantity,
+						clickChecked: true
+						// materialSkuArr: materialSkuArr,
 					})
 					// let a = {
 					// 	color: res.data.color,
@@ -484,6 +453,7 @@
 		methods: {
 			sumQuantity,
 			formatStockAssistant,
+			formatStockOutAmount,
 			tempClick(e) {
 				console.log(e)
 				this.tempRow = e
@@ -515,7 +485,7 @@
 							pageSize: -1
 						}
 					})
-					for (var i = 0; i < result.items.length; i++) {
+					for (let i = 0; i < result.items.length; i++) {
 						this.receiverIdList.push({
 							value: result.items[i].id,
 							label: result.items[i].name
@@ -619,28 +589,25 @@
 
 				this.pickOrderId = result.id
 				this.pickOrderIdLabel = result.no
-				console.log('result')
-				console.log(result)
 				for (var i = 0; i < result.details.length; i++) {
 					let result3 = await this.$myRequest({
-						url: '/material-sku/' + result.details[i].materialSpuId + '/' + this.warehouseId
+						url: '/accessory/' + result.details[i].materialSpuId + '/' + this.warehouseId
 					})
-					console.log('result.details[i]')
-					console.log(result.details[i])
-					console.log('result3')
-					console.log(result3)
-					let materialSkuArr = []
-					for (var j = 0; j < result3.length; j++) {
-						materialSkuArr.push({
-							price: result3[j].price || 0,
-							productSkuId: result3[j].skuId || '',
-							coloringNo: result3[j].coloringNo || '',
-							exchangeRate: result3[j].skuQuantity || 0,
-							quantity: result3[j].quantity || 0,
-							quantityByAssistant: result3[j].quantityByAssistant || 0,
-							quantityByAssistantEdit: result3[j].quantityByAssistantEdit || 0,
-						})
-					}
+					let result4 = await this.$myRequest({
+						url: '/accessory/' + result.details[i].materialSpuId
+					})
+					// let materialSkuArr = []
+					// for (var j = 0; j < result3.length; j++) {
+					// 	materialSkuArr.push({
+					// 		price: result3[j].price || 0,
+					// 		productSkuId: result3[j].skuId || '',
+					// 		coloringNo: result3[j].coloringNo || '',
+					// 		exchangeRate: result3[j].skuQuantity || 0,
+					// 		quantity: result3[j].quantity || 0,
+					// 		quantityByAssistant: result3[j].quantityByAssistant || 0,
+					// 		quantityByAssistantEdit: result3[j].quantityByAssistantEdit || 0,
+					// 	})
+					// }
 					this.materialList.push({
 						productName: result.details[i].materialName || '',
 						productNo: result.details[i].materialNo || '',
@@ -651,7 +618,11 @@
 						assistantUnit: result.details[i].assistantUnit || '',
 						amount: 0,
 						pickOrderDetailId: result.details[i].id || '',
-						materialSkuArr: materialSkuArr,
+						stockQuantity: result3.quantity,
+						price: result4.mainPrice,
+						exchangeRate: result4.exchangeRate,
+						clickChecked: true
+						// materialSkuArr: materialSkuArr,
 					})
 				}
 				console.log('this.materialList')
@@ -705,6 +676,9 @@
 			toEdit(item) {
 				this.editShow = true
 				this.editRow = item
+				// this.tempPrice = item.price
+				this.tempQuantity = item.quantity
+				this.tempStockQuantity = item.stockQuantity
 				// let tempMaterialSkuArr = []
 				// for (var i = 0; i < this.editRow.materialSkuArr.length; i++) {
 				// 	tempMaterialSkuArr.push({
@@ -738,26 +712,30 @@
 				})
 			},
 			editExchangeRate() {
-				let arr = []
-				let finalData = []
-				for (var i = 0; i < this.tempExchangeRate.length; i++) {
-					if (arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
-						let index = arr.indexOf(this.tempExchangeRate[i].exchangeRate)
-						finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this
-							.tempExchangeRate[i].quantityByAssistant
-					} else {
-						finalData.push(this.tempExchangeRate[i])
-						arr.push(this.tempExchangeRate[i].exchangeRate)
-					}
-				}
-				let exchangeRate = []
-				let quantityByAssistant = []
-				for (var i = 0; i < finalData.length; i++) {
-					exchangeRate.push(finalData[i].exchangeRate)
-					quantityByAssistant.push(finalData[i].quantityByAssistant)
-				}
-				this.editRow.exchangeRate = exchangeRate
-				this.editRow.quantityByAssistant = quantityByAssistant
+				// let arr = []
+				// let finalData = []
+				// for (var i = 0; i < this.tempExchangeRate.length; i++) {
+				// 	if (arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
+				// 		let index = arr.indexOf(this.tempExchangeRate[i].exchangeRate)
+				// 		finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this
+				// 			.tempExchangeRate[i].quantityByAssistant
+				// 	} else {
+				// 		finalData.push(this.tempExchangeRate[i])
+				// 		arr.push(this.tempExchangeRate[i].exchangeRate)
+				// 	}
+				// }
+				// let exchangeRate = []
+				// let quantityByAssistant = []
+				// for (var i = 0; i < finalData.length; i++) {
+				// 	exchangeRate.push(finalData[i].exchangeRate)
+				// 	quantityByAssistant.push(finalData[i].quantityByAssistant)
+				// }
+				// this.editRow.exchangeRate = exchangeRate
+				// this.editRow.quantityByAssistant = quantityByAssistant
+				// this.editShow = false
+				// this.editRow.price = this.tempPrice
+				this.editRow.quantity = parseInt(this.tempQuantity || 0)
+				console.log(this.editRow)
 				this.editShow = false
 			},
 
@@ -865,27 +843,44 @@
 				}
 				let paramsDetail = []
 				for (var i = 0; i < this.materialList.length; i++) {
-					for (var j = 0; j < this.materialList[i].materialSkuArr.length; j++) {
-						if (this.materialList[i].materialSkuArr[j].quantityByAssistantEdit > 0) {
-							paramsDetail.push({
-								amount: this.materialList[i].amount,
-								assistantUnit: this.materialList[i].assistantUnit,
-								coloringNo: this.materialList[i].materialSkuArr[j].coloringNo,
-								exchangeRate: this.materialList[i].materialSkuArr[j].exchangeRate,
-								pickOrderDetailId: this.materialList[i].pickOrderDetailId || '',
-								price: this.materialList[i].materialSkuArr[j].price,
-								productName: this.materialList[i].productName,
-								productNo: this.materialList[i].productNo,
-								productSkuId: this.materialList[i].materialSkuArr[j].productSkuId,
-								productSpuId: this.materialList[i].productSpuId,
-								quantity: this.materialList[i].materialSkuArr[j].quantityByAssistantEdit * this.materialList[i].materialSkuArr[j].exchangeRate,
-								quantityByAssistant: this.materialList[i].materialSkuArr[j].quantityByAssistantEdit,
-								unit: this.materialList[i].unit
-							})
-						}
-
-					}
+					paramsDetail.push({
+						amount: this.materialList[i].amount,
+						assistantUnit: this.materialList[i].assistantUnit,
+						// coloringNo: this.materialList[i].materialSkuArr[j].coloringNo,
+						exchangeRate: this.materialList[i].exchangeRate,
+						pickOrderDetailId: this.materialList[i].pickOrderDetailId || '',
+						price: this.materialList[i].price,
+						productName: this.materialList[i].productName,
+						productNo: this.materialList[i].productNo,
+						productSkuId: this.materialList[i].productSpuId,
+						productSpuId: this.materialList[i].productSpuId,
+						quantity: this.materialList[i].quantity,
+						quantityByAssistant: this.materialList[i].quantityByAssistantEdit,
+						unit: this.materialList[i].unit
+					})
 				}
+				// for (var i = 0; i < this.materialList.length; i++) {
+				// 	for (var j = 0; j < this.materialList[i].materialSkuArr.length; j++) {
+				// 		if (this.materialList[i].materialSkuArr[j].quantityByAssistantEdit > 0) {
+				// 			paramsDetail.push({
+				// 				amount: this.materialList[i].amount,
+				// 				assistantUnit: this.materialList[i].assistantUnit,
+				// 				coloringNo: this.materialList[i].materialSkuArr[j].coloringNo,
+				// 				exchangeRate: this.materialList[i].materialSkuArr[j].exchangeRate,
+				// 				pickOrderDetailId: this.materialList[i].pickOrderDetailId || '',
+				// 				price: this.materialList[i].materialSkuArr[j].price,
+				// 				productName: this.materialList[i].productName,
+				// 				productNo: this.materialList[i].productNo,
+				// 				productSkuId: this.materialList[i].materialSkuArr[j].productSkuId,
+				// 				productSpuId: this.materialList[i].productSpuId,
+				// 				quantity: this.materialList[i].materialSkuArr[j].quantityByAssistantEdit * this.materialList[i].materialSkuArr[j].exchangeRate,
+				// 				quantityByAssistant: this.materialList[i].materialSkuArr[j].quantityByAssistantEdit,
+				// 				unit: this.materialList[i].unit
+				// 			})
+				// 		}
+
+				// 	}
+				// }
 				let params = {
 					commandId: this.commandId || '',
 					date: this.date,

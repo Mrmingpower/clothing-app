@@ -279,6 +279,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/stock-out/auditStockOutDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "审核出库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/stock-out/auditStockOutDetailAccess",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "审核出库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

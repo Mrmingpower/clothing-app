@@ -34,10 +34,10 @@
 									class="all_orders_12"></image>
 								<text decode="true" class="address_to">
 									<text style="color: #ff557f;font-size: 30rpx;">
-										￥{{item_orders.price}}
+										￥{{item_orders.mainPrice}}
 									</text>
 									<text style="margin-left: 6rpx;">
-										/  {{item_orders.unit}}
+										/  {{item_orders.defaultUnit}}
 									</text>
 								</text>
 							</view>
@@ -103,7 +103,7 @@
 			},
 			async getData() {
 				let result = await this.$myRequest({
-					url: '/stock-out/material-prompt'
+					url: '/stock-out/accessory-prompt'
 				})
 				this.list_orders = result
 				console.log(result)

@@ -21,7 +21,7 @@
 			<view v-for="(item,index) in materialList" :key="index" :index="index">
 				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
 					:title-size="35" border-radius="0" :title="item.productName" :sub-title="item.productNo">
-					<view slot="body">
+					<view slot="body" v-if="item.clickChecked">
 						<view style="width: 350rpx;" class="u-border-right">
 							<view style="width: 380rpx;">
 								<u-row gutter="8">
@@ -403,6 +403,7 @@
 						assistantUnit: res.data.assistantUnit || '',
 						amount: 0,
 						materialSkuArr: materialSkuArr,
+						clickChecked: true
 					})
 					// let a = {
 					// 	color: res.data.color,
@@ -618,6 +619,7 @@
 						amount: 0,
 						pickOrderDetailId: result.details[i].id || '',
 						materialSkuArr: materialSkuArr,
+						clickChecked: true
 					})
 				}
 				console.log('this.materialList')

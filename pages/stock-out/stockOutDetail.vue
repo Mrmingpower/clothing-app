@@ -132,7 +132,7 @@
 					</u-col>
 					<u-col span="4">
 						<view class="flex-item-70">
-							<u-tag :text="formatSourceType(stockOutDetail.sourceType)" mode="dark"
+							<u-tag :text="formatSourceTypeOut(stockOutDetail.sourceType)" mode="dark"
 								shape="circle" />
 						</view>
 					</u-col>
@@ -164,16 +164,6 @@
 				<view slot="body">
 					<view style="width: 350rpx;" class="u-border-right">
 						<view style="width: 380rpx;">
-							<u-row gutter="7">
-								<u-col span="5">
-									<view class="flex-item-20">转换率</view>
-								</u-col>
-								<u-col span="2">
-									<view style="width: 180rpx;color: #ff0000;">{{item.exchangeRate}}</view>
-								</u-col>
-							</u-row>
-						</view>
-						<view class="line-cla2" style="width: 380rpx;">
 							<u-row gutter="8">
 								<u-col span="5">
 									<view class="flex-item-20">计量单位</view>
@@ -183,6 +173,17 @@
 								</u-col>
 							</u-row>
 						</view>
+						<view class="line-cla2" style="width: 380rpx;" v-if="stockOutDetail.properties === 0">
+							<u-row gutter="7">
+								<u-col span="5">
+									<view class="flex-item-20">转换率</view>
+								</u-col>
+								<u-col span="2">
+									<view style="width: 180rpx;color: #ff0000;">{{item.exchangeRate}}</view>
+								</u-col>
+							</u-row>
+						</view>
+						
 						<view class="line-cla2" style="width: 400rpx;">
 							<u-row gutter="7">
 								<u-col span="5">
@@ -241,7 +242,7 @@
 								</u-col>
 							</u-row>
 						</view>
-						<view class="line-cla2">
+						<view class="line-cla2" v-if="stockOutDetail.properties === 0">
 							<view>副计量单位数量</view>
 							<view style="margin-top: 14rpx;position: relative;right: -90rpx;">
 								<u-number-box bg-color="#efe5fe" v-model="itemm.quantityByAssistant"></u-number-box>
@@ -269,7 +270,7 @@
 								</u-col>
 							</u-row>
 						</view>
-						<view class="line-cla2">
+						<view class="line-cla2"   v-if="stockOutDetail.properties === 0">
 							<u-row gutter="12">
 								<u-col span="12">
 									<view>副计量单位数量</view>
@@ -291,22 +292,22 @@
 				<view slot="body">
 					<view style="width: 350rpx;" class="u-border-right">
 						<view style="width: 380rpx;">
-							<u-row gutter="7">
-								<u-col span="5">
-									<view class="flex-item-20">转换率</view>
-								</u-col>
-								<u-col span="2">
-									<view style="width: 180rpx;color: #ff0000;">{{itemm.exchangeRate}}</view>
-								</u-col>
-							</u-row>
-						</view>
-						<view class="line-cla2" style="width: 380rpx;">
 							<u-row gutter="8">
 								<u-col span="5">
 									<view class="flex-item-20">计量单位</view>
 								</u-col>
 								<u-col span="3">
 									<view style="width: 180rpx;">{{itemm.unit}}</view>
+								</u-col>
+							</u-row>
+						</view>
+						<view class="line-cla2" style="width: 380rpx;"  v-if="stockOutDetail.properties === 0"> 
+							<u-row gutter="7">
+								<u-col span="5">
+									<view class="flex-item-20">转换率</view>
+								</u-col>
+								<u-col span="2">
+									<view style="width: 180rpx;color: #ff0000;">{{itemm.exchangeRate}}</view>
 								</u-col>
 							</u-row>
 						</view>
@@ -368,7 +369,7 @@
 								</u-col>
 							</u-row>
 						</view>
-						<view class="line-cla2">
+						<view class="line-cla2"  v-if="stockOutDetail.properties === 0">
 							<view>副计量单位数量</view>
 							<view style="margin-top: 14rpx;position: relative;right: -90rpx;">
 								<u-number-box :positive-integer="false" bg-color="#efe5fe" v-model="itemm.quantityByAssistant"></u-number-box>
@@ -399,6 +400,7 @@
 <script>
 	import {
 		formatSourceType,
+		formatSourceTypeOut,
 		formatSourceTypeImg,
 		formatStockInStatus,
 		formatStockInStatusType,
@@ -456,6 +458,7 @@
 		},
 		methods: {
 			formatSourceType,
+			formatSourceTypeOut,
 			formatSourceTypeImg,
 			formatStockInStatus,
 			formatStockInStatusType,
@@ -604,14 +607,20 @@
 			},
 			async buttonClick2(e) {
 				for (var i = 0; i < this.editObj.detail.length; i++) {
-					if(this.editObj.detail[i].exchangeRate * this.editObj.detail[i].quantityByAssistant !== this.editObj.detail[i].quantity) {
-						console.log(this.editObj.detail[i].exchangeRate * this.editObj.detail[i].quantityByAssistant)
-						uni.showToast({
-							title: this.editObj.detail[i].productName+'的数量填写错误',
-							icon: 'none'
-						})
-						return
-					} 
+					if(this.stockOutDetail.properties === 0) {
+						if(this.editObj.detail[i].exchangeRate * this.editObj.detail[i].quantityByAssistant !== this.editObj.detail[i].quantity) {
+							console.log(this.editObj.detail[i].exchangeRate * this.editObj.detail[i].quantityByAssistant)
+							uni.showToast({
+								title: this.editObj.detail[i].productName+'的数量填写错误',
+								icon: 'none'
+							})
+							return
+						} else {
+							this.editObj.detail[i].amount = this.editObj.detail[i].price * this.editObj.detail[i].quantity
+						} 
+					} else {
+						this.editObj.detail[i].amount = this.editObj.detail[i].price * this.editObj.detail[i].quantity
+					}
 				}
 				let detailArr = []
 				for (var i = 0; i < this.editObj.detail.length; i++) {

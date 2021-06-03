@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.0.98:21616'
+const BASE_URL = 'http://192.144.230.237:21616'
 import store from '../store/index.js'
 // const token =
 // 	"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzMjhhZWRjMS0yMGE2LTQ1OTItODA0NC0yYWMzY2I3OWJjNjgiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIxOTEzNDI5LCJleHAiOjE2MjE5OTk4MjksInVzZXJuYW1lIjoiY2FycmllciJ9.HU5QQTZp2vc6v80_1JaCNp5vV9GirWAN39Ev6ge_iNk"
@@ -32,17 +32,20 @@ export const myRequest = (options) => {
 		if (parseFloat(expires) < parseFloat(now)) {
 			// token已经过期，开始判断刷新token
 			if (parseFloat(refreshExpires) < parseFloat(now)) {
+				console.log('刷新token也过期了')
 				// 刷新token也已经过期
 				uni.showToast({
 					title: '请重新登陆',
 					icon: 'none'
 				})
+				store.commit('logout')
 				setTimeout(function() {
 					uni.reLaunch({
 						url: '/pages/login/login'
 					})
 				}, 1000);
 			} else {
+				console.log('刷新没过期')
 				// 说明刷新token没过期
 				uni.request({
 					url: BASE_URL + '/users/refresh',

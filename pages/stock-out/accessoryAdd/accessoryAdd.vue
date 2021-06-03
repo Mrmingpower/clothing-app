@@ -107,12 +107,12 @@
 							</view> -->
 							<view class="line-cla2">
 								<u-row gutter="7">
-									<u-col span="5">
+									<u-col span="6">
 										<view class="flex-item-20">金额</view>
 									</u-col>
-									<u-col span="2">
+									<u-col span="1" style="margin-left: 30rpx;">
 										<!-- <view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view> -->
-										<view style="width: 180rpx;color: #ff0000;">{{formatStockOutAmount(item)}}</view>
+										<view style="width: 150rpx;color: #ff0000;">{{formatStockOutAmount(item)}}</view>
 									</u-col>
 								</u-row>
 							</view>

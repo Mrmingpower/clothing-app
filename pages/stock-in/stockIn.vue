@@ -175,6 +175,13 @@
 			this.initData()
 			this.getList()
 		},
+		async onPullDownRefresh() {
+			this.$map.delete('stockInQueryParams')
+			this.queryParams = {}
+			this.initData()
+			await this.getList()
+			uni.stopPullDownRefresh()
+		},
 		onUnload() {
 			// uni.removeStorage({
 			//     key: 'stockInQueryParams'

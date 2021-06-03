@@ -108,6 +108,14 @@
 								</u-row>
 							</view>
 						</view>
+						<view class="" slot="foot">
+							<!-- <view class="footer-box">
+								<view style="font-size: 24rpx; color: #0081ff;">打印</view>
+							</view> -->
+							<view>
+								<u-icon name="star" size="34" color="#ffaa00" label="打印" @click="toPrint(item)"></u-icon>
+							</view>
+						</view>
 					</u-card>
 				</view>
 			</view>
@@ -189,6 +197,13 @@
 			this.initData()
 			this.getList()
 		},
+		async onPullDownRefresh() {
+			this.$map.delete('stockOutQueryParams')
+			this.queryParams = {}
+			this.initData()
+			await this.getList()
+			uni.stopPullDownRefresh()
+		},
 		onUnload() {
 			// uni.removeStorage({
 			//     key: 'stockInQueryParams'
@@ -220,6 +235,12 @@
 				this.status = 'loadmore'
 				this.searchText = ''
 				this.stockOutList = []
+			},
+			async toPrint(item) {
+				let result = await this.$myRequest({
+					url: '/stock-out/' + item.id
+				})
+				console.log(result)
 			},
 			clearSearch() {
 				this.searchText = ''
@@ -295,6 +316,12 @@
 </script>
 
 <style lang="scss" scope>
+	.footer-box {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0 10%;
+	}
 	.input-vieww {
 		align-items: center;
 		justify-content: center;

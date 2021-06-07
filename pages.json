@@ -232,8 +232,17 @@
                 "navigationBarTitleText": "选择面料",
                 "enablePullDownRefresh": false
             }
-            
+
         }
+		,{
+		    "path" : "pages/stock-out/finishedProductAdd/finished-add-add",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择成品",
+		        "enablePullDownRefresh": false
+		    }
+		
+		}
         ,{
             "path" : "pages/stock-out/accessoryAdd/accessoryAdd",
             "style" :                                                                                    
@@ -250,8 +259,16 @@
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
             }
-            
-        }
+        },
+		{
+		    "path" : "pages/stock-out/finishedProductAdd/selectWarehouseByFinishedProductAdd",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择仓库",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
         ,{
             "path" : "pages/stock-out/accessoryAdd/accessory-add-add",
             "style" :                                                                                    
@@ -296,7 +313,16 @@
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+		    "path" : "pages/stock-out/finishedProductAdd/finishedProductAdd",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "成品出库",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

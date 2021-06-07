@@ -52,7 +52,7 @@
 							<u-icon name="shopping-cart-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">辅料出库</view>
 						</u-grid-item>
-						<u-grid-item>
+						<u-grid-item @click="toPage('../stock-out/finishedProductAdd/finishedProductAdd')">
 							<u-icon name="plus-circle-fill" color="#ff5500" :size="47"></u-icon>
 							<view class="grid-text">成品出库</view>
 						</u-grid-item>

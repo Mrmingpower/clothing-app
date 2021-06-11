@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.0.98:21617'
+const BASE_URL = 'http://192.168.0.116:21616'
 import store from '../store/index.js'
 // const token =
 // 	"eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzMjhhZWRjMS0yMGE2LTQ1OTItODA0NC0yYWMzY2I3OWJjNjgiLCJzdWIiOiJhdXRoIiwiaWF0IjoxNjIxOTEzNDI5LCJleHAiOjE2MjE5OTk4MjksInVzZXJuYW1lIjoiY2FycmllciJ9.HU5QQTZp2vc6v80_1JaCNp5vV9GirWAN39Ev6ge_iNk"

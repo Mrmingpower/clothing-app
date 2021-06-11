@@ -17,7 +17,7 @@
 		</radio-group>
 	</view>
 	<view style="width: 100%;position: fixed;bottom: 0;z-index: 9999;">
-		<uni-goods-nav :options="options" @click="clear" @buttonClick="saveSupplier" :button-group="buttonGroup" />
+		<uni-goods-nav :options="options" @buttonClick="saveSupplier" :button-group="buttonGroup" />
 	</view>
 	</view>
 </template>
@@ -85,7 +85,7 @@
 			},
 			async getSupplierList() {
 				let result = await this.$myRequest({
-					url: '//warehouse/search/',
+					url: '/warehouse/search/',
 					data: {
 						prop: '2'
 					}

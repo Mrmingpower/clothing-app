@@ -7,10 +7,10 @@
 			</u-field>
 			<u-field v-model="warehouseName" @click="warehouseClick" required icon="shopping-cart" label-width="200"
 				:disabled="true" right-icon="arrow-down-fill" placeholder="请选择仓库" label="仓库"></u-field>
-			<u-field v-if="sourceType===0" v-model="commandIdLabel" @click="selectcommand" icon="coupon"
-				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择生产指令" label="生产指令">
+			<u-field v-if="sourceType===0" v-model="customerIdLabel" @click="selectcustomer" icon="coupon"
+					right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择客户id" label="客户ID">
 			</u-field>
-			<u-field v-if="sourceType===0" v-model="pickOrderIdLabel" icon="calendar" @click="pickOrderClick"
+			<u-field v-if="sourceType===0" v-model="pickOrderIdLabel" icon="calendar" @click="selectcommand"
 				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择销售单" label="销售单">
 			</u-field>
 		</view>
@@ -18,10 +18,10 @@
 			<view class="u-border-bottom" style="background-color: #FFFFFF;text-align: center;">
 				<text style="font-size: 50rpx;">成品信息</text>
 			</view>
-			<view v-for="(item,index) in materialList" :key="index" :index="index">
+			<view v-for="(item,index) in productList" :key="index" :index="index">
 				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
 					:title-size="35" border-radius="0" :title="item.productName" :sub-title="item.productNo">
-					<view slot="body" v-if="item.clickChecked">
+					<view slot="body">
 						<view style="width: 350rpx;" class="u-border-right">
 							<view style="width: 380rpx;">
 								<u-row gutter="8">
@@ -56,10 +56,10 @@
 							<view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="5">
-										<view class="flex-item-20">副计量单位</view>
+										<view class="flex-item-20">颜色</view>
 									</u-col>
 									<u-col span="2" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.assistantUnit}}</view>
+										<view style="width: 100rpx;">{{item.color}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -68,10 +68,10 @@
 							<view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="6">
-										<view class="flex-item-20">单价</view>
+										<view class="flex-item-20">尺码</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.materialSkuArr[0].price}}</view>
+										<view style="width: 100rpx;">{{item.specification}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -86,22 +86,12 @@
 								</u-row>
 							</view>
 							<view class="line-cla2">
-								<u-row gutter="12">
-									<u-col span="11">
-										<view>辅助单位数量</view>
-									</u-col>
-									<u-col span="1">
-										<view>{{formatStockAssistant(item)}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2">
 								<u-row gutter="7">
 									<u-col span="5">
-										<view class="flex-item-20">金额</view>
+										<view class="flex-item-20">单价</view>
 									</u-col>
 									<u-col span="2">
-										<view style="width: 180rpx;color: #ff0000;">{{item.amount}}</view>
+										<view style="width: 180rpx;color: #ff0000;">{{item.price}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -119,7 +109,7 @@
 							</view>
 						</view>
 					</view>
-
+			
 				</u-card>
 			</view>
 			<view style="background-color: #FFFFFF;" class="u-border-top">
@@ -137,7 +127,7 @@
 			<u-field v-model="date" icon="calendar" @click="dateClick" label-width="200" :disabled="true"
 				right-icon="arrow-down-fill" placeholder="请选择出库日期" label="出库日期"></u-field>
 		</view>
-
+		
 		<view class="wrap" style="margin-top: 15rpx;">
 			<u-field v-model="description" type="textarea" icon="tags" label-width="200" placeholder="备注" label="备注">
 			</u-field>
@@ -148,12 +138,11 @@
 		<view>
 			<u-toast ref="uToast" />
 			<u-select v-model="receiverIdShow" :list="receiverIdList" @confirm="receiverIdConfirm"></u-select>
-			<u-select v-model="receiverTypeShow" :list="receiverTypeList" @confirm="receiverTypeConfirm"></u-select>
 			<u-select v-model="commandShow" :list="commandList" @confirm="commandConfirm"></u-select>
 			<u-select v-model="sourceTypeShow" :list="sourceTypeList" @confirm="sourceTypeConfirm"></u-select>
 			<u-calendar v-model="calendarShow" mode="date" @change="calendarChange"></u-calendar>
-			<!-- <u-picker v-model="calendarShow" mode="date" @confirm="calendarChange"></u-picker> -->
 			<u-select v-model="pickOrderShow" :list="pickOrderList" @confirm="pickOrderConfirm"></u-select>
+			<u-select v-model="pickCustomerShow" :list="pickCustomerList" @confirm="pickCustomerConfirm"></u-select>
 			<u-popup v-model="editShow" mode="bottom" border-radius="14" length="70%" @close="popClose">
 				<view class="u-demo-wrap">
 					<view style="height: 50rpx;"></view>
@@ -166,16 +155,15 @@
 								disabled :required="false" type="text"></u-field>
 							<u-field v-model="editRow.unit" label="单位" label-width="150" :clearable="false" disabled
 								:required="false" type="text"></u-field>
-							<u-field v-model="editRow.assistantUnit" label="副计量单位" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
+							<!-- <u-field v-model="editRow.deliveryDate" label="副计量单位" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field> -->
 							<u-table>
 								<u-tr>
-									<u-th>单匹重量</u-th>
-									<u-th>匹数</u-th>
+									<u-th>名称</u-th>
+									<u-th>数量</u-th>
 									<u-th>库存数量</u-th>
-									<u-th>库存匹数</u-th>
 								</u-tr>
-								<view v-for="(item,index) in editRow.materialSkuArr" :key="index">
+								<view v-for="(item,index) in editRow.productSkuArr" :key="index">
 									<u-tr>
 										<u-td>
 											<view>
@@ -190,11 +178,6 @@
 										<u-td>
 											<view>
 												<text>{{item.quantity}}</text>
-											</view>
-										</u-td>
-										<u-td>
-											<view>
-												<text>{{item.quantityByAssistant}}</text>
 											</view>
 										</u-td>
 									</u-tr>
@@ -224,28 +207,6 @@
 			</u-popup>
 			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true"
 				@close="seeShow = false">
-				<view class="u-demo-wrap">
-					<view style="margin-top: 20rpx;margin-bottom: 20rpx;">
-						<u-cell-group>
-							<u-table>
-								<u-tr>
-									<u-th>单匹重量</u-th>
-									<u-th>匹数</u-th>
-								</u-tr>
-								<view v-for="(item,index) in seeRow.exchangeRate" :key="index">
-									<u-tr>
-										<u-td>
-											{{seeRow.exchangeRate[index]}}
-										</u-td>
-										<u-td>
-											{{seeRow.quantityByAssistant[index]}}
-										</u-td>
-									</u-tr>
-								</view>
-							</u-table>
-						</u-cell-group>
-					</view>
-				</view>
 			</u-popup>
 		</view>
 	</view>
@@ -276,6 +237,7 @@
 				properties: 0,
 				status: '',
 				details: [],
+				commandList:[],
 				receiverTypeList: [],
 				receiverIdList: [],
 				sourceTypeList: [{
@@ -294,8 +256,14 @@
 				calendarShow: false,
 				pickOrderShow: false,
 				pickOrderList: [],
-				materialList: [],
-				tempMaterialList: [],
+				pickOrderIdLabel:'',
+				customerIdLabel:'',
+				commandShow: false,
+				receiverIdShow: false,
+				pickCustomerShow: false,
+				pickCustomerList : [],
+				productList: [],
+				tempproductList: [],
 				thumb: '/static/stockIn/open.png',
 				editShow: false,
 				editRow: '',
@@ -303,74 +271,34 @@
 				tempQuantityByAssistant: [],
 				seeShow: false,
 				seeRow: '',
-
-				commandList: [],
-				commandShow: false,
-				commandId: '',
-				commandIdLabel: '',
-				pickOrderIdLabel: '',
-				pickOrderId: '',
-				receiverType: '',
-				receiverTypeName: '',
-				receiverId: '',
-				receiverIdName: '',
-				receiverTypeShow: false,
-				receiverIdShow: false,
+				"customerId": 0,
+				  "date": "",
+				  "description": "",
+				  "details": [
+				    {
+				      "cost": 0,
+				      "detailDescription": "",
+				      "orderDetailId": 0,
+				      "specification": '',
+				      "quantity": '',
+				      "skuId": 0
+				    }
+				  ],
+				  "orderId": 0,
+				  "orderNo": "",
+				  "payAccountId": 0,
+				  "payStyle": 0,
+				  "principalName": "",
+				  "warehouseId": 0
 			}
 		},
 		onShow() {
 			let that = this
 			uni.getStorage({
-				key: 'out-add-material',
-				async success(res) {
-					console.log('resoutaddmaterial')
-					console.log(res)
-					let only = res.data.productNo + '-' + res.data.color + '-' + res.data.specification
-					if (that.tempMaterialList.indexOf(only) > -1) {
-						let index = that.tempMaterialList.indexOf(only)
-						that.materialList.splice(index, 1)
-						that.tempMaterialList.splice(index, 1)
-					}
-					that.tempMaterialList.push(only)
-					let result1 = await that.$myRequest({
-						url: '/material-sku/' + res.data.id + '/' + that.warehouseId
-					})
-					console.log('result1')
-					console.log(result1)
-					let materialSkuArr = []
-					for (var j = 0; j < result1.length; j++) {
-						materialSkuArr.push({
-							price: result1[j].price || 0,
-							productSkuId: result1[j].skuId || '',
-							coloringNo: result1[j].coloringNo || '',
-							exchangeRate: result1[j].skuQuantity || 0,
-							quantity: result1[j].quantity || 0,
-							quantityByAssistant: result1[j].quantityByAssistant || 0,
-							quantityByAssistantEdit: result1[j].quantityByAssistantEdit || 0,
-						})
-					}
-					that.materialList.push({
-						productName: res.data.name || '',
-						productNo: res.data.no || '',
-						productSpuId: res.data.id || '',
-						quantity: 0,
-						quantityByAssistant: 0,
-						unit: res.data.unit || '',
-						assistantUnit: res.data.assistantUnit || '',
-						amount: 0,
-						materialSkuArr: materialSkuArr,
-						clickChecked: true
-					})
-					uni.removeStorage({
-						key: 'out-add-material'
-					});
-				}
-			})
-			uni.getStorage({
 				key: 'selectStockOutWarehouseByFinishedProductAdd',
 				success(res) {
 					if (that.warehouseId !== res.data.id) {
-						that.materialList = []
+						that.productList = []
 					}
 					that.warehouseName = res.data.name
 					that.warehouseId = res.data.id
@@ -379,112 +307,113 @@
 					});
 				}
 			})
+			uni.getStorage({
+				key:'out-add-customer',
+				success(res){
+					that.customerIdLabel = res.data.no
+					uni.removeStorage({
+						key:'out-add-customer'
+					})
+				}
+			})
+			uni.getStorage({
+				key:'out-add-order',
+				success(res){
+					console.log(res)
+					that.pickOrderIdLabel = res.data.no
+					that.productList = res.data
+					uni.removeStorage({
+						key:'out-add-order'
+					})
+				}
+			})
+			uni.getStorage({
+				key: 'out-add-product',
+				async success(res) {
+					console.log('resoutaddproduct')
+					console.log(res)
+					// let only = res.data.productNo + '-' + res.data.color
+					// if (that.tempproductList.indexOf(only) > -1) {
+					// 	let index = that.tempproductList.indexOf(only)
+					// 	that.productList.splice(index, 1)
+					// 	that.tempproductList.splice(index, 1)
+					// }
+					// that.tempproductList.push(only)
+					
+					// let result1 = await that.$myRequest({
+					// 	url: '/product-spu/'
+					// })
+					// console.log(result1)
+					// let productSkuArr = []
+					// for (var j = 0; j < result1.length; j++) {
+					// 	productSkuArr.push({
+					// 		specification: result1[j].specification || 0,
+					// 		productSkuId: result1[j].skuId || '',
+					// 		coloringNo: result1[j].coloringNo || '',
+					// 		exchangeRate: result1[j].skuQuantity || 0,
+					// 		quantity: result1[j].quantity || 0,
+					// 		quantityByAssistant: result1[j].quantityByAssistant || 0,
+					// 		quantityByAssistantEdit: result1[j].quantityByAssistantEdit || 0,
+					// 	})
+					// }
+					that.productList.push({
+						productName: res.data.productName || '',
+						productNo: res.data.productNo || '',
+						productSpuId: res.data.styleId || '',
+						quantity:0,
+						quantityByAssistant: 0,
+						unit: res.data.unit || '',
+						deliveryDate: res.data.deliveryDate || '',
+						price: res.data.price || '',
+						specification:res.data.specification || '',
+						color:res.data.color || '',
+						// productSkuArr: productSkuArr,
+						// clickChecked: true
+					})
+					uni.removeStorage({
+						key: 'out-add-product'
+					});
+				}
+			})
 		},
 		methods: {
-			sumQuantity,
-			formatStockAssistant,
+			toDel(index) {
+				console.log('执行了')
+				this.materialList.splice(index, 1)
+			},
+			toEdit(item) {
+				this.editShow = true
+				this.editRow = item
+				console.log(this.editRow)
+			},
+			popClose() {
+				this.tempExchangeRate = []
+			},
 			tempClick(e) {
 				console.log(e)
 				this.tempRow = e
 				this.tempQuantityByAssistant = e.quantityByAssistantEdit
 				this.tempQuantityByAssistantShow = true
 			},
-			submitPop() {
-				if (!this.$u.test.digits(this.tempQuantityByAssistant)) {
-					uni.showToast({
-						title: '只能输入整数',
-						icon: 'none'
-					})
-					return
-				}
-				this.tempRow.quantityByAssistantEdit = parseInt(this.tempQuantityByAssistant)
-				this.tempQuantityByAssistantShow = false
+			selectcommand(e){
+				uni.navigateTo({
+					url: 'searchOrder'
+				})
 			},
-			async receiverTypeConfirm(e) {
-				this.receiverTypeName = e[0].label
-				this.receiverType = e[0].value
-				this.receiverIdList = []
-				this.receiverId = ''
-				this.receiverIdName = ''
-				if (e[0].value === 0) {
-					let result = await this.$myRequest({
-						url: '/workshop/search',
-						data: {
-							pageNo: 1,
-							pageSize: -1
-						}
-					})
-					for (var i = 0; i < result.items.length; i++) {
-						this.receiverIdList.push({
-							value: result.items[i].id,
-							label: result.items[i].name
-						})
-					}
-				} else if (e[0].value === 1) {
-					let result = await this.$myRequest({
-						url: '/cooperation-factory/search',
-						data: {
-							pageNo: 1,
-							pageSize: -1
-						}
-					})
-					for (var i = 0; i < result.items.length; i++) {
-						this.receiverIdList.push({
-							value: result.items[i].id,
-							label: result.items[i].name
-						})
-					}
-				} else {
-					let result = await this.$myRequest({
-						url: '/warehouse/search',
-						data: {
-							pageNo: 1,
-							pageSize: -1,
-							prop: 0
-						}
-					})
-					for (var i = 0; i < result.items.length; i++) {
-						this.receiverIdList.push({
-							value: result.items[i].id,
-							label: result.items[i].name
-						})
-					}
-				}
-			},
+			selectcustomer(){
+				uni.navigateTo({
+					url: 'selectCustomers'
+				})
+				},
 			receiverIdConfirm(e) {
 				this.receiverId = e[0].value
 				this.receiverIdName = e[0].label
 			},
-
-			selectcommand() {
-				this.commandShow = true
-			},
-			async commandConfirm(e) {
-				this.commandIdLabel = e[0].label
-				this.commandId = e[0].value
-				let result = await this.$myRequest({
-					url: '/pick-order/get-no',
-					data: {
-						commandId: e[0].value,
-						properties: this.properties
-					}
-				})
-				console.log(e[0].value)
-				console.log(result)
-				if (result.length > 0) {
-					for (var i = 0; i < result.length; i++) {
-						this.pickOrderList.push({
-							value: result[i].id,
-							label: result[i].no
-						})
-					}
-				}
-			},
 			pickOrderClick() {
 				if (this.sourceType === 0) {
-					if (this.pickOrderList.length === 0) {
+					if (this.$u.test.isEmpty(this.sourceType)) {
 						uni.showToast({
-							title: '当前指令下不存在销售单',
+							title: '出库类型不能为空',
 							icon: 'none'
 						})
 						return
@@ -500,113 +429,67 @@
 				}
 			},
 			async pickOrderConfirm(e) {
-				this.materialList = []
 				let result = await this.$myRequest({
-					url: '/pick-order/' + e[0].value
+					url: '/sales-order/' + e[0].value
 				})
-
 				this.pickOrderId = result.id
 				this.pickOrderIdLabel = result.no
 				console.log('result')
 				console.log(result)
-				for (var i = 0; i < result.details.length; i++) {
-					let result3 = await this.$myRequest({
-						url: '/material-sku/' + result.details[i].materialSpuId + '/' + this.warehouseId
-					})
-					console.log('result.details[i]')
-					console.log(result.details[i])
-					console.log('result3')
-					console.log(result3)
-					let materialSkuArr = []
-					for (var j = 0; j < result3.length; j++) {
-						materialSkuArr.push({
-							price: result3[j].price || 0,
-							productSkuId: result3[j].skuId || '',
-							coloringNo: result3[j].coloringNo || '',
-							exchangeRate: result3[j].skuQuantity || 0,
-							quantity: result3[j].quantity || 0,
-							quantityByAssistant: result3[j].quantityByAssistant || 0,
-							quantityByAssistantEdit: result3[j].quantityByAssistantEdit || 0,
-						})
-					}
-					this.materialList.push({
-						productName: result.details[i].materialName || '',
-						productNo: result.details[i].materialNo || '',
-						productSpuId: result.details[i].materialSpuId || '',
-						quantity: 0,
-						quantityByAssistant: 0,
-						unit: result.details[i].unit || '',
-						assistantUnit: result.details[i].assistantUnit || '',
-						amount: 0,
-						pickOrderDetailId: result.details[i].id || '',
-						materialSkuArr: materialSkuArr,
-						clickChecked: true
-					})
-				}
-				console.log('this.materialList')
-				console.log(this.materialList)
+		for (var i = 0; i < result.details.length; i++) {
+			let result3 = await this.$myRequest({
+				// url: '/product-spu/' + result.details[i].productSpuId + '/' + this.warehouseId,
+				url:'/sales-order/no/' + result.data.no,
+			})
+			// console.log('result.details[i]')
+			// console.log(result.details[i])
+			// console.log('result3')
+			// console.log(result3)
+			let productSkuArr = []
+			for (var j = 0; j < result3.length; j++) {
+				productSkuArr.push({
+					// specification: result3[j].specification || 0,
+					productSkuId: result3[j].skuId || '',
+					coloringNo: result3[j].coloringNo || '',
+					exchangeRate: result3[j].skuQuantity || 0,
+					quantity: result3[j].quantity || 0,
+					quantityByAssistant: result3[j].quantityByAssistant || 0,
+					quantityByAssistantEdit: result3[j].quantityByAssistantEdit || 0,
+				})
+			}
+			this.productList.push({
+				productName: result.details[i].productName || '',
+				productNo: result.details[i].productNo || '',
+				productSpuId: result.details[i].productSpuId || '',
+				quantity: 0,
+				quantityByAssistant: 0,
+				unit: result.details[i].unit || '',
+				deliveryDate: result.details[i].deliveryDate || '',
+				amount: 0,
+				pickOrderDetailId: result.details[i].id || '',
+				// productSkuArr: productSkuArr,
+				clickChecked: true
+			})
+		}
+		console.log('this.productList')
+		console.log(this.productList)
+			},
+			async getData(e) {
+				let result = await this.$myRequest({
+					url: '/customer/search',
+				})
+				this.list_orders = res.data
+				console.log(res.data)
 			},
 			calendarChange(e) {
 				this.date = e.result
 			},
-			
-			seeClick(item) {
-				this.seeRow = {
-					exchangeRate: item.exchangeRate,
-					quantityByAssistant: item.quantityByAssistant
-				}
-				this.seeShow = true
-			},
-			headClick(item) {
-				item.clickChecked = !item.clickChecked
-			},
-			closeBtn() {
-				this.editShow = false
-			},
-			popClose() {
-				this.tempExchangeRate = []
-			},
-			toEdit(item) {
-				this.editShow = true
-				this.editRow = item
-			},
-			toDel(index) {
-				console.log('执行了')
-				this.materialList.splice(index, 1)
-			},
-			addLine() {
-				console.log(this.tempExchangeRate)
-				this.tempExchangeRate.push({
-					exchangeRate: 1,
-					quantityByAssistant: 1
-				})
-			},
-			editExchangeRate() {
-				let arr = []
-				let finalData = []
-				for (var i = 0; i < this.tempExchangeRate.length; i++) {
-					if (arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
-						let index = arr.indexOf(this.tempExchangeRate[i].exchangeRate)
-						finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this
-							.tempExchangeRate[i].quantityByAssistant
-					} else {
-						finalData.push(this.tempExchangeRate[i])
-						arr.push(this.tempExchangeRate[i].exchangeRate)
-					}
-				}
-				let exchangeRate = []
-				let quantityByAssistant = []
-				for (var i = 0; i < finalData.length; i++) {
-					exchangeRate.push(finalData[i].exchangeRate)
-					quantityByAssistant.push(finalData[i].quantityByAssistant)
-				}
-				this.editRow.exchangeRate = exchangeRate
-				this.editRow.quantityByAssistant = quantityByAssistant
-				this.editShow = false
-			},
 			dateClick() {
 				this.calendarShow = true
 			},
+			// headClick(item) {
+			// 	item.clickChecked = !item.clickChecked
+			// },
 			warehouseClick() {
 				uni.navigateTo({
 					url: 'selectWarehouseByFinishedProductAdd?supplierNames=' + this.warehouseName
@@ -616,50 +499,6 @@
 				this.sourceTypeShow = true
 			},
 			async sourceTypeConfirm(e) {
-				this.receiverTypeList = []
-				this.receiverType = ''
-				this.receiverTypeName = ''
-				this.receiverIdList = []
-				this.receiverId = ''
-				this.receiverIdName = ''
-				this.pickOrderId = ''
-				this.pickOrderIdLabel = ''
-				this.pickOrderList = []
-				this.commandId = ''
-				this.commandIdLabel = ''
-				this.commandList = []
-				if (e[0].value === 0) {
-					this.receiverTypeList.push({
-						value: 0,
-						label: '车间'
-					}, {
-						value: 1,
-						label: '外协厂'
-					})
-
-
-					let result = await this.$myRequest({
-						url: '/command/active'
-					})
-					for (var i = 0; i < result.length; i++) {
-						this.commandList.push({
-							value: result[i].id,
-							label: result[i].no
-						})
-					}
-
-
-				} else if (e[0].value === 1 || e[0].value === 2) {
-					this.receiverTypeList.push({
-						value: 1,
-						label: '外协厂'
-					})
-				} else {
-					this.receiverTypeList.push({
-						value: 2,
-						label: '仓库'
-					})
-				}
 				this.sourceTypeName = e[0].label
 				this.sourceType = e[0].value
 				this.warehouseId = ''
@@ -668,11 +507,6 @@
 				this.description = ''
 				this.orderId = ''
 				this.details = []
-				this.materialList = []
-				this.tempMaterialList = []
-				this.editRow = ''
-				this.tempExchangeRate = []
-				this.tempQuantityByAssistant = []
 			},
 			async submit() {
 				if (this.$u.test.isEmpty(this.warehouseId)) {
@@ -684,9 +518,12 @@
 				}
 				let params = {
 					date: this.date,
+					sourceTypeName: this.sourceTypeName,
+					warehouseName:this.warehouseName,
+					customerIdLabel:this.customerIdLabel,
+					pickOrderIdLabel:this.pickOrderIdLabel,
 				}
 				console.log('params')
-				console.log(params)
 				let result = await this.$myRequest({
 					url: '/product-out/',
 					method: 'post',
@@ -711,9 +548,8 @@
 					console.log(result)
 				}
 			},
-
 			toAddProduct() {
-				if (!this.$u.test.isEmpty(this.sourceType) && !this.$u.test.isEmpty(this.warehouseId) && this.$u.test.isEmpty(this.pickOrderId)) {
+				if (this.sourceType ===1,2 && this.warehouseName !=='') {
 					uni.navigateTo({
 						url: 'finished-add-add'
 					})

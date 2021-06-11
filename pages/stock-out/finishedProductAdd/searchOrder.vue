@@ -4,56 +4,55 @@
 		<view class="cu-bar search bg-white" style="position: fixed;width: 750rpx;z-index: 9999999;background-color: #20a0ff;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input type="text" v-model="ipt" @input="toSearch" placeholder="商品名称/编号" confirm-type="search">
+				<input type="text" v-model="ipt" @input="toSearch" placeholder="订单单号/ID" confirm-type="search">
 				<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3"
 					size="30"></u-icon>
 				</input>
 			</view>
 		</view>
 		<view style="height: 100rpx;"></view>
-		<view class="YmContent">
+		<!-- <view class="YmContent" v-for="(item,index) in list_orders" :key="index" :index="index" style="margin-bottom: 10rpx"> -->
 			<view class="all_orders_1">
 				<view class="orders">
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item" @click="toSubmit(item_orders)">
 						<view class="all_orders_5">
-							<view class="all_orders_7">
+							<view class="all_orders_7">               
 								<image
 									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
 								<view decode="true" class="address_from">
-									<text style="font-size: 30rpx;color: #000000;">{{item_orders.productName}}</text>
-									<text style="padding-left: 30rpx;color: #c5c5c5;">{{item_orders.productNo}}</text>
+									<text style="font-size: 30rpx;color: #000000;">{{item_orders.customerName}}</text>      <!-- 用户姓名 -->
+									<text style="float: right;">{{item_orders.status}}</text>                                <!-- 状态码 -->
 								</view>
 							</view>
 							<image
 								src="/static/all_orders/images/all_orders_10_10.jpg" mode="scaleToFill" border="0"
 								class="all_orders_10"></image>
-							<view class="all_orders_11">
+							<view class="all_orders_11">                   
 								<image
 									src="/static/all_orders/images/all_orders_12_12.jpg" mode="scaleToFill" border="0"
 									class="all_orders_12"></image>
 								<text decode="true" class="address_to">
-									<text style="color: #ff557f;font-size: 30rpx;">
-										{{item_orders.categoryIds}}
-									</text>
-									<text style="margin-left: 6rpx;">
-										  {{item_orders.specificationIds}}
+									<text style="color: #ff557f;font-size: 30rpx;">                                        <!-- 订单号 -->
+										{{item_orders.no}} 
 									</text>
 								</text>
 							</view>
-							<view class="all_orders_14">
-								<text decode="true" class="all_orders_15">颜色规格</text>
-								<!-- <text decode="true" class="orderNo">{{item_orders.orderNo}}</text> -->
-								<text style="padding-left: 30rpx;">{{item_orders.color}}</text>
-								<text style="padding-left: 30rpx;">|</text>
-								<text style="padding-left: 30rpx;">{{item_orders.specification}}</text>
+							<image
+								src="/static/all_orders/images/all_orders_10_10.jpg" mode="scaleToFill" border="0"
+								class="all_orders_10"></image>
+							<view class="all_orders_20">
+								<image
+									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -8px;"
+									class="all_orders_8"></image>
+								<text style="padding-left: 8rpx;color: #c5c5c5;">{{item_orders.updateTime}}</text>     
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 			<u-divider style="background-color: #f1f2f1;"></u-divider>
-		</view>
+		<!-- </view> -->
 		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 	</view>
 </template>
@@ -68,7 +67,9 @@
 				page: 0, //当前分页页码
 				apiUrl: '', //后端接口地址
 				id: '', //传值使用,方便存在本地的locakStorage  
-				del_id: '' ,//方便存在本地的locakStorage  
+				del_id: '' ,//方便存在本地的locakStorage
+				searchText: '',
+				list_orders: [],
 				pageNo: 0,
 				pageSize: 5,
 				total: 0,
@@ -82,11 +83,11 @@
 			}
 		},
 		onShow() {
-			this.initData()
+			// this.initData()
 			// this.getList()
-			this.getData();
 		},
 		onLoad: function (options) {
+			this.getData();
 		        setTimeout(function () {
 		            console.log('start pulldown');
 		        }, 1000);
@@ -109,7 +110,7 @@
 		methods: {
 			toSubmit(item) {
 				uni.setStorage({
-					key: 'out-add-product',
+					key: 'out-add-order',
 					data: item
 				})
 				uni.navigateBack({
@@ -164,7 +165,7 @@
 				}
 				console.log(queryData)
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/sales-order/search',
 					data: queryData
 				})
 				this.list_orders = [...this.list_orders, ...result.items]
@@ -180,25 +181,19 @@
 			},
 			async toSearch(e) {
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/sales-order/search',
 					data: {
 						query: e.target.value
 					}
 				})
 				this.list_orders = result.items
 			},
-			toPage(url) {
-				uni.navigateTo({
-					url: url
-				})
-			},
 			async getData() {
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/sales-order/search',
 					data:{
-                pageNo: 0,
-				pageSize: 5,
-				total: 0,						
+						pageNo: 0,
+						pageSize: 6,
 					}
 				})
 				this.list_orders = result.items
@@ -206,12 +201,9 @@
 			}
 		}
 	}
-	// import all_orders from "./all_orders.js";
-	// export default all_orders;
 </script>
 
 <style lang="scss" scoped>
-	// @import './all_orders.scss'
 	page{
 		background-color: #f1f2f1;
 	}
@@ -262,8 +254,6 @@
 		border-radius: 0upx;
 		font-size: 8upx;
 	}
-
-	
 
 	.all_orders_1 .orders {
 		white-space: normal;
@@ -469,5 +459,10 @@
 	}
 	.icon_cla{
 		padding: 0px 10px 0px 0px;
+	}
+	.all_orders_20{
+		margin-top: 80px;
+		// margin-left: 20px;
+		font-size: 16px;
 	}
 </style>

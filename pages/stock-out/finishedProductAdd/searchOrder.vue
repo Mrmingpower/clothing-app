@@ -43,7 +43,7 @@
 								class="all_orders_10"></image>
 							<view class="all_orders_20">
 								<image
-									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -8px;"
+									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -12rpx;"
 									class="all_orders_8"></image>
 								<text style="padding-left: 8rpx;color: #c5c5c5;">{{item_orders.updateTime}}</text>     
 							</view>
@@ -461,8 +461,8 @@
 		padding: 0px 10px 0px 0px;
 	}
 	.all_orders_20{
-		margin-top: 80px;
-		// margin-left: 20px;
-		font-size: 16px;
+		margin-top: 150rpx;
+		// margin-left: -80rpx;
+		font-size: 30rpx;
 	}
 </style>

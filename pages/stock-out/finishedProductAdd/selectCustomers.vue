@@ -41,7 +41,7 @@
 								class="all_orders_10"></image>
 							<view class="all_orders_20">
 								<image
-									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -8px;"
+									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -12rpx;"
 									class="all_orders_8"></image>
 								<text style="padding-left: 8rpx;color: #c5c5c5;">{{item_orders.mobile}}</text>
 							</view>

@@ -12,7 +12,8 @@
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
 				<input type="text" v-model="ipt" @input="toSearch" placeholder="仓库名称" confirm-type="search">
-					<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3" size="30"></u-icon>
+				<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3"
+					size="30"></u-icon>
 				</input>
 			</view>
 		</view>
@@ -140,7 +141,7 @@
 				if (this.labelDataList.indexOf(name) > -1) { // 解决组件视图不能跟着更新的两种办法
 					this.$set(this.labelList[index], "checked", true)
 					this.temp_dataList[0] = this.labelList[index].name
-				} 
+				}
 				// else {
 				// 	this.$set(this.labelList[index], "checked", false)
 				// 	this.temp_dataList.splice(this.temp_dataList.findIndex(item => item === this.labelList[index].name), 1)
@@ -267,7 +268,8 @@
 		margin-right: 50rpx;
 		text-align: center;
 	}
-	.icon_cla{
+
+	.icon_cla {
 		padding: 0px 10px 0px 0px;
 	}
 </style>

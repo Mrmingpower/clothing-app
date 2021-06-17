@@ -1,7 +1,8 @@
 <!--本页面由uniapp切片工具生成，uni-app切片-可视化设计工具(一套代码编译到7个平台iOS、Android、H5、小程序)，软件下载地址：http://www.ymznkf.com/new_view_669.htm -->
 <template>
 	<view>
-		<view class="cu-bar search bg-white" style="position: fixed;width: 750rpx;z-index: 9999999;background-color: #20a0ff;">
+		<view class="cu-bar search bg-white"
+			style="position: fixed;width: 750rpx;z-index: 9999999;background-color: #20a0ff;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
 				<input type="text" v-model="ipt" @input="toSearch" placeholder="商品名称/编号" confirm-type="search">
@@ -14,36 +15,33 @@
 		<view class="YmContent">
 			<view class="all_orders_1">
 				<view class="orders">
-					<view v-for="(item_orders, index) in list_orders" :key="index" class="item" @click="toSubmit(item_orders)">
+					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
+						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
 							<view class="all_orders_7">
-								<image
-									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
+								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
 								<view decode="true" class="address_from">
 									<text style="font-size: 30rpx;color: #000000;">{{item_orders.name}}</text>
 									<text style="padding-left: 30rpx;color: #c5c5c5;">{{item_orders.no}}</text>
 								</view>
 							</view>
-							<image
-								src="/static/all_orders/images/all_orders_10_10.jpg" mode="scaleToFill" border="0"
+							<image src="/static/all_orders/images/all_orders_10_10.jpg" mode="scaleToFill" border="0"
 								class="all_orders_10"></image>
 							<view class="all_orders_11">
-								<image
-									src="/static/all_orders/images/all_orders_12_12.jpg" mode="scaleToFill" border="0"
-									class="all_orders_12"></image>
+								<image src="/static/all_orders/images/all_orders_12_12.jpg" mode="scaleToFill"
+									border="0" class="all_orders_12"></image>
 								<text decode="true" class="address_to">
 									<text style="color: #ff557f;font-size: 30rpx;">
 										￥{{item_orders.price}}
 									</text>
 									<text style="margin-left: 6rpx;">
-										/  {{item_orders.unit}}
+										/ {{item_orders.unit}}
 									</text>
 								</text>
 							</view>
 							<view class="all_orders_14">
 								<text decode="true" class="all_orders_15">颜色规格</text>
-								<!-- <text decode="true" class="orderNo">{{item_orders.orderNo}}</text> -->
 								<text style="padding-left: 30rpx;">{{item_orders.color}}</text>
 								<text style="padding-left: 30rpx;">|</text>
 								<text style="padding-left: 30rpx;">{{item_orders.specification}}</text>
@@ -52,8 +50,10 @@
 					</view>
 				</view>
 			</view>
-			<u-divider style="background-color: #f1f2f1;">没有更多了</u-divider>
+			
 		</view>
+		
+		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 	</view>
 </template>
 
@@ -63,17 +63,64 @@
 			return {
 				ipt: '',
 				loadingText: '123',
+				searchText: '',
 				list_orders: [],
 				page: 0, //当前分页页码
 				apiUrl: '', //后端接口地址
 				id: '', //传值使用,方便存在本地的locakStorage  
-				del_id: '' //方便存在本地的locakStorage  
+				del_id: '' ,//方便存在本地的locakStorage  
+				pageNo: 0,
+				pageSize: 3,
+				total: 0,
+				status: 'loadmore',
+				loadText: {
+					loadmore: '点击加载更多',
+					loading: '努力加载中',
+					nomore: '没有更多了'
+				},
+				queryParams: '',
 			}
 		},
 		onLoad() {
 			this.getData()
 		},
+		
+		async onPullDownRefresh() {
+			
+			this.initData()
+			await this.getData()
+			uni.stopPullDownRefresh()
+		},
+		
+		async onReachBottom() {
+			if (parseInt(this.total) === this.list_orders.length) {
+				this.status = 'nomore'
+				return
+			}
+			this.status = 'loading'
+			await this.getData();
+		},
+		
 		methods: {
+			initData() {
+				this.finished = false
+				this.pageNo = 0
+				this.pageSize = 5
+				this.total = 0
+				this.status = 'loadmore'
+				this.searchText = ''
+				this.list_orders = []
+			},
+			
+			async loadmore() {
+				if (parseInt(this.total) === this.list_orders.length) {
+					this.status = 'nomore'
+					return
+				}
+				this.status = 'loading'
+				await this.getData()
+			},
+			
 			toSubmit(item) {
 				uni.setStorage({
 					key: 'out-add-material',
@@ -88,13 +135,22 @@
 				this.getData()
 			},
 			async toSearch(e) {
+				
+				let queryData = {
+					pageNo: this.pageNo, // 传入页码
+					pageSize: this.pageSize// 传入每页条数
+				}
+				
+				if(!this.$u.test.isEmpty(e)) {
+					queryData.name = e.target.value
+					
+				}
 				let result = await this.$myRequest({
-					url: '/stock-out/material-prompt',
-					data: {
-						query: e.target.value
-					}
+					url: '/material/search',
+					data: queryData
+					
 				})
-				this.list_orders = result
+				this.list_orders = result.items
 			},
 			toPage(url) {
 				uni.navigateTo({
@@ -102,11 +158,24 @@
 				})
 			},
 			async getData() {
+				if (this.finished) return;
+				this.pageNo++;
+				let queryData = {
+					pageNo: this.pageNo, // 传入页码
+					pageSize: this.pageSize// 传入每页条数
+				}
 				let result = await this.$myRequest({
-					url: '/stock-out/material-prompt'
+					url: '/material/search',
+					data:queryData
 				})
-				this.list_orders = result
+				this.list_orders = [...this.list_orders, ...result.items]
 				console.log(result)
+				this.total = result.count;
+				console.log(this.total)
+				if (this.list_orders.length == this.total) {
+					this.finished = true;
+					this.status = 'nomore'
+				}
 			}
 		}
 	}
@@ -116,9 +185,10 @@
 
 <style lang="scss" scoped>
 	// @import './all_orders.scss'
-	page{
+	page {
 		background-color: #f1f2f1;
 	}
+
 	.YmContent {
 		height: 100%;
 		width: 100%;
@@ -167,7 +237,7 @@
 		font-size: 8upx;
 	}
 
-	
+
 
 	.all_orders_1 .orders {
 		white-space: normal;
@@ -371,7 +441,8 @@
 		font-size: 8upx;
 		line-height: 111upx;
 	}
-	.icon_cla{
+
+	.icon_cla {
 		padding: 0px 10px 0px 0px;
 	}
 </style>

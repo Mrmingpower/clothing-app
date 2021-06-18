@@ -5,7 +5,7 @@
 			style="position: fixed;width: 750rpx;z-index: 9999999;background-color: #20a0ff;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input type="text" v-model="ipt" @input="toSearch" placeholder="商品名称/编号" confirm-type="search">
+				<input type="text" v-model="ipt" @confirm="toSearch" placeholder="商品名称/编号" confirm-type="search">
 				<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3"
 					size="30"></u-icon>
 				</input>
@@ -49,10 +49,8 @@
 						</view>
 					</view>
 				</view>
-			</view>
-			
+			</view><u-divider style="background-color: #f1f2f1;"></u-divider>
 		</view>
-		
 		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 	</view>
 </template>
@@ -70,7 +68,7 @@
 				id: '', //传值使用,方便存在本地的locakStorage  
 				del_id: '' ,//方便存在本地的locakStorage  
 				pageNo: 0,
-				pageSize: 3,
+				pageSize: 5,
 				total: 0,
 				status: 'loadmore',
 				loadText: {
@@ -78,10 +76,12 @@
 					loading: '努力加载中',
 					nomore: '没有更多了'
 				},
+				isSearch: false,
 				queryParams: '',
 			}
 		},
-		onLoad() {
+		async onLoad() {
+			this.initData()
 			this.getData()
 		},
 		
@@ -98,7 +98,10 @@
 				return
 			}
 			this.status = 'loading'
-			await this.getData();
+			
+				await this.getData();
+		
+			
 		},
 		
 		methods: {
@@ -135,22 +138,20 @@
 				this.getData()
 			},
 			async toSearch(e) {
-				
-				let queryData = {
-					pageNo: this.pageNo, // 传入页码
-					pageSize: this.pageSize// 传入每页条数
+				if(this.$u.test.isEmpty(this.ipt)) {
+					this.isSearch = false
+				} else {
+					this.isSearch = true
 				}
+
+				this.list = []
+				this.status = 'loadmore'
+				this.pageNo = 0
+				this.pageSize = 5
+				this.finished = false
+				this.initData()
+				await this.getData()
 				
-				if(!this.$u.test.isEmpty(e)) {
-					queryData.name = e.target.value
-					
-				}
-				let result = await this.$myRequest({
-					url: '/material/search',
-					data: queryData
-					
-				})
-				this.list_orders = result.items
 			},
 			toPage(url) {
 				uni.navigateTo({
@@ -158,24 +159,27 @@
 				})
 			},
 			async getData() {
+				console.log(this.total)
 				if (this.finished) return;
 				this.pageNo++;
 				let queryData = {
 					pageNo: this.pageNo, // 传入页码
-					pageSize: this.pageSize// 传入每页条数
+					pageSize: this.pageSize,// 传入每页条数
+					name: this.isSearch===true?this.ipt:''
 				}
+				
 				let result = await this.$myRequest({
 					url: '/material/search',
 					data:queryData
 				})
-				this.list_orders = [...this.list_orders, ...result.items]
-				console.log(result)
+				this.list_orders = [...this.list_orders,...result.items ]
 				this.total = result.count;
-				console.log(this.total)
 				if (this.list_orders.length == this.total) {
 					this.finished = true;
 					this.status = 'nomore'
 				}
+				
+				
 			}
 		}
 	}

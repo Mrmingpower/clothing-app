@@ -7,12 +7,12 @@ export const myRequest = (options) => {
 	let refreshToken = store.state.accessToken.refreshToken
 	let expires = store.state.accessToken.expires
 	let refreshExpires = store.state.accessToken.refreshExpires
-	console.log('--------------')
-	console.log(token)
-	console.log(refreshToken)
-	console.log(expires)
-	console.log(refreshExpires)
-	console.log('--------------')
+	// console.log('--------------')
+	// console.log(token)
+	// console.log(refreshToken)
+	// console.log(expires)
+	// console.log(refreshExpires)
+	// console.log('--------------')
 	if (options.url !== '/users/login') {
 		if (!store.state.hasLogin) {
 			uni.showLoading({

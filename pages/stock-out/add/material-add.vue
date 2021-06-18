@@ -203,7 +203,7 @@
 											<view @click="tempClick(item)">
 												<text>{{item.quantityByAssistantEdit}}</text>
 												<!-- <u-icon name="edit-pen" color="#2979ff" size="20"></u-icon> -->
-												<!-- <u-number-box :input-width="28" :input-height="30" align="center" 
+												<!-- <u-number-box :input-width="28" :input-height="30" align="center"
 													v-model="item.quantityByAssistant || 0"></u-number-box> -->
 												<!-- <u-input v-model="item.quantityByAssistant" type="text" :border="border" /> -->
 											</view>
@@ -379,7 +379,7 @@
 					let result1 = await that.$myRequest({
 						url: '/material-sku/' + res.data.id + '/' + that.warehouseId
 					})
-					console.log('result1')
+					console.log('result11')
 					console.log(result1)
 					let materialSkuArr = []
 					for (var j = 0; j < result1.length; j++) {
@@ -641,9 +641,6 @@
 			calendarChange(e) {
 				this.date = e.result
 			},
-
-
-
 			async receiverIdClick() {
 				if (this.$u.test.isEmpty(this.receiverType)) {
 					uni.showToast({

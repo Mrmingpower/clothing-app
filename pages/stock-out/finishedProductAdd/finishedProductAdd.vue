@@ -21,7 +21,7 @@
 			<view v-for="(item,index) in productList" :key="index" :index="index">
 				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
 					:title-size="35" border-radius="0" :title="item.productName" :sub-title="item.productNo">
-					<view slot="body">
+					<view slot="body" v-if="item.show">
 						<view style="width: 350rpx;" class="u-border-right">
 							<view style="width: 380rpx;">
 								<u-row gutter="8">
@@ -112,7 +112,7 @@
 			
 				</u-card>
 			</view>
-			<view style="background-color: #FFFFFF;" class="u-border-top">
+			<view style="background-color: #FFFFFF;" class="u-border-top" >
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
 					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" color="#00aaff"></u-icon>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
@@ -161,22 +161,16 @@
 								<u-tr>
 									<u-th>名称</u-th>
 									<u-th>数量</u-th>
-									<u-th>库存数量</u-th>
 								</u-tr>
-								<view v-for="(item,index) in editRow.productSkuArr" :key="index">
+								<view v-for="(item,index) in productList" :key="index">
 									<u-tr>
 										<u-td>
 											<view>
-												<text>{{item.exchangeRate}}</text>
+												<text>{{item.productName}}</text>
 											</view>
 										</u-td>
 										<u-td>
 											<view @click="tempClick(item)">
-												<text>{{item.quantityByAssistantEdit}}</text>
-											</view>
-										</u-td>
-										<u-td>
-											<view>
 												<text>{{item.quantity}}</text>
 											</view>
 										</u-td>
@@ -189,18 +183,18 @@
 				</view>
 			</u-popup>
 
-			<u-popup v-model="tempQuantityByAssistantShow" mode="center" border-radius="14" width="80%" height="400rpx">
+			<u-popup v-model="quantityShow" mode="center" border-radius="14" width="80%" height="400rpx">
 				<view>
 					<view style="height: 50rpx;"></view>
-					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">匹数</view>
+					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量</view>
 					<view style="margin-top: 30rpx;">
 						<u-cell-group>
-							<u-field v-model="tempQuantityByAssistant" label="匹数:" label-width="150" :clearable="false"
+							<u-field v-model="quantity" label="数量" label-width="150" :clearable="false"
 								:required="false" type="text"></u-field>
 						</u-cell-group>
 						<view class="close-btn">
 							<u-button @tap="submitPop" size="medium" type="primary">确定</u-button>
-							<u-button @tap="tempQuantityByAssistantShow = false" size="medium">取消</u-button>
+							<u-button @tap="quantityShow = false" size="medium">取消</u-button>
 						</view>
 					</view>
 				</view>
@@ -220,9 +214,9 @@
 	export default {
 		data() {
 			return {
-				tempQuantityByAssistant: 0,
+				quantity: 0,
 				tempRow: '',
-				tempQuantityByAssistantShow: false,
+				quantityShow: false,
 				fieldStyle: {
 					'color': '#ff557f',
 				},
@@ -263,12 +257,13 @@
 				pickCustomerShow: false,
 				pickCustomerList : [],
 				productList: [],
+				show:'true',
 				tempproductList: [],
 				thumb: '/static/stockIn/open.png',
 				editShow: false,
 				editRow: '',
 				tempExchangeRate: [],
-				tempQuantityByAssistant: [],
+				quantity: [],
 				seeShow: false,
 				seeRow: '',
 				"customerId": 0,
@@ -289,7 +284,7 @@
 				  "payAccountId": 0,
 				  "payStyle": 0,
 				  "principalName": "",
-				  "warehouseId": 0
+				  "warehouseId": 0,
 			}
 		},
 		onShow() {
@@ -321,41 +316,19 @@
 				success(res){
 					console.log(res)
 					that.pickOrderIdLabel = res.data.no
-					that.productList = res.data
+					for (var i = 0; i < res.data.detail.length; i++) {
+						res.data.detail[i].show = true
+					}
+					that.productList = res.data.detail
 					uni.removeStorage({
 						key:'out-add-order'
 					})
 				}
 			})
-			uni.getStorage({
+			uni.getStorage({                              //+号添加成品
 				key: 'out-add-product',
 				async success(res) {
-					console.log('resoutaddproduct')
 					console.log(res)
-					// let only = res.data.productNo + '-' + res.data.color
-					// if (that.tempproductList.indexOf(only) > -1) {
-					// 	let index = that.tempproductList.indexOf(only)
-					// 	that.productList.splice(index, 1)
-					// 	that.tempproductList.splice(index, 1)
-					// }
-					// that.tempproductList.push(only)
-					
-					// let result1 = await that.$myRequest({
-					// 	url: '/product-spu/'
-					// })
-					// console.log(result1)
-					// let productSkuArr = []
-					// for (var j = 0; j < result1.length; j++) {
-					// 	productSkuArr.push({
-					// 		specification: result1[j].specification || 0,
-					// 		productSkuId: result1[j].skuId || '',
-					// 		coloringNo: result1[j].coloringNo || '',
-					// 		exchangeRate: result1[j].skuQuantity || 0,
-					// 		quantity: result1[j].quantity || 0,
-					// 		quantityByAssistant: result1[j].quantityByAssistant || 0,
-					// 		quantityByAssistantEdit: result1[j].quantityByAssistantEdit || 0,
-					// 	})
-					// }
 					that.productList.push({
 						productName: res.data.productName || '',
 						productNo: res.data.productNo || '',
@@ -367,8 +340,7 @@
 						price: res.data.price || '',
 						specification:res.data.specification || '',
 						color:res.data.color || '',
-						// productSkuArr: productSkuArr,
-						// clickChecked: true
+						show:true
 					})
 					uni.removeStorage({
 						key: 'out-add-product'
@@ -379,7 +351,7 @@
 		methods: {
 			toDel(index) {
 				console.log('执行了')
-				this.materialList.splice(index, 1)
+				this.productList.splice(index, 1)
 			},
 			toEdit(item) {
 				this.editShow = true
@@ -392,8 +364,19 @@
 			tempClick(e) {
 				console.log(e)
 				this.tempRow = e
-				this.tempQuantityByAssistant = e.quantityByAssistantEdit
-				this.tempQuantityByAssistantShow = true
+				this.quantity = e.quantity
+				this.quantityShow = true
+			},
+			submitPop() {
+				if (!this.$u.test.digits(this.quantity)) {
+					uni.showToast({
+						title: '只能输入整数',
+						icon: 'none'
+					})
+					return
+				}
+				this.tempRow.quantity = parseInt(this.quantity)
+				this.quantityShow = false
 			},
 			selectcommand(e){
 				uni.navigateTo({
@@ -430,31 +413,23 @@
 			},
 			async pickOrderConfirm(e) {
 				let result = await this.$myRequest({
-					url: '/sales-order/' + e[0].value
+					url: '/sales-order/' 
 				})
 				this.pickOrderId = result.id
 				this.pickOrderIdLabel = result.no
-				console.log('result')
-				console.log(result)
 		for (var i = 0; i < result.details.length; i++) {
 			let result3 = await this.$myRequest({
-				// url: '/product-spu/' + result.details[i].productSpuId + '/' + this.warehouseId,
 				url:'/sales-order/no/' + result.data.no,
 			})
-			// console.log('result.details[i]')
-			// console.log(result.details[i])
-			// console.log('result3')
-			// console.log(result3)
 			let productSkuArr = []
 			for (var j = 0; j < result3.length; j++) {
 				productSkuArr.push({
-					// specification: result3[j].specification || 0,
 					productSkuId: result3[j].skuId || '',
 					coloringNo: result3[j].coloringNo || '',
 					exchangeRate: result3[j].skuQuantity || 0,
 					quantity: result3[j].quantity || 0,
 					quantityByAssistant: result3[j].quantityByAssistant || 0,
-					quantityByAssistantEdit: result3[j].quantityByAssistantEdit || 0,
+					quantity: result3[j].quantity || 0,
 				})
 			}
 			this.productList.push({
@@ -468,18 +443,16 @@
 				amount: 0,
 				pickOrderDetailId: result.details[i].id || '',
 				// productSkuArr: productSkuArr,
-				clickChecked: true
+				show: true
 			})
 		}
-		console.log('this.productList')
-		console.log(this.productList)
 			},
 			async getData(e) {
 				let result = await this.$myRequest({
 					url: '/customer/search',
 				})
 				this.list_orders = res.data
-				console.log(res.data)
+				// console.log(res.data)
 			},
 			calendarChange(e) {
 				this.date = e.result
@@ -487,9 +460,10 @@
 			dateClick() {
 				this.calendarShow = true
 			},
-			// headClick(item) {
-			// 	item.clickChecked = !item.clickChecked
-			// },
+			headClick(item) {
+				item.show = !item.show
+				console.log('执行了')
+			},
 			warehouseClick() {
 				uni.navigateTo({
 					url: 'selectWarehouseByFinishedProductAdd?supplierNames=' + this.warehouseName
@@ -523,7 +497,7 @@
 					customerIdLabel:this.customerIdLabel,
 					pickOrderIdLabel:this.pickOrderIdLabel,
 				}
-				console.log('params')
+				// console.log('params')
 				let result = await this.$myRequest({
 					url: '/product-out/',
 					method: 'post',
@@ -549,7 +523,7 @@
 				}
 			},
 			toAddProduct() {
-				if (this.sourceType ===1,2 && this.warehouseName !=='') {
+				if (this.sourceType ===2 && this.warehouseName !=='') {
 					uni.navigateTo({
 						url: 'finished-add-add'
 					})

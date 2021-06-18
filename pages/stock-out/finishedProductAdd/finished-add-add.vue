@@ -34,19 +34,16 @@
 									class="all_orders_12"></image>
 								<text decode="true" class="address_to">
 									<text style="color: #ff557f;font-size: 30rpx;">
-										{{item_orders.categoryIds}}
+										{{item_orders.supplierName}}
 									</text>
 									<text style="margin-left: 6rpx;">
-										  {{item_orders.specificationIds}}
+										  {{item_orders.categoryName}}
 									</text>
 								</text>
 							</view>
-							<view class="all_orders_14">
-								<text decode="true" class="all_orders_15">颜色规格</text>
-								<!-- <text decode="true" class="orderNo">{{item_orders.orderNo}}</text> -->
-								<text style="padding-left: 30rpx;">{{item_orders.color}}</text>
-								<text style="padding-left: 30rpx;">|</text>
-								<text style="padding-left: 30rpx;">{{item_orders.specification}}</text>
+							 <view class="all_orders_14">
+								<text decode="true" class="all_orders_15">spuId</text>
+								<text decode="true" class="orderNo">{{item_orders.id}}</text>
 							</view>
 						</view>
 					</view>
@@ -55,6 +52,105 @@
 			<u-divider style="background-color: #f1f2f1;"></u-divider>
 		</view>
 		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
+		<u-popup v-model="goodsShow" border-radius="16" length="80%" mode="bottom" @close="popClose">
+			<view class="specification-wrapper">
+				<view class="specification-right">
+					<u-icon name="close-circle" @click="goodsShow = false" style="color: #0081FF;font-weight: bold;font-size: 50rpx;position: relative;right: -620rpx;top:30rpx;height: 0rpx;" color="#000000" size="50"></u-icon>
+					<view class="price-content">
+						<text class="sign">¥</text>
+						<text class="price">{{ unitPrice }}</text>
+						<u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff" size="35"></u-icon>
+					</view>
+					<view class="inventory">
+						<view style="display: inline;">价格:
+							<block v-for="(item, index) in resultData">
+								<text v-if="index === 0" style="text-decoration: line-through;">{{'￥'+item.price}}</text>
+							</block>
+						</view>
+						<view style="display: inline;margin-left: 50rpx;">货号:
+							<block v-for="(item, index) in resultData">
+								<text v-if="index === 0">{{item.productNo}}</text>
+							</block>
+						</view>
+						<view style="display: inline;margin-left: 50rpx;">品名:
+							<block v-for="(item, index) in resultData">
+								<text v-if="index === 0">{{item.productName}}</text>
+							</block>
+						</view>
+					</view>
+					<view class="choose">
+						已选:
+						<block v-for="(item, index) in colorList">
+							<text v-if="item.checked">{{item.colorName}}</text>
+						</block>
+					</view>
+					<view class="inventory">
+						
+					</view>
+				</view>
+				<view class="item-title">{{ '颜色' }}</view>
+				
+					<view v-for="(item,index) in dataList">
+							{{item.color}}
+							<view v-for="(itemm,indexx) in item.productSkuIdWithSpecificationVOList">
+								{{itemm.specification}}
+							</view>
+					</view>
+						<!-- <view class="item-wrapper">
+							<radio-group @change="checkboxChange" style="display: flex; flex-wrap:wrap">
+							  <label :class="item.checked ? 'checkbox selectBox' : 'checkbox '" @click="labelBtn(item.colorId,index)"  v-for="(item,index) in colorList" :key="item.colorId" >
+								<radio :value="item.colorId" :checked="item.checked"  v-show="false"/>{{item.color}}
+								<text :class="item.checked? 'text_cla1' : 'text_cla'" v-show="item.allNum !== 0"
+								>{{item.allNum}}</text>
+							  </label>
+							</radio-group>
+						</view>
+						<view class="item-title">{{ '规格' }}</view>
+							<view class="item-wrapper u-border-bottom" v-for="(item,index) in specList">
+								<view style="display: inherit;margin: 10rpx;">
+									<view style="margin-top: 30rpx;">
+										{{item.specName}}
+									</view>
+									<view style="position: absolute;right: 350rpx;bottom: 5rpx;">
+										{{item.quantity || 0}}
+										 {{11}} 
+									</view>
+									<view style="margin-top: 30rpx;" class="num_cla">
+										<u-number-box :disabled-input="true" :disabled="!item.specDisabled"  v-model="item.num" @change="valChange"></u-number-box>
+									</view>
+								</view>
+							</view> -->
+					
+					<view class="bottomm" >
+					    <text class="totalPrice">
+					        <text class="sml">合计:</text>
+					        ￥{{ alNum*unitPrice }}
+					    </text>
+					    <u-button
+					        throttle-time="2000"
+					        size="medium"
+					        :ripple="true"
+					        ripple-bg-color="#FEBABD"
+					        shape="circle"
+							@click="submit"
+							class="button"
+					    >
+					        确定
+					    </u-button>
+					</view>
+			</view>
+		</u-popup>
+		<u-popup v-model="showw" mode="center" length="60%">
+			<view class="importValue">
+				<view class="inputPrice">
+					<text >请输入临时价格</text>
+				</view>
+				<u-input v-model="settlePricee" type="text" :border="true" />
+				<view class="mt20">
+					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -79,6 +175,19 @@
 					nomore: '没有更多了'
 				},
 				queryParams: '',
+				goodsShow: false,
+				unitPrice: '',
+				colorList: [],
+				dataList: [],
+				temp_colorIndex: 0,
+				temp_color: '',
+				temp_colorList: '',
+				showw: false,
+				settlePricee: '',
+				alNum: 0,
+				specList: [],
+				resultData: [],
+				value: 0 ,
 			}
 		},
 		onShow() {
@@ -86,7 +195,7 @@
 			// this.getList()
 			this.getData();
 		},
-		onLoad: function (options) {
+		async onLoad(e){
 		        setTimeout(function () {
 		            console.log('start pulldown');
 		        }, 1000);
@@ -107,14 +216,33 @@
 				await this.getList();
 			},
 		methods: {
-			toSubmit(item) {
-				uni.setStorage({
-					key: 'out-add-product',
-					data: item
-				})
-				uni.navigateBack({
-					url: 'finishedProductAdd'
-				})
+			editSettlePrice() {
+				this.settlePricee = this.unitPrice
+				this.showw = true
+			},
+			labelBtn(item,index){
+				// this.colorList[this.temp_colorIndex].checked = false
+				// this.colorList[index].checked = true
+				},
+			onSure() {
+				if(this.$u.test.isEmpty(this.settlePricee)) {
+					this.$refs.uToast.show({
+						title: '不能为空',
+						type: 'error',
+						icon: false
+					})
+					return
+				}
+				let a = this.settlePrice/this.resultData[0].price*100
+				for (var i = 0; i < this.resultData.length; i++) {
+					this.resultData[i].discount = 100 - a
+				}
+				this.unitPrice = this.settlePricee
+				this.showw = false
+			},
+			popClose() {
+				this.allMap = new Map()
+				console.log('弹出关闭')
 			},
 			initData() {
 				this.finished = false
@@ -132,6 +260,13 @@
 				}
 				this.status = 'loading'
 				await this.getList()
+			},
+			checkboxChange: function (e) {
+			  this.temp_color = e.detail.value
+			  console.log(e.detail.value)
+			  console.log(e)
+			  console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
+			  console.log(this.temp_color,"temp_color")
 			},
 			async getList() {
 				if (this.finished) return;
@@ -164,7 +299,7 @@
 				}
 				console.log(queryData)
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/product-spu/search',
 					data: queryData
 				})
 				this.list_orders = [...this.list_orders, ...result.items]
@@ -180,34 +315,51 @@
 			},
 			async toSearch(e) {
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/product-spu/search',
 					data: {
 						query: e.target.value
 					}
 				})
 				this.list_orders = result.items
 			},
-			toPage(url) {
-				uni.navigateTo({
-					url: url
-				})
-			},
+			
 			async getData() {
 				let result = await this.$myRequest({
-					url: '/product-sku/search',
+					url: '/product-spu/search',
 					data:{
-                pageNo: 0,
-				pageSize: 5,
-				total: 0,						
+						pageNo: 0,
+						pageSize: 10,
+						// productNo: 0
 					}
 				})
 				this.list_orders = result.items
+				console.log('rrrrrrrrrrr')
 				console.log(result)
-			}
+			},
+			async toSubmit(item) {
+				// uni.setStorage({
+				// 	key: 'out-add-product',
+				// 	data: item
+				// })
+				// uni.navigateBack({
+				// 	url: 'finishedProductAdd'
+				// })
+				let result1 = await this.$myRequest({
+					url:'/product-spu/group-color/' + item.id
+					
+				})
+				this.specList = result1.productSkuIdWithSpecificationVOList
+				this.resultData = result1
+				this.goodsShow = true
+				// this.colorList = result1
+				this.dataList = result1
+				console.log('item')
+				console.log(result1)
+				console.log(result1[0].color)
+				console.log(this.specList)
+			},
 		}
 	}
-	// import all_orders from "./all_orders.js";
-	// export default all_orders;
 </script>
 
 <style lang="scss" scoped>
@@ -469,5 +621,70 @@
 	}
 	.icon_cla{
 		padding: 0px 10px 0px 0px;
+	}
+	.specification-wrapper {
+		width: 100%;
+		padding: 30rpx 25rpx;
+		box-sizing: border-box;
+	}
+	.specification-right {
+		flex: 1;
+		padding: 0 35rpx 0 28rpx;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		font-weight: 500;
+	}
+	.bottomm{
+		background-color: #FFFFFF;
+		// margin-top: 140%;
+	}
+	.totalPrice{
+		margin-left: 100rpx;
+		font-size: 35rpx;
+		vertical-align: middle;
+		color: #FE3A3A;
+	}
+	.button{
+		margin-left: 150rpx;
+		background-color: #FFCE06;
+		color: #FFFFFF;
+		outline: none;
+		border: none;
+	}
+	.sml{
+		color: #000000;
+	}
+	.inventory{
+		height: 80rpx;
+	}
+	.importValue{
+		padding: 15px;
+		
+	}
+	.inputPrice{
+		color: #797373;
+	    margin: auto;
+	    text-align: center;
+	    padding: 10px 0;
+	}
+	.mt20{
+		margin-top: 40rpx;
+		width: 300rpx;
+		margin-left: 50rpx;
+	}
+	.checkbox{
+	  position: relative;
+	  padding: 5px 10px;
+	  border: 1px solid #ececec;
+	  margin: 10px;
+	  border-radius: 7upx;
+	  color: #000;
+	}
+	.selectBox{
+	  background: #ffaa00!important;
+	  // border-color: #fe3a3a!important;
+	  color: #000000!important;
 	}
 </style>

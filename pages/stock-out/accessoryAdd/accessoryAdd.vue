@@ -135,7 +135,7 @@
 			</view>
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" @click="toScan"
+					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60"
 						color="#00aaff"></u-icon>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
@@ -154,7 +154,6 @@
 			<u-field v-model="receiverIdName" @click="receiverIdClick" icon="shopping-cart" label-width="220"
 				:disabled="true" right-icon="arrow-down-fill" required placeholder="请选择收货单位" label="收货单位"></u-field>
 		</view>
-
 		<view class="wrap" style="margin-top: 15rpx;">
 			<u-field v-model="description" type="textarea" icon="tags" label-width="200" placeholder="备注" label="备注">
 			</u-field>
@@ -189,7 +188,6 @@
 					</view>
 				</view>
 			</u-popup>
-
 			<u-popup v-model="tempQuantityByAssistantShow" mode="center" border-radius="14" width="80%" height="400rpx">
 				<view>
 					<view style="height: 50rpx;"></view>

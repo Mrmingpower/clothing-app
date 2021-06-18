@@ -17,7 +17,7 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item" @click="toSubmit(item_orders)">
 						<view class="all_orders_5">
 							<view class="all_orders_7">
-								<image
+								<image  
 									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
 								<view decode="true" class="address_from">
@@ -88,24 +88,25 @@
 						
 					</view>
 				</view>
-				<view class="item-title">{{ '颜色' }}</view>
-				
+			<!-- 	<view class="item-title">{{ '颜色' }}</view>
 					<view v-for="(item,index) in dataList">
-							{{item.color}}
-							<view v-for="(itemm,indexx) in item.productSkuIdWithSpecificationVOList">
-								{{itemm.specification}}
+							<view>{{'规格'}}
+								<view v-for="(itemm,indexx) in item.productSkuIdWithSpecificationVOList">	
+									{{itemm.specification}}
+								</view>
 							</view>
-					</view>
-						<!-- <view class="item-wrapper">
+					</view> -->
+						<view class="item-wrapper">
 							<radio-group @change="checkboxChange" style="display: flex; flex-wrap:wrap">
-							  <label :class="item.checked ? 'checkbox selectBox' : 'checkbox '" @click="labelBtn(item.colorId,index)"  v-for="(item,index) in colorList" :key="item.colorId" >
+							  <label :class="item.checked ? 'checkbox selectBox' : 'checkbox '" @click="labelBtn(item.colorId,index)"  v-for="(item,index) in dataList" :key="item.colorId" >
 								<radio :value="item.colorId" :checked="item.checked"  v-show="false"/>{{item.color}}
-								<text :class="item.checked? 'text_cla1' : 'text_cla'" v-show="item.allNum !== 0"
-								>{{item.allNum}}</text>
+								
+								<!-- <text :class="item.checked? 'text_cla1' : 'text_cla'" v-show="item.allNum !== 0" -->
+								<!-- {{item.allNum}}</text> -->
 							  </label>
 							</radio-group>
 						</view>
-						<view class="item-title">{{ '规格' }}</view>
+						<!-- <view class="item-title">{{ '规格' }}</view>
 							<view class="item-wrapper u-border-bottom" v-for="(item,index) in specList">
 								<view style="display: inherit;margin: 10rpx;">
 									<view style="margin-top: 30rpx;">
@@ -120,7 +121,6 @@
 									</view>
 								</view>
 							</view> -->
-					
 					<view class="bottomm" >
 					    <text class="totalPrice">
 					        <text class="sml">合计:</text>
@@ -174,7 +174,6 @@
 					loading: '努力加载中',
 					nomore: '没有更多了'
 				},
-				queryParams: '',
 				goodsShow: false,
 				unitPrice: '',
 				colorList: [],
@@ -223,6 +222,8 @@
 			labelBtn(item,index){
 				// this.colorList[this.temp_colorIndex].checked = false
 				// this.colorList[index].checked = true
+				this.dataList[index].checked = true;
+				console.log(this.dataList[index].checked)
 				},
 			onSure() {
 				if(this.$u.test.isEmpty(this.settlePricee)) {
@@ -261,13 +262,13 @@
 				this.status = 'loading'
 				await this.getList()
 			},
-			checkboxChange: function (e) {
-			  this.temp_color = e.detail.value
-			  console.log(e.detail.value)
-			  console.log(e)
-			  console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
-			  console.log(this.temp_color,"temp_color")
-			},
+			// checkboxChange: function () {
+			//    this.temp_color = e.detail.value
+			//    console.log(e.detail.value)
+			//    console.log(e)
+			//    console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
+			//   // console.log(this.temp_color,"temp_color")
+			// },
 			async getList() {
 				if (this.finished) return;
 				console.log('执行了')
@@ -276,28 +277,6 @@
 					pageNo: this.pageNo, // 传入页码
 					pageSize: this.pageSize// 传入每页条数
 				}
-				if(!this.$u.test.isEmpty(this.queryParams.begin)) {
-					queryData.begin = this.queryParams.begin
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.end)) {
-					queryData.end = this.queryParams.end
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.no)) {
-					queryData.no = this.queryParams.no
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.orderCol)) {
-					// 排序的还没加
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.statuses)) {
-					queryData.statuses = this.queryParams.statuses
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.supplierIds)) {
-					queryData.supplierIds = this.queryParams.supplierIds
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.warehouseIds)) {
-					queryData.warehouseIds = this.queryParams.warehouseIds
-				}
-				console.log(queryData)
 				let result = await this.$myRequest({
 					url: '/product-spu/search',
 					data: queryData
@@ -329,11 +308,9 @@
 					data:{
 						pageNo: 0,
 						pageSize: 10,
-						// productNo: 0
 					}
 				})
 				this.list_orders = result.items
-				console.log('rrrrrrrrrrr')
 				console.log(result)
 			},
 			async toSubmit(item) {
@@ -348,7 +325,6 @@
 					url:'/product-spu/group-color/' + item.id
 					
 				})
-				this.specList = result1.productSkuIdWithSpecificationVOList
 				this.resultData = result1
 				this.goodsShow = true
 				// this.colorList = result1
@@ -356,7 +332,6 @@
 				console.log('item')
 				console.log(result1)
 				console.log(result1[0].color)
-				console.log(this.specList)
 			},
 		}
 	}

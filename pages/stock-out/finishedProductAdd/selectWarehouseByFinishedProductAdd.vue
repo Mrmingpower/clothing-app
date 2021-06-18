@@ -118,7 +118,9 @@
 				this.labelList = supplier
 			},
 			labelBtn(name, index) {
+				console.log('------------------------------')
 				console.log(this.allList)
+				console.log('------------------------------')
 				this.labelName = name
 				for (var i = 0; i < this.labelList.length; i++) {
 					this.$set(this.labelList[i], "checked", false)

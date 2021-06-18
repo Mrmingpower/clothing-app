@@ -166,11 +166,11 @@
 									<u-tr>
 										<u-td>
 											<view>
-												<text>{{item.productName}}</text>
+												<text>{{item.productName}}{{item.color}}{{item.specification}}</text>
 											</view>
 										</u-td>
 										<u-td>
-											<view @click="tempClick(item)">
+											<view style="height:38rpx;" @click="tempClick(item)">
 												<text>{{item.quantity}}</text>
 											</view>
 										</u-td>
@@ -526,6 +526,10 @@
 				if (this.sourceType ===2 && this.warehouseName !=='') {
 					uni.navigateTo({
 						url: 'finished-add-add'
+					});
+					uni.setStorage({
+						key:warehouseId,
+						// data:
 					})
 				}
 

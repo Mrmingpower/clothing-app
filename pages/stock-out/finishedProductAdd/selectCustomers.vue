@@ -20,7 +20,7 @@
 									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
 								<view decode="true" class="address_from">
-									<text style="font-size: 30rpx;color: #000000;">{{item_orders.name}}</text>
+									<text style="font-size: 30rpx;color: #000000;">客户名称：{{item_orders.name}}</text>
 								</view>
 							</view>
 							<image
@@ -32,7 +32,7 @@
 									class="all_orders_12"></image>
 								<text decode="true" class="address_to">
 									<text style="color: #ff557f;font-size: 30rpx;">
-										{{item_orders.no}}
+										客户编码：{{item_orders.no}}
 									</text>
 								</text>
 							</view>
@@ -41,9 +41,9 @@
 								class="all_orders_10"></image>
 							<view class="all_orders_20">
 								<image
-									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -12rpx;"
+									src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0" style="width: 22upx;height: 22upx;margin-left: -14rpx;"
 									class="all_orders_8"></image>
-								<text style="padding-left: 8rpx;color: #c5c5c5;">{{item_orders.mobile}}</text>
+								<text style="padding-left: 6rpx;color: #c5c5c5;font-size: 30rpx;">手机号：{{item_orders.mobile}}</text>
 							</view>
 						</view>
 					</view>
@@ -458,8 +458,8 @@
 		padding: 0px 10px 0px 0px;
 	}
 	.all_orders_20{
-		margin-top: 80px;
+		margin-top: 125rpx;
 		// margin-left: 20px;
-		font-size: 16px;
+		font-size: 30px;
 	}
 </style>

@@ -85,9 +85,10 @@
 		onShow() {
 			// this.initData()
 			// this.getList()
+			this.getData();
 		},
 		onLoad: function (options) {
-			this.getData();
+			
 		        setTimeout(function () {
 		            console.log('start pulldown');
 		        }, 1000);
@@ -108,10 +109,13 @@
 				await this.getList();
 			},
 		methods: {
-			toSubmit(item) {
+			async toSubmit(item) {
+				let result2 = await this.$myRequest({
+					url:'/sales-order/no/'+item.no,
+				})
 				uni.setStorage({
 					key: 'out-add-order',
-					data: item
+					data: result2
 				})
 				uni.navigateBack({
 					url: 'finishedProductAdd'

@@ -109,7 +109,6 @@
 							</view>
 						</view>
 					</view>
-			
 				</u-card>
 			</view>
 			<view style="background-color: #FFFFFF;" class="u-border-top" >

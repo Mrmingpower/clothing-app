@@ -58,16 +58,16 @@
 					<view class="price-content">
 						<text class="sign">¥</text>
 						<text class="price">{{ settlePricee }}</text>
-						<u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
-							size="35"></u-icon>
+						<!-- <u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
+							size="35"></u-icon> -->
 					</view>
-					<!-- <view class="inventory">
-						<view style="display: inline;">成本价:
+					<view class="inventory">
+						<!-- <view style="display: inline;">成本价:
 							<block v-for="(item, index) in resultData">
 								<text v-if="index === 0"
 									style="text-decoration: line-through;">{{'￥'+item.price}}</text>
 							</block>
-						</view>
+						</view> -->
 						<view style="display: inline;margin-left: 50rpx;">货号:
 							<block v-for="(item, index) in resultData">
 								<text v-if="index === 0">{{item.productNo}}</text>
@@ -78,13 +78,13 @@
 								<text v-if="index === 0">{{item.productName}}</text>
 							</block>
 						</view>
-					</view> -->
-					<!-- <view class="choose">
+					</view>
+					 <view class="choose">
 						已选:
-						<block v-for="(item, index) in colorList">
-							<text v-if="item.checked">{{item.colorName}}</text>
+						<block v-for="(item, index) in colorArr">
+							<text v-if="item.checked">{{item.color}}</text>
 						</block>
-					</view> -->
+					</view>
 					<view class="inventory">
 						
 					</view>
@@ -119,7 +119,7 @@
 				<view class="bottomm">
 					<text class="pricee fill">
 					    <text class="sml">合计:</text>
-					    ￥{{ settlePricee }}
+					    ￥{{ alNum*settlePricee }}
 					</text>
 					<u-button
 					    throttle-time="2000"
@@ -135,7 +135,7 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup v-model="showw" mode="center" length="60%" >
+	<!-- 	<u-popup v-model="showw" mode="center" length="60%" >
 			<view class="importValue">
 				<view class="inputPrice">
 					<text class="provisionalPrice">请输入临时价格</text>
@@ -145,7 +145,7 @@
 					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
 				</view>
 			</view>
-		</u-popup>
+		</u-popup> -->
 	</view>
 </template>
 
@@ -184,7 +184,8 @@
 				temp_colorIndex: 0,
 				showw: false,
 				settlePricee: '',
-				show: false
+				show: false,
+				alNum:0
 			}
 		},
 		onLoad(e) {
@@ -193,10 +194,6 @@
 			this.getData();
 		},
 		methods: {
-			editSettlePrice() {
-				this.settlePricee = this.unitPrice
-				this.showw = true
-			},
 			initData() {
 				this.finished = false
 				this.pageNo = 0
@@ -209,8 +206,6 @@
 			popClose() {
 				this.allMap = new Map()
 				console.log('弹出关闭')
-				this.settlePricee = ''	
-				console.log(this.settlePricee)
 			},
 			delQuery() {
 			
@@ -232,12 +227,12 @@
 				// 		quantity: this.specList[i].quantity
 				// 	})
 				// }
-				// let alNum = 0
-				// for (var i = 0; i < this.colorList.length; i++) {
-				// 	alNum = alNum + this.colorList[i].allNum
-				// }
-				// this.alNum = alNum
-				// this.allMap.set(this.temp_colorIndex,spec_list)
+				let alNum = 0
+				for (var i = 0; i < this.colorArr.length; i++) {
+					alNum = alNum + this.colorArr[i].allNum
+				}
+				this.alNum = alNum
+				this.allMap.set(this.temp_colorIndex)
 				
 			},
 			labelBtn(item, index) {
@@ -254,18 +249,11 @@
 					this.temp_colorIndex = index
 				})
 			},
-			onSure() {
-				if(this.$u.test.isEmpty(this.settlePricee)) {
-					this.$refs.uToast.show({
-						title: '不能为空',
-						type: 'error',
-						icon: false
-					})
-					return
-				}
+			submit() {
 				
-				// this.unitPrice = this.settlePricee
-				this.showw = false
+				uni.navigateBack({
+					url: 'finishedProductAdd'
+				})
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
@@ -274,13 +262,16 @@
 				console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
 				console.log(this.temp_color, "temp_color")
 			},
+			
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
 				})
 				console.log(result1)
+				console.log('=====================================')
+				this.settlePricee = result1[0].price
 				// this.specList = result1[0].productSkuIdWithSpecificationVOList
-				// this.resultData = result1
+				this.resultData = result1
 				this.goodsShow = true
 				let colorArr = []
 				let specArr = []
@@ -298,7 +289,7 @@
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-				// this.colorList = result1
+				// this.colorArr = result1
 				// this.dataList = result1
 				// console.log('item')
 				// console.log(result1)
@@ -641,5 +632,9 @@
 		line-height: 80rpx;
 		font-size: 36rpx;
 	}
-	
+	.choose{
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		margin-bottom: 50rpx;
+	}
 </style>

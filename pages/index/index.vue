@@ -17,7 +17,7 @@
 					<text decode="true" class="clothing_services_10">入库模块</text>
 				</view>
 				<!-- clothing_services_11是两行的  clothing_services_17是单行的-->
-				<view class="clothing_services_17">
+				<view class="clothing_services_11">
 					<u-grid :col="3" :border="true">
 						<u-grid-item @click="toPage('../stock-in/stockIn')">
 							<u-icon name="info-circle-fill" color="#ffaa00" :size="47"></u-icon>
@@ -30,6 +30,10 @@
 						<u-grid-item @click="toPage('../stock-in/accessoryAdd/accessoryAdd')">
 							<u-icon name="lock-fill" color="#ffaa00" :size="47"></u-icon>
 							<view class="grid-text">辅料入库</view>
+						</u-grid-item>
+						<u-grid-item @click="toPage('../stock-in/finishedProductAdd/finishedProductAdd')">
+							<u-icon name="lock-fill" color="#ffaa00" :size="47"></u-icon>
+							<view class="grid-text">成品入库</view>
 						</u-grid-item>
 					</u-grid>
 				</view>

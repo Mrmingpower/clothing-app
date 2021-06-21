@@ -57,9 +57,9 @@
 						color="#000000" size="50"></u-icon>
 					<view class="price-content">
 						<text class="sign">¥</text>
-						<text class="price">{{ 999 }}</text>
-						<!-- <u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
-							size="35"></u-icon> -->
+						<text class="price">{{ settlePricee }}</text>
+						<u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
+							size="35"></u-icon>
 					</view>
 					<!-- <view class="inventory">
 						<view style="display: inline;">成本价:
@@ -104,7 +104,7 @@
 				<view class="item-title">{{ '规格' }}</view>
 				<view class="item-wrapper u-border-bottom" v-for="(item,index) in specList">
 					<view style="display: inherit;margin: 10rpx;">
-						<view style="margin-top: 30rpx;">
+						<view style="margin-top: 30rpx;margin-left: 50rpx;">
 							{{item.specification}}
 						</view>
 						<view style="position: absolute;right: 350rpx;bottom: 5rpx;">
@@ -119,7 +119,7 @@
 				<view class="bottomm">
 					<text class="pricee fill">
 					    <text class="sml">合计:</text>
-					    ￥{{ 666 }}
+					    ￥{{ settlePricee }}
 					</text>
 					<u-button
 					    throttle-time="2000"
@@ -135,12 +135,12 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-popup v-model="showw" mode="center" length="60%">
+		<u-popup v-model="showw" mode="center" length="60%" >
 			<view class="importValue">
 				<view class="inputPrice">
-					<text>请输入临时价格</text>
+					<text class="provisionalPrice">请输入临时价格</text>
 				</view>
-				<u-input v-model="settlePricee" type="text" :border="true" />
+				<u-input v-model="settlePricee" style="width: 95%;margin: 0 auto;" type="text" :border="true" />
 				<view class="mt20">
 					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
 				</view>
@@ -182,6 +182,9 @@
 				specArr: [],
 				specList: [],
 				temp_colorIndex: 0,
+				showw: false,
+				settlePricee: '',
+				show: false
 			}
 		},
 		onLoad(e) {
@@ -190,6 +193,10 @@
 			this.getData();
 		},
 		methods: {
+			editSettlePrice() {
+				this.settlePricee = this.unitPrice
+				this.showw = true
+			},
 			initData() {
 				this.finished = false
 				this.pageNo = 0
@@ -198,6 +205,12 @@
 				this.status = 'loadmore'
 				this.searchText = ''
 				this.list_orders = []
+			},
+			popClose() {
+				this.allMap = new Map()
+				console.log('弹出关闭')
+				this.settlePricee = ''	
+				console.log(this.settlePricee)
 			},
 			delQuery() {
 			
@@ -236,10 +249,23 @@
 				}
 				this.colorArr[this.temp_colorIndex].checked = false
 				this.colorArr[index].checked = true
-				this.specList = this.specArr[index]
 				this.$nextTick(() => {
+					this.specList = this.specArr[index]
 					this.temp_colorIndex = index
 				})
+			},
+			onSure() {
+				if(this.$u.test.isEmpty(this.settlePricee)) {
+					this.$refs.uToast.show({
+						title: '不能为空',
+						type: 'error',
+						icon: false
+					})
+					return
+				}
+				
+				// this.unitPrice = this.settlePricee
+				this.showw = false
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
@@ -378,6 +404,9 @@
 		position: relative;
 		left: -200rpx;
 	}
+	.price{
+		font-size: 36rpx
+	}
 	.sml {
 		color: #000000;
 	}
@@ -390,7 +419,8 @@
 		color: #000000 !important;
 	}
 	.sign {
-		font-size: 28rpx;
+		font-size: 36rpx;
+		margin-left: 30rpx;
 	}
 	.price-content {
 		color: #fe3a3a;
@@ -598,4 +628,18 @@
 		font-size: 8upx;
 		line-height: 111upx;
 	}
+	.mt20{
+		margin-top: 40rpx;
+		width: 300rpx;
+		margin-left: 75rpx;
+		padding-bottom: 10rpx;
+	}
+	.inputPrice{
+		text-align: center;
+	}
+	.provisionalPrice{
+		line-height: 80rpx;
+		font-size: 36rpx;
+	}
+	
 </style>

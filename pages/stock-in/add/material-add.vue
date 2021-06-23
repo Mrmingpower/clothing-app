@@ -5,18 +5,21 @@
 				placeholder="请选择入库类型" label="入库类型">
 				<u-button @click="sourceTypeClick" slot="right" size="mini" type="primary">选择</u-button>
 			</u-field>
-			<u-field v-if="sourceType===0" v-model="supplierName" @click="selectSupplier" icon="coupon" right-icon="arrow-down-fill"
-				:disabled="true" label-width="200" placeholder="请选择供应商" label="供应商"></u-field>
-			<u-field v-if="sourceType===0"  v-model="arrivalNo" icon="calendar" @click="purchaseClick" right-icon="arrow-down-fill"
-				:disabled="true" label-width="200" placeholder="请选择采购单" label="采购单"></u-field>
+			<u-field v-if="sourceType===0" v-model="supplierName" @click="selectSupplier" icon="coupon"
+				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择供应商" label="供应商">
+			</u-field>
+			<u-field v-if="sourceType===0" v-model="arrivalNo" icon="calendar" @click="purchaseClick"
+				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择采购单" label="采购单">
+			</u-field>
 		</view>
 		<view style="margin-top: 15rpx;">
 			<view class="u-border-bottom" style="background-color: #FFFFFF;text-align: center;">
 				<text style="font-size: 50rpx;">面料信息</text>
 			</view>
 			<view v-for="(item,index) in materialList" :key="index" :index="index">
-				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40" :title-size="35"
-					border-radius="0" :title="item.productName" :sub-title="item.productNo+'--'+item.color+'--'+item.specification">
+				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
+					:title-size="35" border-radius="0" :title="item.productName"
+					:sub-title="item.productNo+'--'+item.color+'--'+item.specification">
 					<view slot="body" v-if="item.clickChecked">
 						<view style="width: 350rpx;" class="u-border-right">
 							<view style="width: 380rpx;">
@@ -87,7 +90,9 @@
 										<view class="flex-item-20">匹数</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 10rpx;color: #00aaff;" v-if="item.quantityByAssistant.length < 3">{{item.quantityByAssistant.join('|')}}</view>
+										<view style="width: 10rpx;color: #00aaff;"
+											v-if="item.quantityByAssistant.length < 3">
+											{{item.quantityByAssistant.join('|')}}</view>
 										<view v-if="item.quantityByAssistant.length >= 3">
 											<u-button type="primary" size="mini" @click="seeClick(item)">查看</u-button>
 										</view>
@@ -100,8 +105,9 @@
 										<view class="flex-item-20">单匹重量</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;color: #00aaff;" v-if="item.exchangeRate.length < 3">{{item.exchangeRate.join('|')}}</view>
-										<view  v-if="item.exchangeRate.length >= 3">
+										<view style="width: 100rpx;color: #00aaff;" v-if="item.exchangeRate.length < 3">
+											{{item.exchangeRate.join('|')}}</view>
+										<view v-if="item.exchangeRate.length >= 3">
 											<u-button type="primary" size="mini" @click="seeClick(item)">查看</u-button>
 										</view>
 									</u-col>
@@ -113,7 +119,8 @@
 										<view class="flex-item-20">总匹数</view>
 									</u-col>
 									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;color: #ff0000;">{{item.allQuantityByAssistant.toString()}}</view>
+										<view style="width: 100rpx;color: #ff0000;">
+											{{item.allQuantityByAssistant.toString()}}</view>
 									</u-col>
 								</u-row>
 							</view>
@@ -127,16 +134,18 @@
 									</u-col>
 								</u-row>
 							</view>
-							
+
 						</view>
 					</view>
 					<view slot="foot" v-if="item.clickChecked">
 						<view class="footer-box">
 							<view class="my-iconfont text-blue" @tap="toEdit(item)">
-								<u-icon name="more-circle" color="#2979ff" size="28" label="修改" label-color="#2979ff"></u-icon>
+								<u-icon name="more-circle" color="#2979ff" size="28" label="修改" label-color="#2979ff">
+								</u-icon>
 							</view>
 							<view class="my-iconfont text-blue" @tap="toDel(index)">
-								<u-icon name="close-circle" color="#e54d42" size="28" label="删除" label-color="#e54d42"></u-icon>
+								<u-icon name="close-circle" color="#e54d42" size="28" label="删除" label-color="#e54d42">
+								</u-icon>
 							</view>
 						</view>
 					</view>
@@ -183,30 +192,36 @@
 					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">单匹重量 & 匹数</view>
 					<view style="margin-top: 20rpx;">
 						<u-cell-group>
-							<u-field v-model="editRow.productName"label="面料名称" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.productNo"label="面料编号" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.price"label="单价" label-width="150" :clearable="false" disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.coloringNo"label="缸号" placeholder="请输入缸号" label-width="150" :clearable="false" :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productName" label="面料名称" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productNo" label="面料编号" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.price" label="单价" label-width="150" :clearable="false" disabled
+								:required="false" type="text"></u-field>
+							<u-field v-model="editRow.coloringNo" label="缸号" placeholder="请输入缸号" label-width="150"
+								:clearable="false" :required="false" type="text"></u-field>
 							<u-table>
+								<u-tr>
+									<u-th>单匹重量</u-th>
+									<u-th>匹数</u-th>
+								</u-tr>
+								<view v-for="(item,index) in tempExchangeRate" :key="index">
 									<u-tr>
-										<u-th>单匹重量</u-th>
-										<u-th>匹数</u-th>
+										<u-td>
+											<view>
+												<u-number-box :min="1" align="center" v-model="item.exchangeRate">
+												</u-number-box>
+											</view>
+										</u-td>
+										<u-td>
+											<view>
+												<u-number-box :min="1" align="center"
+													v-model="item.quantityByAssistant"></u-number-box>
+											</view>
+										</u-td>
 									</u-tr>
-									<view v-for="(item,index) in tempExchangeRate" :key="index">
-										<u-tr>
-											<u-td>
-												<view>
-													<u-number-box :min="1" align="center" v-model="item.exchangeRate"></u-number-box>
-												</view>
-											</u-td>
-											<u-td>
-												<view>
-													<u-number-box :min="1" align="center" v-model="item.quantityByAssistant"></u-number-box>
-												</view>
-											</u-td>
-										</u-tr>
-									</view>
-								</u-table>
+								</view>
+							</u-table>
 						</u-cell-group>
 						<view class="close-btn">
 							<u-button @tap="addLine" size="medium" type="warning">添加</u-button>
@@ -216,27 +231,28 @@
 					</view>
 				</view>
 			</u-popup>
-			
-			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true" @close="seeShow = false">
+
+			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true"
+				@close="seeShow = false">
 				<view class="u-demo-wrap">
 					<view style="margin-top: 20rpx;margin-bottom: 20rpx;">
 						<u-cell-group>
 							<u-table>
+								<u-tr>
+									<u-th>单匹重量</u-th>
+									<u-th>匹数</u-th>
+								</u-tr>
+								<view v-for="(item,index) in seeRow.exchangeRate" :key="index">
 									<u-tr>
-										<u-th>单匹重量</u-th>
-										<u-th>匹数</u-th>
+										<u-td>
+											{{seeRow.exchangeRate[index]}}
+										</u-td>
+										<u-td>
+											{{seeRow.quantityByAssistant[index]}}
+										</u-td>
 									</u-tr>
-									<view v-for="(item,index) in seeRow.exchangeRate" :key="index">
-										<u-tr>
-											<u-td>
-												{{seeRow.exchangeRate[index]}}
-											</u-td>
-											<u-td>
-												{{seeRow.quantityByAssistant[index]}}
-											</u-td>
-										</u-tr>
-									</view>
-								</u-table>
+								</view>
+							</u-table>
 						</u-cell-group>
 					</view>
 				</view>
@@ -303,7 +319,7 @@
 			}
 		},
 		onShow() {
-			let that = this   
+			let that = this
 			uni.getStorage({
 				key: 'addOther-material',
 				success(res) {
@@ -326,10 +342,10 @@
 						clickChecked: true
 					}
 					let only = res.data.productNo + '-' + res.data.color + '-' + res.data.specification
-					if(that.tempMaterialList.indexOf(only) > -1) {
+					if (that.tempMaterialList.indexOf(only) > -1) {
 						let index = that.tempMaterialList.indexOf(only)
-						that.materialList.splice(index,1)
-						that.tempMaterialList.splice(index,1)
+						that.materialList.splice(index, 1)
+						that.tempMaterialList.splice(index, 1)
 					}
 					that.tempMaterialList.push(only)
 					that.materialList.push(a)
@@ -338,6 +354,7 @@
 					});
 				}
 			})
+			
 			uni.getStorage({
 				key: 'add-material',
 				success(res) {
@@ -360,10 +377,10 @@
 						clickChecked: true
 					}
 					let only = res.data.productNo + '-' + res.data.color + '-' + res.data.specification
-					if(that.tempMaterialList.indexOf(only) > -1) {
+					if (that.tempMaterialList.indexOf(only) > -1) {
 						let index = that.tempMaterialList.indexOf(only)
-						that.materialList.splice(index,1)
-						that.tempMaterialList.splice(index,1)
+						that.materialList.splice(index, 1)
+						that.tempMaterialList.splice(index, 1)
 					}
 					that.tempMaterialList.push(only)
 					that.materialList.push(a)
@@ -372,6 +389,7 @@
 					});
 				}
 			})
+			
 			uni.getStorage({
 				key: 'selectStockInSupplierByAdd',
 				async success(res) {
@@ -393,21 +411,13 @@
 					});
 				}
 			})
+			
 			uni.getStorage({
-				key: 'selectStockInWarehouseByAdd',
+				key: 'in-add-selectCommand',
 				success(res) {
-					console.log('res')
-					console.log(res)
-					// let textStr = []
-					// let textId = []
-					// for (var i = 0; i < res.data.length; i++) {
-					// 	textStr.push(res.data[i].name)
-					// 	textId.push(res.data[i].id)
-					// }
-					that.warehouseName = res.data.name
-					that.warehouseId = res.data.id
+					that.arrivalNo = res.data.no
 					uni.removeStorage({
-						key: 'selectStockInWarehouseByAdd'
+						key: 'in-add-selectCommand'
 					});
 				}
 			})
@@ -442,7 +452,7 @@
 			},
 			toDel(index) {
 				console.log('执行了')
-				this.materialList.splice(index,1)
+				this.materialList.splice(index, 1)
 			},
 			addLine() {
 				console.log(this.tempExchangeRate)
@@ -455,9 +465,10 @@
 				let arr = []
 				let finalData = []
 				for (var i = 0; i < this.tempExchangeRate.length; i++) {
-					if(arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
+					if (arr.indexOf(this.tempExchangeRate[i].exchangeRate) > -1) {
 						let index = arr.indexOf(this.tempExchangeRate[i].exchangeRate)
-						finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this.tempExchangeRate[i].quantityByAssistant
+						finalData[index].quantityByAssistant = finalData[index].quantityByAssistant + this
+							.tempExchangeRate[i].quantityByAssistant
 					} else {
 						finalData.push(this.tempExchangeRate[i])
 						arr.push(this.tempExchangeRate[i].exchangeRate)
@@ -474,10 +485,13 @@
 				this.editShow = false
 			},
 			purchaseClick() {
-				console.log(this.sourceType)
-				if(!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
+				uni.navigateTo({
+					url: 'material-select?supplierNames=' + this.arrivalNo
+				})
+				/* console.log(this.sourceType)
+				if (!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
 					this.purchaseOrderShow = true
-				}
+				} */
 			},
 			selectSupplier() {
 				uni.navigateTo({
@@ -485,7 +499,7 @@
 				})
 			},
 			calendarChange(e) {
-				let a = e.year+'-'+e.month+'-'+e.day+' '+e.hour+':'+e.minute+':'+e.second
+				let a = e.year + '-' + e.month + '-' + e.day + ' ' + e.hour + ':' + e.minute + ':' + e.second
 				console.log(a)
 				this.datetime = a
 				// this.datetime = e.result
@@ -523,14 +537,14 @@
 				this.tempQuantityByAssistant = []
 			},
 			async submit() {
-				if(this.$u.test.isEmpty(this.warehouseId)) {
+				if (this.$u.test.isEmpty(this.warehouseId)) {
 					uni.showToast({
 						title: '仓库不能为空',
 						icon: 'none'
 					})
 					return
 				}
-				if(this.sourceType === 0) {
+				if (this.sourceType === 0) {
 					let detailsArr = []
 					for (var i = 0; i < this.materialList.length; i++) {
 						for (var j = 0; j < this.materialList[i].exchangeRate.length; j++) {
@@ -570,14 +584,14 @@
 						ContentType: 'application/json;charset=UTF-8',
 						data: params
 					})
-					if(result === 200) {
+					if (result === 200) {
 						uni.showToast({
 							title: '开单成功',
 							icon: 'success'
 						})
 						setTimeout(function() {
 							uni.switchTab({
-								url:'../../index/index'
+								url: '../../index/index'
 							})
 						}, 800);
 					} else {
@@ -631,14 +645,14 @@
 						ContentType: 'application/json;charset=UTF-8',
 						data: params
 					})
-					if(result === 200) {
+					if (result === 200) {
 						uni.showToast({
 							title: '开单成功',
 							icon: 'success'
 						})
 						setTimeout(function() {
 							uni.switchTab({
-								url:'../../index/index'
+								url: '../../index/index'
 							})
 						}, 800);
 					} else {
@@ -680,11 +694,11 @@
 				}
 			},
 			toAddProduct() {
-				if(!this.$u.test.isEmpty(this.sourceType)) {
-					if(this.sourceType === 0) {
-						if(this.$u.test.isEmpty(this.arrivalNo) && !this.$u.test.isEmpty(this.supplierId) ) {
+				if (!this.$u.test.isEmpty(this.sourceType)) {
+					if (this.sourceType === 0) {
+						if (this.$u.test.isEmpty(this.arrivalNo) && !this.$u.test.isEmpty(this.supplierId)) {
 							uni.navigateTo({
-								url: 'material-add-add?supplierId='+this.supplierId
+								url: 'material-add-add?supplierId=' + this.supplierId
 							})
 						}
 					} else {
@@ -693,7 +707,7 @@
 						})
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -710,13 +724,15 @@
 		width: 100%;
 		padding: 0 17%;
 	}
+
 	.my-iconfont {
 		font-size: 24rpx;
 	}
+
 	.text-blue {
 		color: #0081ff;
 	}
-	
+
 	.line-cla2 {
 		margin: 14rpx 0;
 	}
@@ -756,6 +772,7 @@
 		position: relative;
 		left: 470rpx;
 	}
+
 	.u-demo-wrap {
 		background-color: #ffffff;
 		width: 90%;

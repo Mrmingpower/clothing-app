@@ -5,7 +5,7 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 		    "path" : "pages/login/login",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "登录",
 				"navigationStyle": "custom",
@@ -21,169 +21,169 @@
 		}
 	    ,{
             "path" : "pages/stock-in/stockIn",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "入库订单",
                 "enablePullDownRefresh": true
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/stockInDetail",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "入库明细",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/stockInSearch",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "入库查询",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/selectSupplier",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择供应商",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/selectWarehouse",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/selectSort",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "设置排序",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/add/material-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "面料入库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/add/selectSupplierByAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择供应商",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/add/selectWarehouseByAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/add/material-add-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择面料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/add/material-add-addOther",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择面料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/accessoryAdd/accessoryAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "辅料入库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/accessoryAdd/selectSupplierByAccessoryAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择供应商",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/accessoryAdd/selectWarehouseByAccessoryAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/accessoryAdd/accessory-add-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择辅料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-in/accessoryAdd/accessory-add-addOther",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择辅料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/stockOut",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "出库订单",
                 "enablePullDownRefresh": true
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/stockOutSearch",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "出库查询",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/selectWarehouseOut",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
@@ -191,43 +191,43 @@
         }
         ,{
             "path" : "pages/stock-out/selectSortOut",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "设置排序",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/stockOutDetail",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "出库明细",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/add/material-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "面料出库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/add/selectWarehouseByAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/add/material-add-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择面料",
                 "enablePullDownRefresh": false
@@ -236,25 +236,25 @@
         }
 		,{
 		    "path" : "pages/stock-out/finishedProductAdd/finished-add-add",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择成品",
 		        "enablePullDownRefresh": false
 		    }
-
+		
 		}
         ,{
             "path" : "pages/stock-out/accessoryAdd/accessoryAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "辅料出库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/accessoryAdd/selectWarehouseByAccessoryAdd",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择仓库",
                 "enablePullDownRefresh": false
@@ -262,85 +262,85 @@
         },
 		{
 		    "path" : "pages/stock-out/finishedProductAdd/selectWarehouseByFinishedProductAdd",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择仓库",
 		        "enablePullDownRefresh": false
 		    }
-
+		    
 		},
 		{
 		    "path" : "pages/stock-out/finishedProductAdd/selectCustomers",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择客户",
 		        "enablePullDownRefresh": true
 		    }
-
+		    
 		}
 		,
 		{
 		    "path" : "pages/stock-out/finishedProductAdd/searchOrder",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "搜索订单",
 		        "enablePullDownRefresh": true
 		    }
-
+		    
 		}
         ,{
             "path" : "pages/stock-out/accessoryAdd/accessory-add-add",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "选择辅料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/mine/mine",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "我的",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/mine/personal",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "个人资料",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/auditStockOutDetail",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "审核出库",
                 "enablePullDownRefresh": false
             }
-
+            
         }
         ,{
             "path" : "pages/stock-out/auditStockOutDetailAccess",
-            "style" :
+            "style" :                                                                                    
             {
                 "navigationBarTitleText": "审核出库",
                 "enablePullDownRefresh": false
             }
-
+            
         },
 		{
 		    "path" : "pages/stock-out/finishedProductAdd/finishedProductAdd",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "成品出库",
 		        "enablePullDownRefresh": false
 		    }
-
+		    
 		}
         ,{
             "path" : "pages/stock-out/add/material-selectCommand",
@@ -358,16 +358,7 @@
 		        "navigationBarTitleText": "成品入库",
 		        "enablePullDownRefresh": false
 		    }
-		
-		},
-		{
-		    "path" : "pages/stock-in/finishedProductAdd/selectWarehouseByFinishedProductAdd",
-		    "style" :
-		    {
-		        "navigationBarTitleText": "选择仓库",
-		        "enablePullDownRefresh": false
-		    }
-		
+
 		},
 		{
 		    "path" : "pages/stock-in/finishedProductAdd/finished-add-add",
@@ -376,7 +367,7 @@
 		        "navigationBarTitleText": "成品入库",
 		        "enablePullDownRefresh": false
 		    }
-		
+
 		}
     ],
 	"globalStyle": {

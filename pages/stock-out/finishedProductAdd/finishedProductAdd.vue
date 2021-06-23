@@ -524,12 +524,9 @@
 			toAddProduct() {
 				if (this.sourceType ===2 && this.warehouseName !=='') {
 					uni.navigateTo({
-						url: 'finished-add-add'
+						url: 'finished-add-add?warehouseId=' + this.warehouseId
 					});
-					uni.setStorage({
-						key:warehouseId,
-						// data:
-					})
+					
 				}
 
 			}

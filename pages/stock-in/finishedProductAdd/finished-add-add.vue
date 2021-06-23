@@ -17,6 +17,8 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
+							<text class="textnum_cla">{{alNum}}</text>
+							<u-icon  style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
 								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
@@ -58,16 +60,8 @@
 					<view class="price-content">
 						<text class="sign">¥</text>
 						<text class="price">{{ settlePricee }}</text>
-						<!-- <u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
-							size="35"></u-icon> -->
 					</view>
 					<view class="inventory">
-						<!-- <view style="display: inline;">成本价:
-							<block v-for="(item, index) in resultData">
-								<text v-if="index === 0"
-									style="text-decoration: line-through;">{{'￥'+item.price}}</text>
-							</block>
-						</view> -->
 						<view style="display: inline;margin-left: 50rpx;">货号:
 							<block v-for="(item, index) in resultData">
 								<text v-if="index === 0">{{item.productNo}}</text>
@@ -135,17 +129,6 @@
 				</view>
 			</view>
 		</u-popup>
-	<!-- 	<u-popup v-model="showw" mode="center" length="60%" >
-			<view class="importValue">
-				<view class="inputPrice">
-					<text class="provisionalPrice">请输入临时价格</text>
-				</view>
-				<u-input v-model="settlePricee" style="width: 95%;margin: 0 auto;" type="text" :border="true" />
-				<view class="mt20">
-					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
-				</view>
-			</view>
-		</u-popup> -->
 	</view>
 </template>
 
@@ -185,7 +168,8 @@
 				showw: false,
 				settlePricee: '',
 				show: false,
-				alNum:0
+				alNum:0,
+				resultData:''
 			}
 		},
 		onLoad(e) {
@@ -216,17 +200,6 @@
 					a = a + this.specList[i].num 
 				}
 				this.colorArr[this.temp_colorIndex].allNum = a
-				// let spec_list = []
-				// for (var i = 0; i < this.specList.length; i++) {
-				// 	spec_list.push({
-				// 		checked: this.specList[i].checked,
-				// 		specDisabled: this.specList[i].specDisabled,
-				// 		num: this.specList[i].num,
-				// 		specId: this.specList[i].specId,
-				// 		specName: this.specList[i].specName,
-				// 		quantity: this.specList[i].quantity
-				// 	})
-				// }
 				let alNum = 0
 				for (var i = 0; i < this.colorArr.length; i++) {
 					alNum = alNum + this.colorArr[i].allNum
@@ -249,11 +222,17 @@
 					this.temp_colorIndex = index
 				})
 			},
-			submit() {
-				
+			submit(resultData) {
+				this.goodsShow = false
+				uni.setStorage({
+					key: 'out-add-product',
+					data: this.resultData,
+				})
 				uni.navigateBack({
 					url: 'finishedProductAdd'
 				})
+				console.log(this.resultData)
+				console.log('===========================================')
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
@@ -262,7 +241,6 @@
 				console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
 				console.log(this.temp_color, "temp_color")
 			},
-			
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
@@ -270,7 +248,6 @@
 				console.log(result1)
 				console.log('=====================================')
 				this.settlePricee = result1[0].price
-				// this.specList = result1[0].productSkuIdWithSpecificationVOList
 				this.resultData = result1
 				this.goodsShow = true
 				let colorArr = []
@@ -289,12 +266,8 @@
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-				// this.colorArr = result1
-				// this.dataList = result1
-				// console.log('item')
-				// console.log(result1)
-				// console.log(result1[0].color)
-				// console.log(this.specList)
+				console.log(this.resultData)
+				console.log("======================================")
 			},
 			async getData() {
 				let result = await this.$myRequest({
@@ -316,6 +289,19 @@
 		height: 100%;
 		width: 100%;
 		background-color: #f1f2f1;
+	}
+	.textnum_cla{
+		border: 1px solid #ffffff;
+		border-radius: 30rpx;
+		width: 50rpx;
+		height: 50rpx;
+		background-color: #ff0000;
+		color: #ffffff; 
+		text-align: center;
+		font-size: 35rpx;
+		position: absolute;
+		right: 20rpx;
+		top: 20rpx;
 	}
 	.all_orders_1 {
 		white-space: normal;
@@ -605,7 +591,9 @@
 		font-size: 22upx;
 		line-height: 23upx;
 	}
-	
+	.all_orders_5{
+		position: relative;
+	}
 	.all_orders_1 .orders .item .all_orders_6 {
 		white-space: normal;
 		width: 113upx;

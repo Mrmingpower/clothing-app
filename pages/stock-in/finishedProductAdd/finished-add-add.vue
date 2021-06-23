@@ -17,6 +17,8 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
+							<text class="textnum_cla">{{alNum}}</text>
+							<u-icon  style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
 								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
@@ -58,16 +60,8 @@
 					<view class="price-content">
 						<text class="sign">¥</text>
 						<text class="price">{{ settlePricee }}</text>
-						<u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
-							size="35"></u-icon>
 					</view>
-					<!-- <view class="inventory">
-						<view style="display: inline;">成本价:
-							<block v-for="(item, index) in resultData">
-								<text v-if="index === 0"
-									style="text-decoration: line-through;">{{'￥'+item.price}}</text>
-							</block>
-						</view>
+					<view class="inventory">
 						<view style="display: inline;margin-left: 50rpx;">货号:
 							<block v-for="(item, index) in resultData">
 								<text v-if="index === 0">{{item.productNo}}</text>
@@ -78,13 +72,13 @@
 								<text v-if="index === 0">{{item.productName}}</text>
 							</block>
 						</view>
-					</view> -->
-					<!-- <view class="choose">
+					</view>
+					 <view class="choose">
 						已选:
-						<block v-for="(item, index) in colorList">
-							<text v-if="item.checked">{{item.colorName}}</text>
+						<block v-for="(item, index) in colorArr">
+							<text v-if="item.checked">{{item.color}}</text>
 						</block>
-					</view> -->
+					</view>
 					<view class="inventory">
 						
 					</view>
@@ -119,7 +113,7 @@
 				<view class="bottomm">
 					<text class="pricee fill">
 					    <text class="sml">合计:</text>
-					    ￥{{ settlePricee }}
+					    ￥{{ alNum*settlePricee }}
 					</text>
 					<u-button
 					    throttle-time="2000"
@@ -132,17 +126,6 @@
 					>
 					    确定
 					</u-button>
-				</view>
-			</view>
-		</u-popup>
-		<u-popup v-model="showw" mode="center" length="60%" >
-			<view class="importValue">
-				<view class="inputPrice">
-					<text class="provisionalPrice">请输入临时价格</text>
-				</view>
-				<u-input v-model="settlePricee" style="width: 95%;margin: 0 auto;" type="text" :border="true" />
-				<view class="mt20">
-					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
 				</view>
 			</view>
 		</u-popup>
@@ -184,7 +167,9 @@
 				temp_colorIndex: 0,
 				showw: false,
 				settlePricee: '',
-				show: false
+				show: false,
+				alNum:0,
+				resultData:''
 			}
 		},
 		onLoad(e) {
@@ -193,10 +178,6 @@
 			this.getData();
 		},
 		methods: {
-			editSettlePrice() {
-				this.settlePricee = this.unitPrice
-				this.showw = true
-			},
 			initData() {
 				this.finished = false
 				this.pageNo = 0
@@ -209,8 +190,6 @@
 			popClose() {
 				this.allMap = new Map()
 				console.log('弹出关闭')
-				this.settlePricee = ''	
-				console.log(this.settlePricee)
 			},
 			delQuery() {
 			
@@ -221,23 +200,12 @@
 					a = a + this.specList[i].num 
 				}
 				this.colorArr[this.temp_colorIndex].allNum = a
-				// let spec_list = []
-				// for (var i = 0; i < this.specList.length; i++) {
-				// 	spec_list.push({
-				// 		checked: this.specList[i].checked,
-				// 		specDisabled: this.specList[i].specDisabled,
-				// 		num: this.specList[i].num,
-				// 		specId: this.specList[i].specId,
-				// 		specName: this.specList[i].specName,
-				// 		quantity: this.specList[i].quantity
-				// 	})
-				// }
-				// let alNum = 0
-				// for (var i = 0; i < this.colorList.length; i++) {
-				// 	alNum = alNum + this.colorList[i].allNum
-				// }
-				// this.alNum = alNum
-				// this.allMap.set(this.temp_colorIndex,spec_list)
+				let alNum = 0
+				for (var i = 0; i < this.colorArr.length; i++) {
+					alNum = alNum + this.colorArr[i].allNum
+				}
+				this.alNum = alNum
+				this.allMap.set(this.temp_colorIndex)
 				
 			},
 			labelBtn(item, index) {
@@ -254,18 +222,17 @@
 					this.temp_colorIndex = index
 				})
 			},
-			onSure() {
-				if(this.$u.test.isEmpty(this.settlePricee)) {
-					this.$refs.uToast.show({
-						title: '不能为空',
-						type: 'error',
-						icon: false
-					})
-					return
-				}
-				
-				// this.unitPrice = this.settlePricee
-				this.showw = false
+			submit(resultData) {
+				this.goodsShow = false
+				uni.setStorage({
+					key: 'out-add-product',
+					data: this.resultData,
+				})
+				uni.navigateBack({
+					url: 'finishedProductAdd'
+				})
+				console.log(this.resultData)
+				console.log('===========================================')
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
@@ -279,8 +246,9 @@
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
 				})
 				console.log(result1)
-				// this.specList = result1[0].productSkuIdWithSpecificationVOList
-				// this.resultData = result1
+				console.log('=====================================')
+				this.settlePricee = result1[0].price
+				this.resultData = result1
 				this.goodsShow = true
 				let colorArr = []
 				let specArr = []
@@ -298,12 +266,8 @@
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-				// this.colorList = result1
-				// this.dataList = result1
-				// console.log('item')
-				// console.log(result1)
-				// console.log(result1[0].color)
-				// console.log(this.specList)
+				console.log(this.resultData)
+				console.log("======================================")
 			},
 			async getData() {
 				let result = await this.$myRequest({
@@ -325,6 +289,19 @@
 		height: 100%;
 		width: 100%;
 		background-color: #f1f2f1;
+	}
+	.textnum_cla{
+		border: 1px solid #ffffff;
+		border-radius: 30rpx;
+		width: 50rpx;
+		height: 50rpx;
+		background-color: #ff0000;
+		color: #ffffff; 
+		text-align: center;
+		font-size: 35rpx;
+		position: absolute;
+		right: 20rpx;
+		top: 20rpx;
 	}
 	.all_orders_1 {
 		white-space: normal;
@@ -614,7 +591,9 @@
 		font-size: 22upx;
 		line-height: 23upx;
 	}
-	
+	.all_orders_5{
+		position: relative;
+	}
 	.all_orders_1 .orders .item .all_orders_6 {
 		white-space: normal;
 		width: 113upx;
@@ -641,5 +620,9 @@
 		line-height: 80rpx;
 		font-size: 36rpx;
 	}
-	
+	.choose{
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		margin-bottom: 50rpx;
+	}
 </style>

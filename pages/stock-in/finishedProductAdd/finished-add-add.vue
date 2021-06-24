@@ -17,8 +17,8 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
-							<text class="textnum_cla">{{alNum}}</text>
-							<u-icon  style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
+							<text class="textnum_cla" v-show="item_orders.checked === true">{{alNum}}</text>
+							<u-icon   v-show="item_orders.checked === true" style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
 								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
@@ -73,7 +73,7 @@
 							</block>
 						</view>
 					</view>
-					 <view class="choose">
+					<view class="choose">
 						已选:
 						<block v-for="(item, index) in colorArr">
 							<text v-if="item.checked">{{item.color}}</text>
@@ -96,6 +96,7 @@
 					</radio-group>
 				</view>
 				<view class="item-title">{{ '规格' }}</view>
+				<view class="stock">{{ '库存' }}</view>
 				<view class="item-wrapper u-border-bottom" v-for="(item,index) in specList">
 					<view style="display: inherit;margin: 10rpx;">
 						<view style="margin-top: 30rpx;margin-left: 50rpx;">
@@ -105,7 +106,7 @@
 							{{item.quantity || 0}}
 						</view>
 						<view style="margin-top: 30rpx;" class="num_cla">
-							<u-number-box :disabled-input="true"  v-model="item.num" @change="valChange"></u-number-box>
+							<u-number-box   v-model="item.num" @change="valChange"></u-number-box>
 						</view>
 					</view>
 				</view>
@@ -169,7 +170,9 @@
 				settlePricee: '',
 				show: false,
 				alNum:0,
-				resultData:''
+				resultData:'',
+				allMap: new Map(),
+				
 			}
 		},
 		onLoad(e) {
@@ -205,8 +208,16 @@
 					alNum = alNum + this.colorArr[i].allNum
 				}
 				this.alNum = alNum
-				this.allMap.set(this.temp_colorIndex)
-				
+				// let spec_list = []
+				// for (var i = 0; i < this.specList.length; i++) {
+				// 	if (this.specList[i].num > 0) {						
+				// 		spec_list.push({
+				// 			...this.specList[i]
+				// 		})
+				// 	}
+				// }
+				// this.allMap.set(this.temp_colorIndex, spec_list)
+				// console.log(spec_list)
 			},
 			labelBtn(item, index) {
 				console.log('item===========')
@@ -222,17 +233,35 @@
 					this.temp_colorIndex = index
 				})
 			},
-			submit(resultData) {
+			submit() {
+				let Arr = [];
+				let that = this;
+				
+				let productArr = []
+				for (var i = 0; i < this.colorArr.length; i++) {
+					if(this.colorArr[i].allNum > 0) {
+						productArr.push({
+							colorId: this.colorArr[i].colorId,
+							color: this.colorArr[i].color,
+							checked: false,
+							allNum: this.colorArr[i].allNum,
+							spec: this.specArr[i],
+							productName: this.resultData[i].productName,
+							productNo: this.resultData[i].productNo,
+							settlePricee:this.resultData[0].price
+						})
+					}
+				}
+				console.log(productArr)
+				// return
 				this.goodsShow = false
 				uni.setStorage({
 					key: 'out-add-product',
-					data: this.resultData,
+					data: productArr,
 				})
 				uni.navigateBack({
 					url: 'finishedProductAdd'
 				})
-				console.log(this.resultData)
-				console.log('===========================================')
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
@@ -246,6 +275,7 @@
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
 				})
 				console.log(result1)
+				console.log(result1[0].specifications)
 				console.log('=====================================')
 				this.settlePricee = result1[0].price
 				this.resultData = result1
@@ -266,8 +296,6 @@
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-				console.log(this.resultData)
-				console.log("======================================")
 			},
 			async getData() {
 				let result = await this.$myRequest({
@@ -389,6 +417,7 @@
 	}
 	.item-title{
 		margin-left: 20rpx;
+		display: inline-block;
 	}
 	.selectBox {
 		background: #ffaa00 !important;
@@ -624,5 +653,9 @@
 		margin-top: 20rpx;
 		margin-left: 20rpx;
 		margin-bottom: 50rpx;
+	}
+	.stock{
+		display: inline-block;
+		margin-left: 250rpx;
 	}
 </style>

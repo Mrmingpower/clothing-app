@@ -111,6 +111,75 @@
 					</view>
 				</u-card>
 			</view>
+			
+			
+			<view>
+				<u-card  style="margin-top: 15rpx;" margin="0rpx,10rpx">
+					<view class="" slot="body">
+						
+						<view style="float: right;position: relative;top: -95rpx; font-weight: bold;">
+							<!-- <text>总数量：{{ totalNum }}</text> -->
+							<!-- <text style="margin-left: 20rpx;">总价格：{{ totalPrice }}</text> -->
+						</view>
+						<view class="u-border-bottom" style="padding-bottom: 20rpx;" :index="index"
+							v-for="(item,index) in finishedAddAddInfoArr">
+							<view>
+								<view style="font-weight: bold;">{{item.productName}}</view>
+								<view style="font-weight: bold;position: absolute;right: 0rpx;top: 3rpx;">
+									<!-- <text>总数量：{{ item.totalNum }}</text> -->
+									<text style="margin-left: 20rpx;">总金额：{{ item.salePrice*item.num }}</text>
+									<u-icon @click="changeAllChecked(index)" style="margin-left: 30rpx;" name="arrow-down"
+										color="#565656" size="35"></u-icon>
+								</view>
+							</view>
+							<view v-for="(itemm,indexx) in item.productSkuIdWithSpecificationVOList" v-if="item.allChecked === true">
+								<view v-if="itemm.num == 0" class="data_cla">
+									<u-icon v-if="removeChecked === true" @click="toRemove(index,indexx)"
+										name="minus-circle" color="#ff0004" size="28"></u-icon>
+									<text>{{item.color}}</text>
+									<text>{{itemm.specification}}</text>
+									<text>{{itemm.num}}</text>
+									<text>￥{{itemm.price}}</text>
+									<u-icon  @click="itemm.editChecked = !itemm.editChecked"
+										name="arrow-down" color="#565656" size="28"></u-icon>
+								</view>
+								<view v-if="itemm.num == 0" v-show="itemm.editChecked"
+									style="display: block;background-color: #f5f4f9;">
+									<view class="data_cla">
+										<text style="margin-left: 35px;">数量</text>
+										<text>单价</text>
+										<text style="margin-right: 75rpx;">合计</text>
+									</view>
+									<view class="data_cla">
+										<view class="input_cla" style="position: relative;">
+											<u-input @input="inputchange(index)" maxlength="8" :clearable="false"
+												:custom-style="customStyle" v-model="itemm.num"></u-input>
+											<u-icon @click="numIconClick(index,indexx)"
+												style="position: absolute;right: 10rpx;top:25rpx;" name="plus-circle"
+												color="#000000" size="28"></u-icon>
+										</view>
+										<view class="input_cla" style="position: relative;">
+											<u-input @input="inputchangee(index,indexx)" maxlength="8" :clearable="false"
+												:custom-style="customStyle" v-model="itemm.price"></u-input>
+											<u-icon @click="priceIconClick(index,indexx)"
+												style="position: absolute;right: 10rpx;top:25rpx;" name="plus-circle"
+												color="#000000" size="28"></u-icon>
+										</view>
+										<view class="input_cla">
+											<u-input :clearable="false" disabled :custom-style="customStyle"
+												v-model="itemm.price * itemm.num">
+												{{itemm.price * itemm.num}}</u-input>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+						
+					</view>
+				</u-card>
+			</view>
+			
+			
 			<view style="background-color: #FFFFFF;" class="u-border-top" >
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
 					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" color="#00aaff"></u-icon>
@@ -213,6 +282,8 @@
 	export default {
 		data() {
 			return {
+				finishedAddAddInfoArr: [],
+				
 				quantity: 0,
 				tempRow: '',
 				quantityShow: false,
@@ -310,6 +381,19 @@
 					})
 				}
 			})
+			
+			uni.getStorage({
+				key:'out-finishedProduct',
+				success(res){
+					
+					that.finishedAddAddInfoArr=res.data
+					console.log(that.finishedAddAddInfoArr)
+					uni.removeStorage({
+						key:'out-finishedProduct'
+					})
+				}
+			})
+			
 			uni.getStorage({
 				key:'out-add-order',
 				success(res){
@@ -348,6 +432,11 @@
 			})
 		},
 		methods: {
+			
+			changeAllChecked(index) {
+				this.finishedAddAddInfoArr[index].allChecked = !this.finishedAddAddInfoArr[index].allChecked
+			},
+			
 			toDel(index) {
 				console.log('执行了')
 				this.productList.splice(index, 1)
@@ -469,7 +558,10 @@
 				})
 			},
 			sourceTypeClick() {
+				
 				this.sourceTypeShow = true
+				this.productList=[];
+				
 			},
 			async sourceTypeConfirm(e) {
 				this.sourceTypeName = e[0].label

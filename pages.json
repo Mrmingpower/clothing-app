@@ -261,6 +261,15 @@
             }
         },
 		{
+		    "path" : "pages/stock-in/finishedProductAdd/selectWarehouseByFinishedProductAdd",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择仓库",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "pages/stock-out/finishedProductAdd/selectWarehouseByFinishedProductAdd",
 		    "style" :                                                                                    
 		    {

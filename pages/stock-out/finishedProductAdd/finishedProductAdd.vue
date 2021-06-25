@@ -113,41 +113,45 @@
 			</view>
 
 
-			<view v-for="(item,index) in finishedAddAddInfoArr" :index="index" :key="index">
-				<u-card :title="item.productName" :sub-title="item.color" title-size="40" border-radius="0"
-					:border="false">
-					<view slot="body" class="main">
+			<view v-for="(item,index) in productArr" :index="index" :key="index">
+				<u-card :title="item.productNo" :sub-title="item.color" title-size="40" border-radius="0"
+					:border="false" @head-click="headClick(item)">
+					<view slot="body" class="main" v-if="item.showw">
 						<view style="margin-bottom: 20rpx;" class="No">
-							<text>编号</text>
-							<text style="margin-left: 100rpx;">{{item.productNo}}</text>
+							<text>品名</text>
+							<text style="margin-left: 50rpx;">{{item.productName}}</text>
+							<text style="margin-left: 100rpx">单价</text>
+							<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;">
+								{{item.settlePricee}}
+							</text>
 						</view>
 						<view class="Specifications">
 							<text>规格</text>
-							<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
-								<text
-									style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.specification}}</text>
+							<view v-for="(itemm,index) in item.spec ">
+								<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;">
+									{{itemm.specification}}
+								</text>
 							</view>
 						</view>
 						<view class="number">
 							<text>数量</text>
-							<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
-								<text
-									style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.num}}</text>
+							<view v-for="(itemm,index) in item.spec ">
+								<text style="margin-left: 50rpx;width: 30rpx;
+								text-align: center;display: inline-block;" @tap="toEdit(itemm)">
+									{{itemm.num}}
+								</text>
 							</view>
 						</view>
-						<view class="unitPrice">
-							<text>单价</text>
-							<text
-								style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{item.settlePricee}}</text>
+						<view class="total">
+							<text style="color:#000000;font-size: 32rpx;float: left;">合计:<text
+									style="color: #FF0000;margin-left: 40rpx" v-model="allNum">{{item.allNum}}</text></text>
+							<text style="color:#000000;font-size: 32rpx;float: right;">金额:
+							<text style="color: #FF0000;" >￥{{total[index]}}</text>
+									</text>
 						</view>
-
 						<view class="footer-box">
-							<view class="my-iconfont" @tap="toEdit(item)">
-								<u-icon name="more-circle" color="#2979ff" size="50" label="修改" label-color="#2979ff">
-								</u-icon>
-							</view>
 							<view class="my-iconfont" @tap="toDel(index)">
-								<u-icon name="close-circle" color="#e54d42" size="50" label="删除" label-color="#e54d42">
+								<u-icon name="close-circle" color="#e54d42" size="50" label="" label-color="#e54d42">
 								</u-icon>
 							</view>
 						</view>
@@ -259,8 +263,9 @@
 	export default {
 		data() {
 			return {
+				productArr: [],
 				finishedAddAddInfoArr: [],
-
+				tempfinishedAddAddInfoArr: [],
 				quantity: 0,
 				tempRow: '',
 				quantityShow: false,
@@ -312,10 +317,10 @@
 				quantity: [],
 				seeShow: false,
 				seeRow: '',
-				"customerId": 0,
-				"date": "",
-				"description": "",
-				"details": [{
+				customerId: 0,
+				date: "",
+				description: "",
+				details: [{
 					"cost": 0,
 					"detailDescription": "",
 					"orderDetailId": 0,
@@ -323,12 +328,14 @@
 					"quantity": '',
 					"skuId": 0
 				}],
-				"orderId": 0,
-				"orderNo": "",
-				"payAccountId": 0,
-				"payStyle": 0,
-				"principalName": "",
-				"warehouseId": 0,
+				orderId: 0,
+				orderNo: "",
+				payAccountId: 0,
+				payStyle: 0,
+				principalName: "",
+				warehouseId: 0,
+				total: [],
+				allNum: 0
 			}
 		},
 		onShow() {
@@ -359,9 +366,23 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-
-					that.finishedAddAddInfoArr = res.data
-					console.log(that.finishedAddAddInfoArr)
+					for (var i = 0; i < res.data.length; i++) {
+						that.productArr.push({
+							productName: res.data[i].productName ,
+							productNo: res.data[i].productNo ,
+							settlePricee: res.data[i].settlePricee,
+							spec: res.data[i].spec,
+							color: res.data[i].color,
+							showw: true,
+							allNum: res.data[i].allNum
+						})
+					}
+					console.log(this.productArr)
+					
+					for (var i = 0; i < res.data.length; i++) {
+						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
+					}
+					
 					uni.removeStorage({
 						key: 'out-finishedProduct'
 					})
@@ -399,6 +420,18 @@
 						color: res.data.color || '',
 						show: true
 					})
+
+					// for (var i = 0; i < res.data.length; i++) {
+					// 	that.productArr.push({
+					// 		productName: res.data[i].productName || '',
+					// 		productNo: res.data[i].productNo || '',
+					// 		settlePricee: res.data[i].settlePricee,
+					// 		spec: res.data[i].spec || '',
+					// 		color: res.data[i].color,
+					// 		showw: true,
+					// 		allNum: res.data[i].allNum
+					// 	})
+					// }
 					uni.removeStorage({
 						key: 'out-add-product'
 					});
@@ -407,9 +440,6 @@
 		},
 		methods: {
 
-			changeAllChecked(index) {
-				this.finishedAddAddInfoArr[index].allChecked = !this.finishedAddAddInfoArr[index].allChecked
-			},
 
 			toDel(index) {
 				console.log('执行了')
@@ -548,13 +578,36 @@
 				this.details = []
 			},
 			async submit() {
-				if (this.$u.test.isEmpty(this.warehouseId)) {
+				if (this.$u.test.isEmpty(this.warehouseName)) {
 					uni.showToast({
 						title: '仓库不能为空',
 						icon: 'none'
 					})
 					return
 				}
+				if (this.$u.test.isEmpty(this.sourceName)) {
+					uni.showToast({
+						title: '出库类型不能为空',
+						icon: 'none'
+					})
+					return
+				}
+				if (this.$u.test.isEmpty(this.customerIdLabel)) {
+					uni.showToast({
+						title: '客户ID不能为空',
+						icon: 'none'
+					})
+					return
+				}
+				if (this.$u.test.isEmpty(this.pickOrderIdLabel)) {
+					uni.showToast({
+						title: '销售单不能为空',
+						icon: 'none'
+					})
+					return
+				}
+
+
 				let params = {
 					date: this.date,
 					sourceTypeName: this.sourceTypeName,
@@ -589,22 +642,23 @@
 			},
 			toAddProduct() {
 				if (this.sourceType === 2 && this.warehouseName !== '') {
-					if (this.finishedAddAddInfoArr != '') {
+					if (this.productArr != '') {
+						console.log(this.productArr)
 						uni.setStorage({
 							key: 'finishedProductAddTofinishedAdd',
-							data: this.finishedAddAddInfoArr
+							data: this.productArr
 						})
 						uni.navigateTo({
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
-					} else{
+					} else {
 						uni.navigateTo({
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
 					}
 				}
 			},
-			
+
 		}
 	}
 </script>
@@ -621,12 +675,14 @@
 		padding: 0 17%;
 	}
 
+
 	.my-iconfont {
 		color: #0081ff;
-		margin-left: -50rpx;
-		margin-top: 30rpx;
+		margin-left: 420rpx;
+		margin-top: -260rpx;
 		margin-bottom: -30rpx;
 	}
+
 
 	.text-blue {
 		color: #0081ff;
@@ -662,9 +718,7 @@
 		background-color: #fff;
 	}
 
-	.field_cla {
-		margin-left: -165rpx;
-	}
+
 
 	.saomiao_cla {
 		position: relative;
@@ -710,5 +764,11 @@
 		box-shadow: 0 0 10rpx 6rpx rgba(0, 0, 0, 0.1);
 		padding-bottom: constant(safe-area-inset-bottom);
 		padding-bottom: env(safe-area-inset-bottom);
+	}
+	.total {
+	
+		margin-top: 30rpx;
+		font-size: 30rpx;
+		color: #FF0000;
 	}
 </style>

@@ -4,7 +4,7 @@
 			style="position: fixed;width: 750rpx;z-index: 10074;background-color: #20a0ff;">
 			<view class="search-form round">
 				<text class="cuIcon-search"></text>
-				<input type="text" v-model="ipt" placeholder="商品名称/编号" confirm-type="search">
+				<input type="text" v-model="ipt" @confirm="toSearch" placeholder="商品名称/编号" confirm-type="search">
 				<u-icon class="icon_cla" v-if="ipt.length !== 0" @click="delQuery" name="close-circle" color="#e3e3e3"
 					size="30"></u-icon>
 				</input>
@@ -18,7 +18,7 @@
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
 							<!-- 购物车-->
-							<text class="textnum_cla" >{{alNum}}</text>
+							<text :="colorArr.allNum" class="textnum_cla">{{colorArr.allNum}}</text>
 							<u-icon style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"
 								name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
@@ -115,7 +115,8 @@
 							{{item.quantity || 0}}
 						</view>
 						<view style="margin-top: 30rpx;" class="num_cla">
-							<u-number-box :disabled-input="true" v-model="item.num" @change="valChange"></u-number-box>
+							<u-number-box :disabled-input="true" v-model="item.num" @change="valChange(index)">
+							</u-number-box>
 						</view>
 					</view>
 				</view>
@@ -126,23 +127,14 @@
 						￥{{ alNum*unitPrice }}
 					</text>
 					<u-button throttle-time="2000" size="medium" :ripple="true" ripple-bg-color="#FEBABD" shape="circle"
-						:customStyle="customStyle" @click="submit">
+						:customStyle="customStyle" @click="confirm">
 						确定
 					</u-button>
 				</view>
 			</view>
 		</u-popup>
-		<u-popup v-model="showw" mode="center" length="60%">
-			<view class="importValue">
-				<view class="inputPrice">
-					<text>请输入临时价格</text>
-				</view>
-				<u-input v-model="settlePricee" type="text" :border="true" />
-				<view class="mt20">
-					<u-button type="primary" :ripple="true" :plain="true" shape="circle" @click="onSure">确认</u-button>
-				</view>
-			</view>
-		</u-popup>
+		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
+
 	</view>
 </template>
 
@@ -150,7 +142,7 @@
 	export default {
 		data() {
 			return {
-				resultData:'',
+				resultData: '',
 				customStyle: {
 					color: '#fff',
 					backgroundColor: '#ffce06',
@@ -191,9 +183,9 @@
 			this.initData()
 			this.getData();
 		},
-		
+
 		onShow() {
-			let that=this
+			let that = this
 			uni.getStorage({
 				key: 'finishedProductAddTofinishedAdd',
 				success(res) {
@@ -204,35 +196,35 @@
 				}
 			})
 		},
-		
-		
-		methods: {
 
-			submit() {
-				let that=this
-				for (var i = 0; i < this.colorArr.length; i++) {
-					if(this.colorArr[i].allNum > 0) {
-						that.navigateToFinishedProductAddInfo.push({
-							colorId: this.colorArr[i].colorId,
-							color: this.colorArr[i].color,
-							checked: false,
-							allNum: this.colorArr[i].allNum,
-							spec: this.specArr[i],
-							productName: this.resultData[i].productName,
-							productNo: this.resultData[i].productNo,
-							settlePricee:this.resultData[0].price
-						})
-					}
-				}
-				
-				uni.setStorage({
-					key: 'out-finishedProduct',
-					data: this.navigateToFinishedProductAddInfo
-				})
-				uni.navigateBack({
-					url: 'finishedProductAdd'
-				})
+		async onReachBottom() {
+			if (parseInt(this.total) === this.list_orders.length) {
+				this.status = 'nomore'
+				return
+			}
+			this.status = 'loading'
+
+			await this.getData();
+
+
+		},
+
+		methods: {
+			popClose() {
+				console.log(this.alNum)
+				console.log('弹出关闭')
 			},
+
+			async loadmore() {
+				if (parseInt(this.total) === this.list_orders.length) {
+					this.status = 'nomore'
+					return
+				}
+				this.status = 'loading'
+				await this.getData()
+			},
+
+
 
 			initData() {
 				this.finished = false
@@ -252,6 +244,7 @@
 					a = a + this.specList[i].num
 				}
 				this.colorArr[this.temp_colorIndex].allNum = a
+				// this.colorArr[e].checked = true
 				// let spec_list = []
 				// for (var i = 0; i < this.specList.length; i++) {
 				// 	spec_list.push({
@@ -268,37 +261,50 @@
 					alNum = alNum + this.colorArr[i].allNum
 				}
 				this.alNum = alNum
-
+console.log(this.alNum)
 				// this.allMap.set(this.temp_colorIndex,spec_list)
 
 			},
-			labelBtn(item, index) {
-				console.log('item===========')
-				console.log(this.colorArr[index])
-				if (this.temp_colorIndex === index) {
-					console.log('重复了')
-					return
+
+			confirm() {
+				let that = this
+				for (var i = 0; i < this.colorArr.length; i++) {
+					if (this.colorArr[i].allNum > 0) {
+						this.navigateToFinishedProductAddInfo.push({
+							colorId: this.colorArr[i].colorId,
+							color: this.colorArr[i].color,
+							checked: false,
+							allNum: this.colorArr[i].allNum,
+							spec: this.specArr[i],
+							productName: this.resultData[i].productName,
+							productNo: this.resultData[i].productNo,
+							settlePricee: this.resultData[0].salePrice
+						})
+					}
 				}
-				this.colorArr[this.temp_colorIndex].checked = false
-				this.colorArr[index].checked = true
-				this.specList = this.specArr[index]
-				this.$nextTick(() => {
-					this.temp_colorIndex = index
+
+				uni.setStorage({
+					key: 'out-finishedProduct',
+					data: this.navigateToFinishedProductAddInfo
+				})
+				uni.navigateBack({
+					url: 'finishedProductAdd'
 				})
 			},
-			checkboxChange: function(e) {
-				this.temp_color = e.detail.value
-				console.log(e.detail.value)
-				console.log(e)
-				console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
-				console.log(this.temp_color, "temp_color")
-			},
+
+			// checkboxChange: function(e) {
+			// 	this.temp_color = e.detail.value
+			// 	console.log(e.detail.value)
+			// 	console.log(e)
+			// 	console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
+			// 	console.log(this.temp_color, "temp_color")
+			// },
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
 				})
 				console.log(result1)
-				
+
 				// this.specList = result1[0].productSkuIdWithSpecificationVOList
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
@@ -326,20 +332,52 @@
 				// console.log(result1)
 				// console.log(result1[0].color)
 				// console.log(this.specList)
-				
+
 			},
+
+			labelBtn(item, index) {
+				console.log('item===========')
+				console.log(this.colorArr[index])
+				if (this.temp_colorIndex === index) {
+					console.log('重复了')
+					return
+				}
+				this.colorArr[this.temp_colorIndex].checked = false
+				this.colorArr[index].checked = true
+				this.specList = this.specArr[index]
+				this.$nextTick(() => {
+					this.temp_colorIndex = index
+				})
+			},
+
+			async toSearch(e) {
+				if (this.$u.test.isEmpty(this.ipt)) {
+					this.isSearch = false
+				} else {
+					this.isSearch = true
+				}
+				console.log(this.ipt)
+				this.initData()
+				this.getData()
+			},
+
 			async getData() {
+				this.pageNo++;
 				let result = await this.$myRequest({
 					url: '/product-spu/search',
 					data: {
-						pageNo: 0,
+						pageNo: this.pageNo,
 						pageSize: 10,
+						productName: this.isSearch === true ? this.ipt : ''
 					}
 				})
 				console.log(result)
-				this.list_orders = result.items
-
-
+				this.list_orders = [...this.list_orders, ...result.items]
+				this.total = result.count;
+				if (this.list_orders.length == this.total) {
+					this.finished = true;
+					this.status = 'nomore'
+				}
 			},
 		}
 	}

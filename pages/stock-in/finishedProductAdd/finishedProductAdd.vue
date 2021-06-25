@@ -35,7 +35,7 @@
 							</view>
 							<view class="total">
 								<text style="color:#000000;font-size: 32rpx;float: left;">合计:<text style="color: #FF0000;margin-left: 40rpx">{{item.allNum}}</text></text>
-								<text style="color:#000000;font-size: 32rpx;float: right;">金额:<text style="color: #FF0000;">￥{{total}}</text></text>
+								<text style="color:#000000;font-size: 32rpx;float: right;">金额:<text style="color: #FF0000;">￥{{item.allNum*item.settlePricee}}</text></text>
 							</view>
 							<view class="footer-box">
 								<view class="my-iconfont" @tap="toDel(index)">
@@ -73,10 +73,10 @@
 		</view>
 		<u-popup v-model="show" mode="center" length="90%" :closeable="true" height="300rpx">
 			
-				<view style="text-align: center;" >
+				<view style="text-align: center;"  v-for="(item,index) in productArr" :index="index" :key="index" >
 					<text style="font-size: 30rpx;">请输入数量</text>
 					<u-input v-model="sp.num" :type="type" :border="border" style="margin-top: 40rpx;" />
-					<u-button @tap="submitPop" size="medium" type="primary" style="margin-top: 70rpx;">确定</u-button>
+					<u-button @tap="submitPop(item)" size="medium" type="primary" style="margin-top: 70rpx;">确定</u-button>
 				</view>
 			
 		</u-popup>
@@ -104,6 +104,8 @@
 				},
 				date: '',
 				description: '',
+				tempProductArr:[],
+				spec:[]
 			}
 		},
 		onShow() {
@@ -124,23 +126,31 @@
 			uni.getStorage({
 				key:'out-add-product',
 				success(res){
-					console.log(res)
-					for (var i = 0; i < res.data.length; i++) {
-						that.productArr.push({
-							productName:res.data[i].productName || '',
-							productNo:res.data[i].productNo || '',
-							settlePricee:res.data[i].settlePricee,
-							spec:res.data[i].spec || '',
-							color:res.data[i].color,
-							showw:true,
-							allNum:res.data[i].allNum
-						})
+					for (var j=0;j<res.data.length;j++){
+						let only = res.data[j].productNo + '-' + res.data[j].color
+						if (that.tempProductArr.indexOf(only) > -1) {
+							let index = that.tempProductArr.indexOf(only)
+							that.productArr[index].allNum = that.productArr[index].allNum + res.data[index].allNum
+							for (var s=0;s<that.productArr[index].spec.length;s++){
+								that.productArr[index].spec[s].num = that.productArr[index].spec[s].num + res.data[index].spec[s].num
+								console.log(that.productArr[index].spec[s].num)
+							}
+						}
+						else{
+							that.tempProductArr.push(only)
+							that.productArr.push({
+								productName:res.data[j].productName || '',
+								productNo:res.data[j].productNo || '',
+								settlePricee:res.data[j].settlePricee,
+								spec:res.data[j].spec || '',
+								color:res.data[j].color,
+								showw:true,
+								allNum:res.data[j].allNum
+							})
+						}
+						
 					}
-					
-					console.log('asdasdasdasdasdasdasdsadsadsadsadsadsadasdasd')
-					console.log(that.productArr)
 					this.settlePricee = res.data.settlePricee
-					this.total = this.allNumn * this.settlePricee
 					uni.removeStorage({
 						key: 'out-add-product'
 					});
@@ -158,7 +168,7 @@
 				item.showw = !item.showw
 				console.log('执行了')
 			},
-			submitPop() {
+			submitPop(item) {
 				if (!this.$u.test.digits(this.sp.num)) {
 					uni.showToast({
 						title: '只能输入整数',
@@ -167,17 +177,22 @@
 					this.sp.num = 0
 					return
 				}
-				
+				console.log(item)
+				console.log(this.sp.num)
+				this.allNum = this.sp.num + item.allNum
+				console.log(this.allNum)
 				this.show = false
 			},
 			toDel(index) {
 				console.log('执行了')
+				let that = this
 				this.productArr.splice(index, 1)
 			},
-			toEdit(item) {
+			toEdit(itemm) {
 				this.show = true
-				this.sp = item
-				
+				this.sp = itemm
+				console.log(this.sp.num)
+				console.log(itemm)
 			},
 			warehouseClick() {
 				uni.navigateTo({
@@ -186,9 +201,11 @@
 				console.log('选仓库')
 			},
 			toAddProduct() {
-				uni.navigateTo({
-					url: 'finished-add-add?warehouseId=' + this.warehouseId
-				});
+				if(this.warehouseName !==''){
+					uni.navigateTo({
+						url: 'finished-add-add?warehouseId=' + this.warehouseId
+					});
+				}
 			}
 		}
 	}

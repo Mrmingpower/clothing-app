@@ -208,16 +208,6 @@
 					alNum = alNum + this.colorArr[i].allNum
 				}
 				this.alNum = alNum
-				// let spec_list = []
-				// for (var i = 0; i < this.specList.length; i++) {
-				// 	if (this.specList[i].num > 0) {						
-				// 		spec_list.push({
-				// 			...this.specList[i]
-				// 		})
-				// 	}
-				// }
-				// this.allMap.set(this.temp_colorIndex, spec_list)
-				// console.log(spec_list)
 			},
 			labelBtn(item, index) {
 				console.log('item===========')

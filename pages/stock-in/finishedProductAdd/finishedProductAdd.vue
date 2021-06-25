@@ -12,36 +12,34 @@
 					<text style="font-size: 50rpx;">成品信息</text>
 				</view>
 				<view   v-for="(item,index) in productArr" :index="index" :key="index">
-					<u-card :title="item.productName" :sub-title="item.color" title-size="40" border-radius="0" :border="false">
-						<view slot="body" class="main">
+					<u-card :title="item.productNo" :sub-title="item.color" title-size="40" border-radius="0" :border="false"
+					@head-click="headClick(item)">
+						<view slot="body" class="main" v-if="item.showw">
 							<view style="margin-bottom: 20rpx;" class="No">
-								<text>编号</text>
-								<text style="margin-left: 100rpx;">{{item.productNo}}</text>
+								<text>品名</text>
+								<text style="margin-left: 50rpx;">{{item.productName}}</text>
+								<text style="margin-left: 100rpx" >单价</text>
+									<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;">{{item.settlePricee}}</text>
 								</view>
 							<view class="Specifications">
 								<text>规格</text>
-								<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
-									<text style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.specification}}</text>
+								<view v-for="(itemm,index) in item.spec " >
+									<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.specification}}</text>
 								</view>
 							</view>
 							<view  class="number" >
 								<text>数量</text>
-								<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
-									<text style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.num}}</text>
+								<view v-for="(itemm,index) in item.spec " >
+									<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;" @tap="toEdit(itemm)">{{itemm.num}}</text>
 								</view>
 							</view>
-							<view  class="unitPrice" >
-								<text>单价</text>
-									<text style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{item.settlePricee}}</text>
+							<view class="total">
+								<text style="color:#000000;font-size: 32rpx;float: left;">合计:<text style="color: #FF0000;margin-left: 40rpx">{{item.allNum}}</text></text>
+								<text style="color:#000000;font-size: 32rpx;float: right;">金额:<text style="color: #FF0000;">￥{{total}}</text></text>
 							</view>
-							
 							<view class="footer-box">
-								<view class="my-iconfont" @tap="toEdit(item)">
-									<u-icon name="more-circle" color="#2979ff" size="50" label="修改" label-color="#2979ff">
-									</u-icon>
-								</view>
 								<view class="my-iconfont" @tap="toDel(index)">
-									<u-icon name="close-circle" color="#e54d42" size="50" label="删除" label-color="#e54d42">
+									<u-icon name="close-circle" color="#e54d42" size="50" label="" label-color="#e54d42">
 									</u-icon>
 								</view>
 							</view>
@@ -56,8 +54,32 @@
 							@click="toAddProduct" color="#00aaff"></u-icon>
 					</view>
 				</view>
+				<view class="wrap" style="margin-top: 15rpx;">
+					<u-calendar v-model="calendarShow" mode="date" @change="calendarChange"></u-calendar>
+					<u-field :field-style="fieldStyle"  disabled icon="star" label-width="200"
+						placeholder="成品" label="成品"></u-field>
+					<u-field v-model="date" icon="calendar" @click="dateClick" label-width="200" :disabled="true"
+						right-icon="arrow-down-fill" placeholder="请选择出库日期" label="出库日期"></u-field>
+				</view>
+				
+				<view class="wrap" style="margin-top: 15rpx;">
+					<u-field v-model="description" type="textarea" icon="tags" label-width="200" placeholder="备注" label="备注">
+					</u-field>
+				</view>
+				<view>
+					<u-button throttle-time="2000" type="primary" :ripple="true" :plain="true" @click="submit">确认开单</u-button>
+				</view>
 			</view>
 		</view>
+		<u-popup v-model="show" mode="center" length="90%" :closeable="true" height="300rpx">
+			
+				<view style="text-align: center;" >
+					<text style="font-size: 30rpx;">请输入数量</text>
+					<u-input v-model="sp.num" :type="type" :border="border" style="margin-top: 40rpx;" />
+					<u-button @tap="submitPop" size="medium" type="primary" style="margin-top: 70rpx;">确定</u-button>
+				</view>
+			
+		</u-popup>
 	</view>
 </template>
 
@@ -68,18 +90,29 @@
 				sourceTypeName: '其他入库',
 				warehouseName: '',
 				warehouseId: '',
-				productList: [],
-				productArr:[]
+				productArr: [],
+				productArr:[],
+				total:'',
+				show:false,
+				value: '',
+				type: 'text',
+				border: true,
+				sp:'',
+				calendarShow: false,
+				fieldStyle: {
+					'color': '#ff557f',
+				},
+				date: '',
+				description: '',
 			}
 		},
-
 		onShow() {
 			let that = this
 			uni.getStorage({
 				key: 'selectStockInWarehouseByFinishedProductAdd',
 				success(res) {
 					if (that.warehouseId !== res.data.id) {
-						that.productList = []
+						that.productArr = []
 					}
 					that.warehouseName = res.data.name
 					that.warehouseId = res.data.id
@@ -92,9 +125,22 @@
 				key:'out-add-product',
 				success(res){
 					console.log(res)
-					that.productArr = res.data
+					for (var i = 0; i < res.data.length; i++) {
+						that.productArr.push({
+							productName:res.data[i].productName || '',
+							productNo:res.data[i].productNo || '',
+							settlePricee:res.data[i].settlePricee,
+							spec:res.data[i].spec || '',
+							color:res.data[i].color,
+							showw:true,
+							allNum:res.data[i].allNum
+						})
+					}
+					
 					console.log('asdasdasdasdasdasdasdsadsadsadsadsadsadasdasd')
 					console.log(that.productArr)
+					this.settlePricee = res.data.settlePricee
+					this.total = this.allNumn * this.settlePricee
 					uni.removeStorage({
 						key: 'out-add-product'
 					});
@@ -102,6 +148,37 @@
 			})
 		},
 		methods: {
+			calendarChange(e) {
+				this.date = e.result
+			},
+			dateClick() {
+				this.calendarShow = true
+			},
+			headClick(item) {
+				item.showw = !item.showw
+				console.log('执行了')
+			},
+			submitPop() {
+				if (!this.$u.test.digits(this.sp.num)) {
+					uni.showToast({
+						title: '只能输入整数',
+						icon: 'none'
+					})
+					this.sp.num = 0
+					return
+				}
+				
+				this.show = false
+			},
+			toDel(index) {
+				console.log('执行了')
+				this.productArr.splice(index, 1)
+			},
+			toEdit(item) {
+				this.show = true
+				this.sp = item
+				
+			},
 			warehouseClick() {
 				uni.navigateTo({
 					url: 'selectWarehouseByFinishedProductAdd?supplierNames=' + this.warehouseName
@@ -153,11 +230,17 @@
 	}
 	.my-iconfont {
 		color: #0081ff;
-		margin-left: -50rpx;
-		margin-top: 30rpx;
+		margin-left: 420rpx;
+		margin-top: -260rpx;
 		margin-bottom: -30rpx;
 	}
+	.total{
+		
+		margin-top: 30rpx;
+		font-size: 30rpx;
+		color: #FF0000;
+	}
 	.unitPrice{
-		float: right;
+		margin-top: 30rpx;
 	}
 </style>

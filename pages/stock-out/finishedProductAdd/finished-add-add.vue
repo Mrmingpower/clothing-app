@@ -17,10 +17,10 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
-							<!--购物车-->
-							<!-- <text class="textnum_cla" >{{alNum}}</text>
+							<!-- 购物车-->
+							<text class="textnum_cla" >{{alNum}}</text>
 							<u-icon style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"
-								name="shopping-cart-fill" color="#2979ff" size="100"></u-icon> -->
+								name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
 								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
@@ -150,6 +150,7 @@
 	export default {
 		data() {
 			return {
+				resultData:'',
 				customStyle: {
 					color: '#fff',
 					backgroundColor: '#ffce06',
@@ -182,6 +183,7 @@
 				alNum: 0,
 				unitPrice: '',
 				navigateToFinishedProductAddInfo: [],
+				finishedProductAddTofinishedAdd: [],
 			}
 		},
 		onLoad(e) {
@@ -189,9 +191,40 @@
 			this.initData()
 			this.getData();
 		},
+		
+		onShow() {
+			let that=this
+			uni.getStorage({
+				key: 'finishedProductAddTofinishedAdd',
+				success(res) {
+					that.finishedProductAddTofinishedAdd = res.data
+					uni.removeStorage({
+						key: 'finishedProductAddTofinishedAdd'
+					})
+				}
+			})
+		},
+		
+		
 		methods: {
 
 			submit() {
+				let that=this
+				for (var i = 0; i < this.colorArr.length; i++) {
+					if(this.colorArr[i].allNum > 0) {
+						that.navigateToFinishedProductAddInfo.push({
+							colorId: this.colorArr[i].colorId,
+							color: this.colorArr[i].color,
+							checked: false,
+							allNum: this.colorArr[i].allNum,
+							spec: this.specArr[i],
+							productName: this.resultData[i].productName,
+							productNo: this.resultData[i].productNo,
+							settlePricee:this.resultData[0].price
+						})
+					}
+				}
+				
 				uni.setStorage({
 					key: 'out-finishedProduct',
 					data: this.navigateToFinishedProductAddInfo
@@ -265,8 +298,9 @@
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
 				})
 				console.log(result1)
+				
 				// this.specList = result1[0].productSkuIdWithSpecificationVOList
-				// this.resultData = result1
+				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
 				this.goodsShow = true
 				let colorArr = []
@@ -292,44 +326,7 @@
 				// console.log(result1)
 				// console.log(result1[0].color)
 				// console.log(this.specList)
-				let that = this
-				let productSkuIdWithSpecificationVOListInfo = new Array();
-				for (var x = 0; x < result1.length; x++) {
-					productSkuIdWithSpecificationVOListInfo[x] = new Array();
-					for (let c = 0; c < result1[x].productSkuIdWithSpecificationVOList.length; c++) {
-						productSkuIdWithSpecificationVOListInfo[x].push({
-							cost: result1[x].productSkuIdWithSpecificationVOList[c].cost,
-							price: result1[x].productSkuIdWithSpecificationVOList[c].price,
-							quantity: result1[x].productSkuIdWithSpecificationVOList[c].quantity,
-							skuId: result1[x].productSkuIdWithSpecificationVOList[c].skuId,
-							specification: result1[x].productSkuIdWithSpecificationVOList[c].specification,
-							editChecked: false,
-							num: 0,
-						})
-					}
-				}
-
-				let finalInfo = []
-				for (var j = 0; j < result1.length; j++) {
-
-					finalInfo.push({
-						categoryName: result1[j].categoryName,
-						color: result1[j].color,
-						salePrice: result1[j].salePrice,
-						specifications: result1[j].specifications,
-						supplierName: result1[j].supplierName,
-						productName: result1[j].productName,
-						productNo: result1[j].productNo,
-						productSkuIdWithSpecificationVOList: productSkuIdWithSpecificationVOListInfo[j],
-						unit: result1[j].unit,
-						allChecked: false,
-						editChecked: false,
-						num: 0
-					})
-				}
-				console.log(productSkuIdWithSpecificationVOListInfo)
-				this.navigateToFinishedProductAddInfo = finalInfo
-
+				
 			},
 			async getData() {
 				let result = await this.$myRequest({

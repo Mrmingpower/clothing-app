@@ -8,7 +8,7 @@
 			<u-field v-model="warehouseName" @click="warehouseClick" required icon="shopping-cart" label-width="200"
 				:disabled="true" right-icon="arrow-down-fill" placeholder="请选择仓库" label="仓库"></u-field>
 			<u-field v-if="sourceType===0" v-model="customerIdLabel" @click="selectcustomer" icon="coupon"
-					right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择客户id" label="客户ID">
+				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择客户id" label="客户ID">
 			</u-field>
 			<u-field v-if="sourceType===0" v-model="pickOrderIdLabel" icon="calendar" @click="selectcommand"
 				right-icon="arrow-down-fill" :disabled="true" label-width="200" placeholder="请选择销售单" label="销售单">
@@ -111,78 +111,55 @@
 					</view>
 				</u-card>
 			</view>
-			
-			
-			<view>
-				<u-card  style="margin-top: 15rpx;" margin="0rpx,10rpx">
-					<view class="" slot="body">
-						
-						<view style="float: right;position: relative;top: -95rpx; font-weight: bold;">
-							<!-- <text>总数量：{{ totalNum }}</text> -->
-							<!-- <text style="margin-left: 20rpx;">总价格：{{ totalPrice }}</text> -->
+
+
+			<view v-for="(item,index) in finishedAddAddInfoArr" :index="index" :key="index">
+				<u-card :title="item.productName" :sub-title="item.color" title-size="40" border-radius="0"
+					:border="false">
+					<view slot="body" class="main">
+						<view style="margin-bottom: 20rpx;" class="No">
+							<text>编号</text>
+							<text style="margin-left: 100rpx;">{{item.productNo}}</text>
 						</view>
-						<view class="u-border-bottom" style="padding-bottom: 20rpx;" :index="index"
-							v-for="(item,index) in finishedAddAddInfoArr">
-							<view>
-								<view style="font-weight: bold;">{{item.productName}}</view>
-								<view style="font-weight: bold;position: absolute;right: 0rpx;top: 3rpx;">
-									<!-- <text>总数量：{{ item.totalNum }}</text> -->
-									<text style="margin-left: 20rpx;">总金额：{{ item.salePrice*item.num }}</text>
-									<u-icon @click="changeAllChecked(index)" style="margin-left: 30rpx;" name="arrow-down"
-										color="#565656" size="35"></u-icon>
-								</view>
-							</view>
-							<view v-for="(itemm,indexx) in item.productSkuIdWithSpecificationVOList" v-if="item.allChecked === true">
-								<view v-if="itemm.num == 0" class="data_cla">
-									<u-icon v-if="removeChecked === true" @click="toRemove(index,indexx)"
-										name="minus-circle" color="#ff0004" size="28"></u-icon>
-									<text>{{item.color}}</text>
-									<text>{{itemm.specification}}</text>
-									<text>{{itemm.num}}</text>
-									<text>￥{{itemm.price}}</text>
-									<u-icon  @click="itemm.editChecked = !itemm.editChecked"
-										name="arrow-down" color="#565656" size="28"></u-icon>
-								</view>
-								<view v-if="itemm.num == 0" v-show="itemm.editChecked"
-									style="display: block;background-color: #f5f4f9;">
-									<view class="data_cla">
-										<text style="margin-left: 35px;">数量</text>
-										<text>单价</text>
-										<text style="margin-right: 75rpx;">合计</text>
-									</view>
-									<view class="data_cla">
-										<view class="input_cla" style="position: relative;">
-											<u-input @input="inputchange(index)" maxlength="8" :clearable="false"
-												:custom-style="customStyle" v-model="itemm.num"></u-input>
-											<u-icon @click="numIconClick(index,indexx)"
-												style="position: absolute;right: 10rpx;top:25rpx;" name="plus-circle"
-												color="#000000" size="28"></u-icon>
-										</view>
-										<view class="input_cla" style="position: relative;">
-											<u-input @input="inputchangee(index,indexx)" maxlength="8" :clearable="false"
-												:custom-style="customStyle" v-model="itemm.price"></u-input>
-											<u-icon @click="priceIconClick(index,indexx)"
-												style="position: absolute;right: 10rpx;top:25rpx;" name="plus-circle"
-												color="#000000" size="28"></u-icon>
-										</view>
-										<view class="input_cla">
-											<u-input :clearable="false" disabled :custom-style="customStyle"
-												v-model="itemm.price * itemm.num">
-												{{itemm.price * itemm.num}}</u-input>
-										</view>
-									</view>
-								</view>
+						<view class="Specifications">
+							<text>规格</text>
+							<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
+								<text
+									style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.specification}}</text>
 							</view>
 						</view>
-						
+						<view class="number">
+							<text>数量</text>
+							<view v-for="(itemm,index) in item.spec " style="margin-left: -30rpx;">
+								<text
+									style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{itemm.num}}</text>
+							</view>
+						</view>
+						<view class="unitPrice">
+							<text>单价</text>
+							<text
+								style="margin-left: 80rpx;width: 30rpx;text-align: center;display: inline-block;">{{item.settlePricee}}</text>
+						</view>
+
+						<view class="footer-box">
+							<view class="my-iconfont" @tap="toEdit(item)">
+								<u-icon name="more-circle" color="#2979ff" size="50" label="修改" label-color="#2979ff">
+								</u-icon>
+							</view>
+							<view class="my-iconfont" @tap="toDel(index)">
+								<u-icon name="close-circle" color="#e54d42" size="50" label="删除" label-color="#e54d42">
+								</u-icon>
+							</view>
+						</view>
 					</view>
 				</u-card>
 			</view>
-			
-			
-			<view style="background-color: #FFFFFF;" class="u-border-top" >
+
+
+			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" color="#00aaff"></u-icon>
+					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" color="#00aaff">
+					</u-icon>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
 				</view>
@@ -195,7 +172,7 @@
 			<u-field v-model="date" icon="calendar" @click="dateClick" label-width="200" :disabled="true"
 				right-icon="arrow-down-fill" placeholder="请选择出库日期" label="出库日期"></u-field>
 		</view>
-		
+
 		<view class="wrap" style="margin-top: 15rpx;">
 			<u-field v-model="description" type="textarea" icon="tags" label-width="200" placeholder="备注" label="备注">
 			</u-field>
@@ -283,7 +260,7 @@
 		data() {
 			return {
 				finishedAddAddInfoArr: [],
-				
+
 				quantity: 0,
 				tempRow: '',
 				quantityShow: false,
@@ -301,7 +278,7 @@
 				properties: 0,
 				status: '',
 				details: [],
-				commandList:[],
+				commandList: [],
 				receiverTypeList: [],
 				receiverIdList: [],
 				sourceTypeList: [{
@@ -313,21 +290,20 @@
 				}, {
 					value: 2,
 					label: '其他出库'
-				}, 
-				 ],
+				}, ],
 				sourceTypeShow: false,
 				sourceTypeName: '',
 				calendarShow: false,
 				pickOrderShow: false,
 				pickOrderList: [],
-				pickOrderIdLabel:'',
-				customerIdLabel:'',
+				pickOrderIdLabel: '',
+				customerIdLabel: '',
 				commandShow: false,
 				receiverIdShow: false,
 				pickCustomerShow: false,
-				pickCustomerList : [],
+				pickCustomerList: [],
 				productList: [],
-				show:'true',
+				show: 'true',
 				tempproductList: [],
 				thumb: '/static/stockIn/open.png',
 				editShow: false,
@@ -337,24 +313,22 @@
 				seeShow: false,
 				seeRow: '',
 				"customerId": 0,
-				  "date": "",
-				  "description": "",
-				  "details": [
-				    {
-				      "cost": 0,
-				      "detailDescription": "",
-				      "orderDetailId": 0,
-				      "specification": '',
-				      "quantity": '',
-				      "skuId": 0
-				    }
-				  ],
-				  "orderId": 0,
-				  "orderNo": "",
-				  "payAccountId": 0,
-				  "payStyle": 0,
-				  "principalName": "",
-				  "warehouseId": 0,
+				"date": "",
+				"description": "",
+				"details": [{
+					"cost": 0,
+					"detailDescription": "",
+					"orderDetailId": 0,
+					"specification": '',
+					"quantity": '',
+					"skuId": 0
+				}],
+				"orderId": 0,
+				"orderNo": "",
+				"payAccountId": 0,
+				"payStyle": 0,
+				"principalName": "",
+				"warehouseId": 0,
 			}
 		},
 		onShow() {
@@ -373,30 +347,30 @@
 				}
 			})
 			uni.getStorage({
-				key:'out-add-customer',
-				success(res){
+				key: 'out-add-customer',
+				success(res) {
 					that.customerIdLabel = res.data.no
 					uni.removeStorage({
-						key:'out-add-customer'
+						key: 'out-add-customer'
 					})
 				}
 			})
-			
+
 			uni.getStorage({
-				key:'out-finishedProduct',
-				success(res){
-					
-					that.finishedAddAddInfoArr=res.data
+				key: 'out-finishedProduct',
+				success(res) {
+
+					that.finishedAddAddInfoArr = res.data
 					console.log(that.finishedAddAddInfoArr)
 					uni.removeStorage({
-						key:'out-finishedProduct'
+						key: 'out-finishedProduct'
 					})
 				}
 			})
-			
+
 			uni.getStorage({
-				key:'out-add-order',
-				success(res){
+				key: 'out-add-order',
+				success(res) {
 					console.log(res)
 					that.pickOrderIdLabel = res.data.no
 					for (var i = 0; i < res.data.detail.length; i++) {
@@ -404,11 +378,11 @@
 					}
 					that.productList = res.data.detail
 					uni.removeStorage({
-						key:'out-add-order'
+						key: 'out-add-order'
 					})
 				}
 			})
-			uni.getStorage({                              //+号添加成品
+			uni.getStorage({ //+号添加成品
 				key: 'out-add-product',
 				async success(res) {
 					console.log(res)
@@ -416,14 +390,14 @@
 						productName: res.data.productName || '',
 						productNo: res.data.productNo || '',
 						productSpuId: res.data.styleId || '',
-						quantity:0,
+						quantity: 0,
 						quantityByAssistant: 0,
 						unit: res.data.unit || '',
 						deliveryDate: res.data.deliveryDate || '',
 						price: res.data.price || '',
-						specification:res.data.specification || '',
-						color:res.data.color || '',
-						show:true
+						specification: res.data.specification || '',
+						color: res.data.color || '',
+						show: true
 					})
 					uni.removeStorage({
 						key: 'out-add-product'
@@ -432,11 +406,11 @@
 			})
 		},
 		methods: {
-			
+
 			changeAllChecked(index) {
 				this.finishedAddAddInfoArr[index].allChecked = !this.finishedAddAddInfoArr[index].allChecked
 			},
-			
+
 			toDel(index) {
 				console.log('执行了')
 				this.productList.splice(index, 1)
@@ -466,16 +440,16 @@
 				this.tempRow.quantity = parseInt(this.quantity)
 				this.quantityShow = false
 			},
-			selectcommand(e){
+			selectcommand(e) {
 				uni.navigateTo({
 					url: 'searchOrder'
 				})
 			},
-			selectcustomer(){
+			selectcustomer() {
 				uni.navigateTo({
 					url: 'selectCustomers'
 				})
-				},
+			},
 			receiverIdConfirm(e) {
 				this.receiverId = e[0].value
 				this.receiverIdName = e[0].label
@@ -501,39 +475,39 @@
 			},
 			async pickOrderConfirm(e) {
 				let result = await this.$myRequest({
-					url: '/sales-order/' 
+					url: '/sales-order/'
 				})
 				this.pickOrderId = result.id
 				this.pickOrderIdLabel = result.no
-		for (var i = 0; i < result.details.length; i++) {
-			let result3 = await this.$myRequest({
-				url:'/sales-order/no/' + result.data.no,
-			})
-			let productSkuArr = []
-			for (var j = 0; j < result3.length; j++) {
-				productSkuArr.push({
-					productSkuId: result3[j].skuId || '',
-					coloringNo: result3[j].coloringNo || '',
-					exchangeRate: result3[j].skuQuantity || 0,
-					quantity: result3[j].quantity || 0,
-					quantityByAssistant: result3[j].quantityByAssistant || 0,
-					quantity: result3[j].quantity || 0,
-				})
-			}
-			this.productList.push({
-				productName: result.details[i].productName || '',
-				productNo: result.details[i].productNo || '',
-				productSpuId: result.details[i].productSpuId || '',
-				quantity: 0,
-				quantityByAssistant: 0,
-				unit: result.details[i].unit || '',
-				deliveryDate: result.details[i].deliveryDate || '',
-				amount: 0,
-				pickOrderDetailId: result.details[i].id || '',
-				// productSkuArr: productSkuArr,
-				show: true
-			})
-		}
+				for (var i = 0; i < result.details.length; i++) {
+					let result3 = await this.$myRequest({
+						url: '/sales-order/no/' + result.data.no,
+					})
+					let productSkuArr = []
+					for (var j = 0; j < result3.length; j++) {
+						productSkuArr.push({
+							productSkuId: result3[j].skuId || '',
+							coloringNo: result3[j].coloringNo || '',
+							exchangeRate: result3[j].skuQuantity || 0,
+							quantity: result3[j].quantity || 0,
+							quantityByAssistant: result3[j].quantityByAssistant || 0,
+							quantity: result3[j].quantity || 0,
+						})
+					}
+					this.productList.push({
+						productName: result.details[i].productName || '',
+						productNo: result.details[i].productNo || '',
+						productSpuId: result.details[i].productSpuId || '',
+						quantity: 0,
+						quantityByAssistant: 0,
+						unit: result.details[i].unit || '',
+						deliveryDate: result.details[i].deliveryDate || '',
+						amount: 0,
+						pickOrderDetailId: result.details[i].id || '',
+						// productSkuArr: productSkuArr,
+						show: true
+					})
+				}
 			},
 			async getData(e) {
 				let result = await this.$myRequest({
@@ -558,10 +532,10 @@
 				})
 			},
 			sourceTypeClick() {
-				
+
 				this.sourceTypeShow = true
-				this.productList=[];
-				
+				this.productList = [];
+
 			},
 			async sourceTypeConfirm(e) {
 				this.sourceTypeName = e[0].label
@@ -584,9 +558,9 @@
 				let params = {
 					date: this.date,
 					sourceTypeName: this.sourceTypeName,
-					warehouseName:this.warehouseName,
-					customerIdLabel:this.customerIdLabel,
-					pickOrderIdLabel:this.pickOrderIdLabel,
+					warehouseName: this.warehouseName,
+					customerIdLabel: this.customerIdLabel,
+					pickOrderIdLabel: this.pickOrderIdLabel,
 				}
 				// console.log('params')
 				let result = await this.$myRequest({
@@ -614,14 +588,23 @@
 				}
 			},
 			toAddProduct() {
-				if (this.sourceType ===2 && this.warehouseName !=='') {
-					uni.navigateTo({
-						url: 'finished-add-add?warehouseId=' + this.warehouseId
-					});
-					
+				if (this.sourceType === 2 && this.warehouseName !== '') {
+					if (this.finishedAddAddInfoArr != '') {
+						uni.setStorage({
+							key: 'finishedProductAddTofinishedAdd',
+							data: this.finishedAddAddInfoArr
+						})
+						uni.navigateTo({
+							url: 'finished-add-add?warehouseId=' + this.warehouseId
+						});
+					} else{
+						uni.navigateTo({
+							url: 'finished-add-add?warehouseId=' + this.warehouseId
+						});
+					}
 				}
-
-			}
+			},
+			
 		}
 	}
 </script>
@@ -639,7 +622,10 @@
 	}
 
 	.my-iconfont {
-		font-size: 24rpx;
+		color: #0081ff;
+		margin-left: -50rpx;
+		margin-top: 30rpx;
+		margin-bottom: -30rpx;
 	}
 
 	.text-blue {
@@ -654,6 +640,10 @@
 		margin-top: 40rpx;
 		display: flex;
 		justify-content: center;
+	}
+
+	.unitPrice {
+		float: right;
 	}
 
 	.data_cla {
@@ -679,6 +669,17 @@
 	.saomiao_cla {
 		position: relative;
 		left: 150rpx;
+	}
+
+	.Specifications {
+		flex-direction: row;
+		display: flex;
+	}
+
+	.number {
+		margin-top: 30rpx;
+		flex-direction: row;
+		display: flex;
 	}
 
 	.add_cla {

@@ -337,12 +337,12 @@
 				warehouseId: 0,
 				total: [],
 				allNum: 0,
-				tempProductArr:[],
-				spec:[]
+				tempProductArr: [],
+				spec: []
 			}
 		},
 		onShow() {
-			
+
 			let that = this
 			uni.getStorage({
 				key: 'selectStockOutWarehouseByFinishedProductAdd',
@@ -370,29 +370,40 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-					for (var j=0;j<res.data.length;j++){
-						let only = res.data[j].productNo + '-' + res.data[j].color
-						if (that.tempProductArr.indexOf(only) > -1) {
-							let index = that.tempProductArr.indexOf(only)
-							that.productArr[index].allNum = that.productArr[index].allNum + res.data[index].allNum
-							for (var s=0;s<that.productArr[index].spec.length;s++){
-								that.productArr[index].spec[s].num = that.productArr[index].spec[s].num + res.data[index].spec[s].num
-								console.log(that.productArr[index].spec[s].num)
+					console.log('res')
+					console.log(res)
+					that.$nextTick(() => {
+						for (var j = 0; j < res.data.length; j++) {
+							let only = res.data[j].productNo + '-' + res.data[j].color
+							if (that.tempProductArr.indexOf(only) > -1) {
+								let index = that.tempProductArr.indexOf(only)
+								console.log(that.productArr[index])
+								that.productArr[index].allNum = /* that.productArr[index].allNum */ res
+									.data[index]
+									.allNum
+								for (var s = 0; s < that.productArr[index].spec.length; s++) {
+									that.productArr[index].spec[s]
+										.num = /* that.productArr[index].spec[s].num + */ res
+										.data[index].spec[s].num
+									console.log(that.productArr[index].spec[s].num)
+								}
+							} else {
+								that.tempProductArr.push(only)
+								that.productArr.push({
+									productName: res.data[j].productName,
+									productNo: res.data[j].productNo,
+									settlePricee: res.data[j].settlePricee,
+									spec: res.data[j].spec,
+									color: res.data[j].color,
+									showw: true,
+									allNum: res.data[j].allNum
+								})
 							}
+
 						}
-						else{
-							that.tempProductArr.push(only)
-							that.productArr.push({
-								productName:res.data[j].productName ,
-								productNo:res.data[j].productNo ,
-								settlePricee:res.data[j].settlePricee,
-								spec:res.data[j].spec ,
-								color:res.data[j].color,
-								showw:true,
-								allNum:res.data[j].allNum
-							})
-						}					
-					}	
+					})
+
+
 
 					for (var i = 0; i < res.data.length; i++) {
 						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
@@ -662,6 +673,7 @@
 					}
 
 				}
+
 			},
 
 		}

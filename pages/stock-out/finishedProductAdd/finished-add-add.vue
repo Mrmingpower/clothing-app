@@ -306,6 +306,7 @@
 				})
 
 				// this.specList = result1[0].productSkuIdWithSpecificationVOList
+				
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
 				this.goodsShow = true

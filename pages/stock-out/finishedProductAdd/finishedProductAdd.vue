@@ -366,7 +366,8 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-					for (var i = 0; i < res.data.length; i++) {
+						console.log(res.data)
+						for (var i = 0; i < res.data.length; i++) {
 						that.productArr.push({
 							productName: res.data[i].productName ,
 							productNo: res.data[i].productNo ,
@@ -376,8 +377,9 @@
 							showw: true,
 							allNum: res.data[i].allNum
 						})
+						
+					
 					}
-					console.log(this.productArr)
 					
 					for (var i = 0; i < res.data.length; i++) {
 						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
@@ -392,7 +394,6 @@
 			uni.getStorage({
 				key: 'out-add-order',
 				success(res) {
-					console.log(res)
 					that.pickOrderIdLabel = res.data.no
 					for (var i = 0; i < res.data.detail.length; i++) {
 						res.data.detail[i].show = true
@@ -406,7 +407,6 @@
 			uni.getStorage({ //+号添加成品
 				key: 'out-add-product',
 				async success(res) {
-					console.log(res)
 					that.productList.push({
 						productName: res.data.productName || '',
 						productNo: res.data.productNo || '',
@@ -439,22 +439,17 @@
 			})
 		},
 		methods: {
-
-
 			toDel(index) {
-				console.log('执行了')
 				this.productList.splice(index, 1)
 			},
 			toEdit(item) {
 				this.editShow = true
 				this.editRow = item
-				console.log(this.editRow)
 			},
 			popClose() {
 				this.tempExchangeRate = []
 			},
 			tempClick(e) {
-				console.log(e)
 				this.tempRow = e
 				this.quantity = e.quantity
 				this.quantityShow = true
@@ -544,7 +539,6 @@
 					url: '/customer/search',
 				})
 				this.list_orders = res.data
-				// console.log(res.data)
 			},
 			calendarChange(e) {
 				this.date = e.result
@@ -554,7 +548,6 @@
 			},
 			headClick(item) {
 				item.show = !item.show
-				console.log('执行了')
 			},
 			warehouseClick() {
 				uni.navigateTo({
@@ -615,7 +608,6 @@
 					customerIdLabel: this.customerIdLabel,
 					pickOrderIdLabel: this.pickOrderIdLabel,
 				}
-				// console.log('params')
 				let result = await this.$myRequest({
 					url: '/product-out/',
 					method: 'post',
@@ -637,13 +629,12 @@
 						title: '开单失败',
 						icon: 'none'
 					})
-					console.log(result)
 				}
 			},
 			toAddProduct() {
+				console.log(this.productArr)
 				if (this.sourceType === 2 && this.warehouseName !== '') {
 					if (this.productArr != '') {
-						console.log(this.productArr)
 						uni.setStorage({
 							key: 'finishedProductAddTofinishedAdd',
 							data: this.productArr
@@ -656,6 +647,7 @@
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
 					}
+					
 				}
 			},
 
@@ -699,6 +691,7 @@
 	}
 
 	.unitPrice {
+		margin-top: 30rpx;
 		float: right;
 	}
 

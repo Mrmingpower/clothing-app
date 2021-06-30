@@ -18,7 +18,7 @@
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
 							<!-- 购物车-->
-							<text :="colorArr.allNum" class="textnum_cla">{{colorArr.allNum}}</text>
+							<text :="colorArr.allNum" class="textnum_cla">{{item_orders.allNum}}</text>
 							<u-icon style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"
 								name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
@@ -186,10 +186,12 @@
 
 		onShow() {
 			let that = this
+
 			uni.getStorage({
 				key: 'finishedProductAddTofinishedAdd',
 				success(res) {
 					that.finishedProductAddTofinishedAdd = res.data
+					console.log(that.finishedProductAddTofinishedAdd)
 					uni.removeStorage({
 						key: 'finishedProductAddTofinishedAdd'
 					})
@@ -210,10 +212,7 @@
 		},
 
 		methods: {
-			popClose() {
-				console.log(this.alNum)
-				console.log('弹出关闭')
-			},
+			popClose() {},
 
 			async loadmore() {
 				if (parseInt(this.total) === this.list_orders.length) {
@@ -224,7 +223,10 @@
 				await this.getData()
 			},
 
+			checkboxChange: function(e) {
+				this.temp_color = e.detail.value
 
+			},
 
 			initData() {
 				this.finished = false
@@ -261,7 +263,6 @@
 					alNum = alNum + this.colorArr[i].allNum
 				}
 				this.alNum = alNum
-console.log(this.alNum)
 				// this.allMap.set(this.temp_colorIndex,spec_list)
 
 			},
@@ -303,15 +304,15 @@ console.log(this.alNum)
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
 				})
-				console.log(result1)
 
 				// this.specList = result1[0].productSkuIdWithSpecificationVOList
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
 				this.goodsShow = true
+				console.log(result1)
 				let colorArr = []
 				let specArr = []
-				for (var i = 0; i < result1.length; i++) {
+				for (let i = 0; i < this.resultData.length; i++) {
 					colorArr.push({
 						colorId: result1[i].colorId,
 						color: result1[i].color,
@@ -319,8 +320,27 @@ console.log(this.alNum)
 						allNum: 0,
 
 					})
+					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
+						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo && this
+							.resultData[i].color === this.finishedProductAddTofinishedAdd[j].color) {
+							colorArr.push({
+								allNum: this.finishedProductAddTofinishedAdd[j].allNum
+							})
+						}
+					}
 					specArr.push(result1[i].productSkuIdWithSpecificationVOList)
 				}
+
+				// for (var i = 0; i < result1.length; i++) {
+				// 	colorArr.push({
+				// 		colorId: result1[i].colorId,
+				// 		color: result1[i].color,
+				// 		checked: false,
+				// 		allNum: 0,
+
+				// 	})
+				// 	specArr.push(result1[i].productSkuIdWithSpecificationVOList)
+				// }
 				colorArr[0].checked = true
 				this.colorArr = colorArr
 				this.specArr = specArr
@@ -333,11 +353,10 @@ console.log(this.alNum)
 				// console.log(result1[0].color)
 				// console.log(this.specList)
 
+
 			},
 
 			labelBtn(item, index) {
-				console.log('item===========')
-				console.log(this.colorArr[index])
 				if (this.temp_colorIndex === index) {
 					console.log('重复了')
 					return
@@ -356,7 +375,6 @@ console.log(this.alNum)
 				} else {
 					this.isSearch = true
 				}
-				console.log(this.ipt)
 				this.initData()
 				this.getData()
 			},
@@ -371,13 +389,22 @@ console.log(this.alNum)
 						productName: this.isSearch === true ? this.ipt : ''
 					}
 				})
-				console.log(result)
 				this.list_orders = [...this.list_orders, ...result.items]
 				this.total = result.count;
 				if (this.list_orders.length == this.total) {
 					this.finished = true;
 					this.status = 'nomore'
 				}
+
+				let that = this
+				for (let i = 0; i < this.list_orders.length; i++) {
+					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
+						if (this.list_orders[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo) {
+							this.list_orders[i].allNum = this.finishedProductAddTofinishedAdd[j].allNum
+						}
+					}
+				}
+
 			},
 		}
 	}

@@ -139,10 +139,10 @@
 						else{
 							that.tempProductArr.push(only)
 							that.productArr.push({
-								productName:res.data[j].productName || '',
-								productNo:res.data[j].productNo || '',
+								productName:res.data[j].productName ,
+								productNo:res.data[j].productNo ,
 								settlePricee:res.data[j].settlePricee,
-								spec:res.data[j].spec || '',
+								spec:res.data[j].spec ,
 								color:res.data[j].color,
 								showw:true,
 								allNum:res.data[j].allNum

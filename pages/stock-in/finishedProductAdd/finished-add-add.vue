@@ -255,10 +255,7 @@
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
-				console.log(e.detail.value)
-				console.log(e)
-				console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
-				console.log(this.temp_color, "temp_color")
+
 			},
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({

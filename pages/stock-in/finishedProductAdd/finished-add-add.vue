@@ -261,9 +261,7 @@
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
 				})
-				console.log(result1)
-				console.log(result1[0].specifications)
-				console.log('=====================================')
+
 				this.settlePricee = result1[0].price
 				this.resultData = result1
 				this.goodsShow = true

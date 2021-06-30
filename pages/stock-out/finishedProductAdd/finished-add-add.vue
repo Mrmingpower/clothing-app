@@ -312,7 +312,9 @@
 				console.log(result1)
 				let colorArr = []
 				let specArr = []
-				for (let i = 0; i < this.resultData.length; i++) {
+
+
+				for (let i = 0; i < result1.length; i++) {
 					colorArr.push({
 						colorId: result1[i].colorId,
 						color: result1[i].color,
@@ -320,27 +322,30 @@
 						allNum: 0,
 
 					})
-					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
-						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo && this
-							.resultData[i].color === this.finishedProductAddTofinishedAdd[j].color) {
-							colorArr.push({
-								allNum: this.finishedProductAddTofinishedAdd[j].allNum
-							})
-						}
-					}
 					specArr.push(result1[i].productSkuIdWithSpecificationVOList)
 				}
 
-				// for (var i = 0; i < result1.length; i++) {
-				// 	colorArr.push({
-				// 		colorId: result1[i].colorId,
-				// 		color: result1[i].color,
-				// 		checked: false,
-				// 		allNum: 0,
+				for (let i = 0; i < colorArr.length; i++) {
+					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
+						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo &&
+							colorArr[i].color === this.finishedProductAddTofinishedAdd[j].color) {
+							colorArr[i].allNum = this.finishedProductAddTofinishedAdd[j].allNum
+						}
+					}
+				}
 
-				// 	})
-				// 	specArr.push(result1[i].productSkuIdWithSpecificationVOList)
-				// }
+				for (let i = 0; i < colorArr.length; i++) {
+					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
+						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo &&
+							colorArr[i].color === this.finishedProductAddTofinishedAdd[j].color) {
+								for(let x=0;x<specArr.length;x++){
+									specArr[i][x].num = this.finishedProductAddTofinishedAdd[j].spec[x].num
+								}
+							
+						}
+					}
+				}
+				console.log(specArr)
 				colorArr[0].checked = true
 				this.colorArr = colorArr
 				this.specArr = specArr
@@ -398,9 +403,10 @@
 
 				let that = this
 				for (let i = 0; i < this.list_orders.length; i++) {
+					this.list_orders[i].allNum = 0
 					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
 						if (this.list_orders[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo) {
-							this.list_orders[i].allNum = this.finishedProductAddTofinishedAdd[j].allNum
+							this.list_orders[i].allNum += this.finishedProductAddTofinishedAdd[j].allNum
 						}
 					}
 				}

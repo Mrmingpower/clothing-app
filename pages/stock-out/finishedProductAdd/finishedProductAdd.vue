@@ -144,10 +144,11 @@
 						</view>
 						<view class="total">
 							<text style="color:#000000;font-size: 32rpx;float: left;">合计:<text
-									style="color: #FF0000;margin-left: 40rpx" v-model="allNum">{{item.allNum}}</text></text>
+									style="color: #FF0000;margin-left: 40rpx"
+									v-model="allNum">{{item.allNum}}</text></text>
 							<text style="color:#000000;font-size: 32rpx;float: right;">金额:
-							<text style="color: #FF0000;" >￥{{total[index]}}</text>
-									</text>
+								<text style="color: #FF0000;">￥{{total[index]}}</text>
+							</text>
 						</view>
 						<view class="footer-box">
 							<view class="my-iconfont" @tap="toDel(index)">
@@ -335,10 +336,13 @@
 				principalName: "",
 				warehouseId: 0,
 				total: [],
-				allNum: 0
+				allNum: 0,
+				tempProductArr:[],
+				spec:[]
 			}
 		},
 		onShow() {
+			
 			let that = this
 			uni.getStorage({
 				key: 'selectStockOutWarehouseByFinishedProductAdd',
@@ -366,25 +370,34 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-						console.log(res.data)
-						for (var i = 0; i < res.data.length; i++) {
-						that.productArr.push({
-							productName: res.data[i].productName ,
-							productNo: res.data[i].productNo ,
-							settlePricee: res.data[i].settlePricee,
-							spec: res.data[i].spec,
-							color: res.data[i].color,
-							showw: true,
-							allNum: res.data[i].allNum
-						})
-						
-					
-					}
-					
+					for (var j=0;j<res.data.length;j++){
+						let only = res.data[j].productNo + '-' + res.data[j].color
+						if (that.tempProductArr.indexOf(only) > -1) {
+							let index = that.tempProductArr.indexOf(only)
+							that.productArr[index].allNum = that.productArr[index].allNum + res.data[index].allNum
+							for (var s=0;s<that.productArr[index].spec.length;s++){
+								that.productArr[index].spec[s].num = that.productArr[index].spec[s].num + res.data[index].spec[s].num
+								console.log(that.productArr[index].spec[s].num)
+							}
+						}
+						else{
+							that.tempProductArr.push(only)
+							that.productArr.push({
+								productName:res.data[j].productName ,
+								productNo:res.data[j].productNo ,
+								settlePricee:res.data[j].settlePricee,
+								spec:res.data[j].spec ,
+								color:res.data[j].color,
+								showw:true,
+								allNum:res.data[j].allNum
+							})
+						}					
+					}	
+
 					for (var i = 0; i < res.data.length; i++) {
 						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
 					}
-					
+
 					uni.removeStorage({
 						key: 'out-finishedProduct'
 					})
@@ -647,7 +660,7 @@
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
 					}
-					
+
 				}
 			},
 
@@ -758,8 +771,9 @@
 		padding-bottom: constant(safe-area-inset-bottom);
 		padding-bottom: env(safe-area-inset-bottom);
 	}
+
 	.total {
-	
+
 		margin-top: 30rpx;
 		font-size: 30rpx;
 		color: #FF0000;

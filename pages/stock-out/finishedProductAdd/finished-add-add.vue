@@ -224,7 +224,7 @@
 			},
 
 			checkboxChange: function(e) {
-				this.temp_color = e.detail.value
+				
 
 			},
 
@@ -338,7 +338,7 @@
 					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
 						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo &&
 							colorArr[i].color === this.finishedProductAddTofinishedAdd[j].color) {
-								for(let x=0;x<specArr.length;x++){
+								for(let x=0;x<specArr[i].length;x++){
 									specArr[i][x].num = this.finishedProductAddTofinishedAdd[j].spec[x].num
 								}
 							
@@ -368,8 +368,9 @@
 				}
 				this.colorArr[this.temp_colorIndex].checked = false
 				this.colorArr[index].checked = true
-				this.specList = this.specArr[index]
+				
 				this.$nextTick(() => {
+					this.specList = this.specArr[index]
 					this.temp_colorIndex = index
 				})
 			},

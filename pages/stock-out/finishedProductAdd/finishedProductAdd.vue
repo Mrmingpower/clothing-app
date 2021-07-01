@@ -137,7 +137,7 @@
 							<text>数量</text>
 							<view v-for="(itemm,index) in item.spec ">
 								<text style="margin-left: 50rpx;width: 30rpx;
-								text-align: center;display: inline-block;">
+								text-align: center;display: inline-block;" @tap="toEdit(itemm)">
 									{{itemm.num}}
 								</text>
 							</view>
@@ -147,7 +147,7 @@
 									style="color: #FF0000;margin-left: 40rpx"
 									v-model="allNum">{{item.allNum}}</text></text>
 							<text style="color:#000000;font-size: 32rpx;float: right;">金额:
-								<text style="color: #FF0000;">￥{{total[index]}}</text>
+								<text style="color: #FF0000;">￥{{item.totalPrice}}</text>
 							</text>
 						</view>
 						<view class="footer-box">
@@ -163,8 +163,9 @@
 
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" @click="toScan" color="#00aaff">
-					</u-icon>
+					<u-field  v-model="show" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" :focus="true"
+						@click="focus" @confirm="scanConfirm" @focus="focus" color="#00aaff">
+					</u-field>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
 				</view>
@@ -194,6 +195,65 @@
 			<u-calendar v-model="calendarShow" mode="date" @change="calendarChange"></u-calendar>
 			<u-select v-model="pickOrderShow" :list="pickOrderList" @confirm="pickOrderConfirm"></u-select>
 			<u-select v-model="pickCustomerShow" :list="pickCustomerList" @confirm="pickCustomerConfirm"></u-select>
+			<u-popup v-model="editShow" mode="bottom" border-radius="14" length="70%" @close="popClose">
+				<view class="u-demo-wrap">
+					<view style="height: 50rpx;"></view>
+					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">单匹重量 & 匹数</view>
+					<view style="margin-top: 20rpx;">
+						<u-cell-group>
+							<u-field v-model="editRow.productName" label="成品名称" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.productNo" label="成品编号" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field>
+							<u-field v-model="editRow.unit" label="单位" label-width="150" :clearable="false" disabled
+								:required="false" type="text"></u-field>
+							<!-- <u-field v-model="editRow.deliveryDate" label="副计量单位" label-width="150" :clearable="false"
+								disabled :required="false" type="text"></u-field> -->
+							<u-table>
+								<u-tr>
+									<u-th>名称</u-th>
+									<u-th>数量</u-th>
+								</u-tr>
+								<view v-for="(item,index) in productList" :key="index">
+									<u-tr>
+										<u-td>
+											<view>
+												<text>{{item.productName}}{{item.color}}{{item.specification}}</text>
+											</view>
+										</u-td>
+										<u-td>
+											<view style="height:38rpx;" @click="tempClick(item)">
+												<text>{{item.quantity}}</text>
+											</view>
+										</u-td>
+									</u-tr>
+								</view>
+							</u-table>
+						</u-cell-group>
+					</view>
+					<u-divider>没有更多了</u-divider>
+				</view>
+			</u-popup>
+
+			<u-popup v-model="quantityShow" mode="center" border-radius="14" width="80%" height="400rpx">
+				<view>
+					<view style="height: 50rpx;"></view>
+					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量</view>
+					<view style="margin-top: 30rpx;">
+						<u-cell-group>
+							<u-field v-model="quantity" label="数量" label-width="150" :clearable="false"
+								:required="false" type="text"></u-field>
+						</u-cell-group>
+						<view class="close-btn">
+							<u-button @tap="submitPop" size="medium" type="primary">确定</u-button>
+							<u-button @tap="quantityShow = false" size="medium">取消</u-button>
+						</view>
+					</view>
+				</view>
+			</u-popup>
+			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true"
+				@close="seeShow = false">
+			</u-popup>
 		</view>
 	</view>
 </template>
@@ -281,7 +341,7 @@
 				allNum: 0,
 				tempProductArr: [],
 				spec: [],
-				count: 0,
+
 			}
 		},
 		onShow() {
@@ -313,7 +373,6 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-
 					console.log('res')
 					console.log(res)
 					that.$nextTick(() => {
@@ -322,10 +381,11 @@
 							if (that.tempProductArr.indexOf(only) > -1) {
 								let index = that.tempProductArr.indexOf(only)
 								console.log(index)
-								that.total[index] = res.data[j].allNum * res.data[j].settlePricee
+
 								that.productArr[index].allNum = res.data[j].allNum
 								for (var s = 0; s < that.productArr[index].spec.length; s++) {
 									that.productArr[index].spec[s].num = res.data[j].spec[s].num
+									that.productArr[index].totalPrice = res.data[j].totalPrice
 									console.log(that.tempProductArr)
 								}
 							} else {
@@ -333,18 +393,21 @@
 								that.productArr.push({
 									productName: res.data[j].productName,
 									productNo: res.data[j].productNo,
-									settlePricee: res.data[j].settlePricee
-									,
+									settlePricee: res.data[j].settlePricee,
 									spec: res.data[j].spec,
 									color: res.data[j].color,
 									showw: true,
-									allNum: res.data[j].allNum
+									allNum: res.data[j].allNum,
+									totalPrice: res.data[j].totalPrice
 								})
-								that.total[that.count] = res.data[j].allNum * res.data[j].settlePricee
-								that.count++
+
+
 							}
+
 						}
+
 					})
+
 					uni.removeStorage({
 						key: 'out-finishedProduct'
 					})
@@ -403,17 +466,13 @@
 				this.productList.splice(index, 1)
 			},
 			toDel(index) {
-				let that = this
+				console.log(this.productArr)
 				this.productArr.splice(index, 1)
-				this.tempProductArr.splice(index,1)
-				this.count = 0
-				console.log('删除执行了')
+				this.tempProductArr.splice(index, 1)
 			},
 			toEdit(item) {
 				this.editShow = true
-				this.up = item
-				console.log(this.up.settlePricee)
-				console.log(item)
+				this.editRow = item
 			},
 			popClose() {
 				this.tempExchangeRate = []
@@ -422,6 +481,17 @@
 				this.tempRow = e
 				this.quantity = e.quantity
 				this.quantityShow = true
+			},
+			submitPop() {
+				if (!this.$u.test.digits(this.quantity)) {
+					uni.showToast({
+						title: '只能输入整数',
+						icon: 'none'
+					})
+					return
+				}
+				this.tempRow.quantity = parseInt(this.quantity)
+				this.quantityShow = false
 			},
 			selectcommand(e) {
 				uni.navigateTo({
@@ -504,6 +574,7 @@
 			dateClick() {
 				this.calendarShow = true
 			},
+
 			headClick(item) {
 				item.show = !item.show
 			},
@@ -513,10 +584,8 @@
 				})
 			},
 			sourceTypeClick() {
-
 				this.sourceTypeShow = true
 				this.productList = [];
-
 			},
 			async sourceTypeConfirm(e) {
 				this.sourceTypeName = e[0].label
@@ -557,6 +626,7 @@
 					})
 					return
 				}
+
 				let params = {
 					date: this.date,
 					sourceTypeName: this.sourceTypeName,
@@ -602,19 +672,158 @@
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
 					}
-
+				} else if (this.sourceType === '') {
+					this.$refs.uToast.show({
+						title: '请选择出库类型',
+						type: 'error',
+						url: ''
+					})
+				} else if (this.warehouseName === '') {
+					this.$refs.uToast.show({
+						title: '请选择仓库',
+						type: 'error',
+						url: ''
+					})
 				}
 
 			},
-			toScan(){
+			toScan() {
 				uni.navigateTo({
 					url: 'scan'
 				});
-			}
+			},
+			scanConfirm(index) {
+				if (index === 0) {
+					this.show = true
+					this.tempUrl = this.url
+				} else if (index === 1) {
+					this.itemNumber = ''
+					this.description = ''
+					this.inventoryItemId = ''
+					this.invCategory = ''
+					this.status = ''
+					this.primaryUomCode = ''
+					this.itemType = ''
+					this.lastUpdateDate = ''
+					this.weightUomCode = ''
+					this.unitWeight = ''
+					this.volumeUomCode = ''
+					this.unitVolume = ''
+					this.dimensionUomCode = ''
+					this.unitLength = ''
+					this.unitWidth = ''
+					this.unitHeight = ''
+					uni.scanCode({
+						scanType: ['qrCode'],
+						success: (res) => {
+							let that = this
+							console.log('条码类型：' + res.scanType);
+							console.log('条码内容：' + res.result);
+							let barCord = res.result
+							uni.showLoading({
+								title: '加载中',
+								mask: true
+							});
 
+							this.$myRequest({
+								url:111,
+								data:{
+									barCord:barCord
+								}
+							})
+							uni.request({
+								header: {
+									"Content-Type": 'application/x-www-form-urlencoded'
+								},
+								url: that.url + "/item/by-item-number",
+								method: 'GET',
+								data: {
+									itemNumber: itemNumber
+								},
+								success: (res) => {
+									let result = res.data
+									console.log(that.url)
+									console.log(result)
+									if (result.code === 200) {
+										uni.hideLoading();
+										uni.showToast({
+											title: '扫描成功',
+											icon: 'success'
+										})
+										that.itemNumber = result.result.itemNumber
+										that.description = result.result.description
+										that.inventoryItemId = result.result.inventoryItemId
+										that.invCategory = result.result.invCategory
+										that.status = result.result.status
+										that.primaryUomCode = result.result.primaryUomCode
+										that.itemType = result.result.itemType
+										that.lastUpdateDate = result.result.lastUpdateDate
+										that.weightUomCode = result.result.weightUomCode
+										that.unitWeight = result.result.unitWeight
+										that.volumeUomCode = result.result.volumeUomCode
+										that.unitVolume = result.result.unitVolume
+										that.dimensionUomCode = result.result.dimensionUomCode
+										that.unitLength = result.result.unitLength
+										that.unitWidth = result.result.unitWidth
+										that.unitHeight = result.result.unitHeight
+									} else {
+										uni.hideLoading();
+										if (this.$u.test.isEmpty(result.code)) {
+											uni.showToast({
+												title: result.message ||
+													'请配置正确的服务器地址并保证连接正确',
+												icon: 'none'
+											})
+											this.show = true
+											this.tempUrl = this.url
+										} else {
+											uni.showToast({
+												title: result.message || '扫描错误',
+												icon: 'none'
+											})
+										}
+									}
+								},
+								fail: (err) => {
+									uni.hideLoading();
+									uni.showToast({
+										title: '请配置正确的服务器地址并保证连接正确',
+										icon: 'none'
+									})
+									this.show = true
+									this.tempUrl = this.url
+								}
+							})
+						}
+					});
+				} else {
+					// this.itemNumber = ''
+					// this.description = ''
+					// this.inventoryItemId = ''
+					// this.invCategory = ''
+					// this.status = ''
+					// this.primaryUomCode = ''
+					// this.itemType = ''
+					// this.lastUpdateDate = ''
+					// this.weightUomCode = ''
+					// this.unitWeight = ''
+					// this.volumeUomCode = ''
+					// this.unitVolume = ''
+					// this.dimensionUomCode = ''
+					// this.unitLength = ''
+					// this.unitWidth = ''
+					// this.unitHeight = ''
+					uni.redirectTo({
+						url: 'scan'
+					})
+				}
+			}
 		},
 
+
+
 		watch: {
+
 			productArr: function() {
 				console.log("aa")
 			}
@@ -732,4 +941,5 @@
 		font-size: 30rpx;
 		color: #FF0000;
 	}
+
 </style>

@@ -304,14 +304,14 @@
 				})
 			},
 
-		
+
 			async toSubmit(list_orders) {
 				console.log(list_orders)
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + list_orders.id
 				})
 
-				
+
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
 				this.goodsShow = true
@@ -345,7 +345,7 @@
 								for(let x=0;x<specArr[i].length;x++){
 									specArr[i][x].num = this.finishedProductAddTofinishedAdd[j].spec[x].num
 								}
-							
+
 						}
 					}
 				}
@@ -363,7 +363,7 @@
 				}
 				this.colorArr[this.temp_colorIndex].checked = false
 				this.colorArr[index].checked = true
-				
+
 				this.$nextTick(() => {
 					this.specList = this.specArr[index]
 					this.temp_colorIndex = index

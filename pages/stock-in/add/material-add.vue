@@ -354,7 +354,40 @@
 					});
 				}
 			})
-			
+			uni.getStorage({
+				key:'purchaseOrder',
+				success(res){
+						that.arrivalNo = res.data.orderNo
+						that.spuId = res.data.id
+						for(var b=0;b<res.data.details.length;b++){
+							that.materialList.push({
+								color: res.data.details[b].color,
+								specification: res.data.details[b].specification,
+								unit: res.data.details[b].unit,
+								assistantUnit: res.data.details[b].assistantUnit,
+								price: res.data.details[b].price,
+								spuId: res.data.details[b].id,
+								productId: res.data.details[b].id,
+								productName: res.data.details[b].productName,
+								productNo: res.data.details[b].productNo,
+								exchangeRate: [1],
+								quantityByAssistant: [1],
+								allQuantityByAssistant: '',
+								quantity: '',
+								amount: '',
+								coloringNo: '',
+								clickChecked: true,
+								arrivalDetailId:res.data.id
+							})
+						}
+						console.log(res)
+						console.log(res)
+						console.log(res)
+						uni.removeStorage({
+							key:'purchaseOrder',
+						})
+				}
+			})
 			uni.getStorage({
 				key: 'add-material',
 				success(res) {
@@ -389,6 +422,17 @@
 					});
 				}
 			})
+			uni.getStorage({
+				key: 'selectStockInWarehouseByAdd',
+				success(res) {
+					that.warehouseName = res.data.name
+					that.warehouseId = res.data.id
+					uni.removeStorage({
+						key: 'selectStockInWarehouseByAdd'
+					});
+					
+				}
+			})
 			
 			uni.getStorage({
 				key: 'selectStockInSupplierByAdd',
@@ -411,16 +455,7 @@
 					});
 				}
 			})
-			
-			uni.getStorage({
-				key: 'in-add-selectCommand',
-				success(res) {
-					that.arrivalNo = res.data.no
-					uni.removeStorage({
-						key: 'in-add-selectCommand'
-					});
-				}
-			})
+
 		},
 		methods: {
 			sumQuantity,
@@ -486,12 +521,9 @@
 			},
 			purchaseClick() {
 				uni.navigateTo({
-					url: 'material-select?supplierNames=' + this.arrivalNo
+					url: 'materilPurchaseOrder?supplierNames=' + this.arrivalNo
 				})
-				/* console.log(this.sourceType)
-				if (!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
-					this.purchaseOrderShow = true
-				} */
+
 			},
 			selectSupplier() {
 				uni.navigateTo({
@@ -544,6 +576,7 @@
 					})
 					return
 				}
+
 				if (this.sourceType === 0) {
 					let detailsArr = []
 					for (var i = 0; i < this.materialList.length; i++) {
@@ -567,6 +600,9 @@
 								specification: this.materialList[i].specification,
 								unit: this.materialList[i].unit,
 								spuId: this.materialList[i].spuId || '',
+								remark1:'',
+								remark2:'',
+								remark3:'',
 							})
 						}
 					}
@@ -578,6 +614,7 @@
 						warehouseId: this.warehouseId,
 						details: detailsArr
 					}
+					console.log(params)
 					let result = await this.$myRequest({
 						url: '/purchase-arrival/',
 						method: 'POST',

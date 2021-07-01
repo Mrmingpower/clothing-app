@@ -839,6 +839,7 @@
 					})
 					return
 				}
+
 				let paramsDetail = []
 				for (var i = 0; i < this.materialList.length; i++) {
 					paramsDetail.push({

@@ -163,6 +163,7 @@
 		// onLoad() {
 		// 	this.getList()
 		// },
+
 		onShow() {
 			let queryParams = this.$map.get('stockInQueryParams') || {}
 			// let queryParams = uni.getStorageSync('stockInQueryParams')
@@ -216,6 +217,7 @@
 			clearSearch() {
 				this.searchText = ''
 			},
+
 			toDetail(id) {
 				console.log(id)
 				uni.navigateTo({
@@ -255,9 +257,9 @@
 				if(!this.$u.test.isEmpty(this.queryParams.orderCol)) {
 					// 排序的还没加
 				}
-				
-				
-				
+
+
+
 				if(!this.$u.test.isEmpty(this.queryParams.statuses)) {
 					queryData.statuses = this.queryParams.statuses
 				}

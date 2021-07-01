@@ -447,16 +447,6 @@
 					});
 				}
 			})
-			
-			uni.getStorage({
-				key: 'out-add-selectCommand',
-				success(res) {
-					that.commandIdLabel = res.data.no
-					uni.removeStorage({
-						key: 'out-add-selectCommand'
-					});
-				}
-			})
 		},
 		methods: {
 			sumQuantity,
@@ -546,10 +536,7 @@
 				// 		label: result[i].no
 				// 	})
 				// }
-				// this.commandShow = true
-				uni.navigateTo({
-					url: 'material-selectCommand?supplierNames=' + this.commandIdLabel
-				})
+				this.commandShow = true
 			},
 			async commandConfirm(e) {
 				this.commandIdLabel = e[0].label
@@ -671,9 +658,9 @@
 				}
 				this.seeShow = true
 			},
-			headClick(item) {
-				item.clickChecked = !item.clickChecked
-			},
+			// headClick(item) {
+			// 	item.clickChecked = !item.clickChecked
+			// },
 			closeBtn() {
 				this.editShow = false
 			},

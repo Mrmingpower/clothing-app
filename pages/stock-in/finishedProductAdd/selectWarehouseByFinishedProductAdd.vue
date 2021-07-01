@@ -69,11 +69,6 @@
 					url: 'finishedProductAdd'
 				})
 			},
-			// comback() {
-			// 	uni.navigateBack({
-			// 		url: '/pages/service/summary/summary'
-			// 	})
-			// },
 			toSearch() {
 				let tempArr = []
 				for (var i = 0; i < this.allList.length; i++) {
@@ -118,9 +113,6 @@
 				this.labelList = supplier
 			},
 			labelBtn(name, index) {
-				console.log('------------------------------')
-				console.log(this.allList)
-				console.log('------------------------------')
 				this.labelName = name
 				for (var i = 0; i < this.labelList.length; i++) {
 					this.$set(this.labelList[i], "checked", false)
@@ -131,10 +123,9 @@
 				if (this.labelDataList.indexOf(name) > -1) { // 解决组件视图不能跟着更新的两种办法
 					this.$set(this.labelList[index], "checked", true)
 					this.temp_dataList[0] = this.labelList[index].name
-				} 
+				}
 			},
 			checkboxChange: function(e) {
-				console.log(e)
 				this.labelDataList = e.detail.value
 			},
 		}

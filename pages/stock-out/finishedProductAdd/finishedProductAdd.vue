@@ -125,7 +125,7 @@
 								{{item.settlePricee}}
 							</text>
 						</view>
-						<view class="Specifications">
+						<view class="specifications">
 							<text>规格</text>
 							<view v-for="(itemm,index) in item.spec ">
 								<text style="margin-left: 50rpx;width: 30rpx;text-align: center;display: inline-block;">
@@ -570,6 +570,7 @@
 			dateClick() {
 				this.calendarShow = true
 			},
+		
 			headClick(item) {
 				item.show = !item.show
 			},
@@ -743,7 +744,7 @@
 		left: 150rpx;
 	}
 
-	.Specifications {
+	.specifications {
 		flex-direction: row;
 		display: flex;
 	}

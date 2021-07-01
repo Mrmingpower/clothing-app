@@ -59,7 +59,7 @@
 									</u-col>
 								</u-row>
 							</view>
-							
+
 						</view>
 						<view style="position: absolute;right: 80rpx;top: 120rpx;">
 							<view class="line-cla2">
@@ -208,7 +208,7 @@
 					</view>
 				</view>
 			</u-popup>
-			
+
 			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true" @close="seeShow = false">
 				<view class="u-demo-wrap">
 					<view style="margin-top: 20rpx;margin-bottom: 20rpx;">
@@ -386,6 +386,32 @@
 				}
 			})
 			uni.getStorage({
+				key:'purchaseOrder',
+				success(res){
+						that.arrivalNo = res.data.orderNo
+						for(var b=0;b<res.data.details.length;b++){
+							that.materialList.push({
+								color: res.data.details[b].color,
+								specification: res.data.details[b].specification,
+								unit: res.data.details[b].unit,
+								assistantUnit: res.data.details[b].assistantUnit,
+								price: res.data.details[b].price,
+								spuId: res.data.details[b].spuId,
+								productId: res.data.details[b].spuId,
+								productName: res.data.details[b].productName,
+								productNo: res.data.details[b].productNo,
+								exchangeRate: [1],
+								quantityByAssistant: [1],
+								allQuantityByAssistant: '',
+								quantity: '',
+								amount: '',
+								coloringNo: '',
+								clickChecked: true
+							})
+						}
+				}
+			})
+			uni.getStorage({
 				key: 'selectStockInWarehouseByAccessoryAdd',
 				success(res) {
 					console.log('res')
@@ -439,10 +465,13 @@
 				this.editShow = false
 			},
 			purchaseClick() {
-				console.log(this.sourceType)
-				if(!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
-					this.purchaseOrderShow = true
-				}
+				// console.log(this.sourceType)
+				// if(!this.$u.test.isEmpty(this.supplierId) && this.sourceType === 0) {
+				// 	this.purchaseOrderShow = true
+				// }
+				uni.navigateTo({
+					url: 'accessoryPurchaseOrder?supplierNames=' + this.arrivalNo
+				})
 			},
 			selectSupplier() {
 				uni.navigateTo({
@@ -657,7 +686,7 @@
 						})
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -680,7 +709,7 @@
 	.text-blue {
 		color: #0081ff;
 	}
-	
+
 	.line-cla2 {
 		margin: 14rpx 0;
 	}

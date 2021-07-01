@@ -63,7 +63,7 @@
 				list_orders: [],
 				page: 0, //当前分页页码
 				apiUrl: '', //后端接口地址
-				id: '', //传值使用,方便存在本地的locakStorage  
+				id: '', //传值使用,方便存在本地的locakStorage
 				del_id: '' ,//方便存在本地的locakStorage
 				searchText: '',
 				pageNo: 0,
@@ -75,10 +75,9 @@
 					loading: '努力加载中',
 					nomore: '没有更多了'
 				},
-				queryParams: '',
 			}
 		},
-		onShow() {	
+		onShow() {
 			// this.initData()
 			// this.getList()
 		},
@@ -138,27 +137,6 @@
 					pageNo: this.pageNo, // 传入页码
 					pageSize: this.pageSize// 传入每页条数
 				}
-				if(!this.$u.test.isEmpty(this.queryParams.begin)) {
-					queryData.begin = this.queryParams.begin
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.end)) {
-					queryData.end = this.queryParams.end
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.no)) {
-					queryData.no = this.queryParams.no
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.orderCol)) {
-					// 排序的还没加
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.statuses)) {
-					queryData.statuses = this.queryParams.statuses
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.supplierIds)) {
-					queryData.supplierIds = this.queryParams.supplierIds
-				}
-				if(!this.$u.test.isEmpty(this.queryParams.warehouseIds)) {
-					queryData.warehouseIds = this.queryParams.warehouseIds
-				}
 				console.log(queryData)
 				let result = await this.$myRequest({
 					url: '/customer/search',
@@ -188,8 +166,8 @@
 				let result = await this.$myRequest({
 					url: '/customer/search',
 					data:{
-						pageNo: 0,
-						pageSize: 6,
+						pageNo: this.pageNo,
+						pageSize: 10,
 						total: 0,
 					}
 				})

@@ -61,7 +61,7 @@
 					<u-field v-model="date" icon="calendar" @click="dateClick" label-width="200" :disabled="true"
 						right-icon="arrow-down-fill" placeholder="请选择出库日期" label="出库日期"></u-field>
 				</view>
-				
+
 				<view class="wrap" style="margin-top: 15rpx;">
 					<u-field v-model="description" type="textarea" icon="tags" label-width="200" placeholder="备注" label="备注">
 					</u-field>
@@ -72,13 +72,13 @@
 			</view>
 		</view>
 		<u-popup v-model="show" mode="center" length="90%" :closeable="true" height="300rpx">
-			
+
 				<view style="text-align: center;"  v-for="(item,index) in productArr" :index="index" :key="index" >
 					<text style="font-size: 30rpx;">请输入数量</text>
 					<u-input v-model="sp.num" :type="type" :border="border" style="margin-top: 40rpx;" />
 					<u-button @tap="submitPop(item)" size="medium" type="primary" style="margin-top: 70rpx;">确定</u-button>
 				</view>
-			
+
 		</u-popup>
 	</view>
 </template>
@@ -130,9 +130,9 @@
 						let only = res.data[j].productNo + '-' + res.data[j].color
 						if (that.tempProductArr.indexOf(only) > -1) {
 							let index = that.tempProductArr.indexOf(only)
-							that.productArr[index].allNum = that.productArr[index].allNum + res.data[index].allNum
+							that.productArr[index].allNum = that.productArr[index].allNum + res.data[j].allNum
 							for (var s=0;s<that.productArr[index].spec.length;s++){
-								that.productArr[index].spec[s].num = that.productArr[index].spec[s].num + res.data[index].spec[s].num
+								that.productArr[index].spec[s].num = that.productArr[index].spec[s].num + res.data[j].spec[s].num
 								console.log(that.productArr[index].spec[s].num)
 							}
 						}
@@ -148,7 +148,7 @@
 								allNum:res.data[j].allNum
 							})
 						}
-						
+
 					}
 					this.settlePricee = res.data.settlePricee
 					uni.removeStorage({
@@ -206,7 +206,57 @@
 						url: 'finished-add-add?warehouseId=' + this.warehouseId
 					});
 				}
-			}
+			},
+			async submit() {
+				if (this.$u.test.isEmpty(this.warehouseName)) {
+					uni.showToast({
+						title: '仓库不能为空',
+						icon: 'none'
+					})
+					return
+				}
+				let productDetails = []
+				console.log(this.productArr)
+				for(var s=0;s<this.productArr.length;s++){
+					for(var j=0;j<this.productArr[s].spec.length;j++){
+						this.skuId = this.productArr[s].spec[j].skuId
+					}
+					productDetails.push({
+						price:this.productArr[s].settlePricee,
+						quantity:this.productArr[s].allNum,
+						skuId: this.skuId
+					})
+				}
+				let params = {
+					date: this.date,
+					description: this.description,
+					warehouseId: this.warehouseId,
+					details:productDetails
+				}
+				console.log(params)
+				let result = await this.$myRequest({
+					url: '/product-in/',
+					method: 'post',
+					ContentType: 'application/json;charset=UTF-8',
+					data: params
+				})
+				if (result === 200) {
+					uni.showToast({
+						title: '开单成功',
+						icon: 'success'
+					})
+					setTimeout(function() {
+						uni.switchTab({
+							url: '../../index/index'
+						})
+					}, 800);
+				} else {
+					uni.showToast({
+						title: '开单失败',
+						icon: 'none'
+					})
+				}
+			},
 		}
 	}
 </script>
@@ -252,7 +302,7 @@
 		margin-bottom: -30rpx;
 	}
 	.total{
-		
+
 		margin-top: 30rpx;
 		font-size: 30rpx;
 		color: #FF0000;

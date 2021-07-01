@@ -17,8 +17,8 @@
 					<view v-for="(item_orders, index) in list_orders" :key="index" class="item"
 						@click="toSubmit(item_orders)">
 						<view class="all_orders_5">
-							<text class="textnum_cla" v-show="item_orders.checked === true">{{alNum}}</text>
-							<u-icon   v-show="item_orders.checked === true" style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
+							<text class="textnum_cla" >{{alNum}}</text>
+							<u-icon    style="height: 0rpx;position: absolute;right:0rpx;top:80rpx;"name="shopping-cart-fill" color="#2979ff" size="100"></u-icon>
 							<view class="all_orders_7">
 								<image src="/static/all_orders/images/all_orders_8_8.jpg" mode="scaleToFill" border="0"
 									class="all_orders_8"></image>
@@ -40,10 +40,6 @@
 										{{item_orders.categoryName}}
 									</text>
 								</text>
-							</view>
-							<view class="all_orders_14">
-								<text decode="true" class="all_orders_15">spuId</text>
-								<text decode="true" class="orderNo">{{item_orders.id}}</text>
 							</view>
 						</view>
 					</view>
@@ -80,11 +76,11 @@
 						</block>
 					</view>
 					<view class="inventory">
-						
+
 					</view>
 				</view>
 				<view class="item-title">{{ '颜色' }}</view>
-		
+
 				<view class="item-wrapper">
 					<radio-group @change="checkboxChange" style="display: flex; flex-wrap:wrap">
 						<label :class="item.checked ? 'checkbox selectBox' : 'checkbox '"
@@ -110,7 +106,7 @@
 						</view>
 					</view>
 				</view>
-		
+
 				<view class="bottomm">
 					<text class="pricee fill">
 					    <text class="sml">合计:</text>
@@ -130,6 +126,10 @@
 				</view>
 			</view>
 		</u-popup>
+		<view >
+			<u-toast ref="uToast" />
+		</view>
+		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 	</view>
 </template>
 
@@ -172,18 +172,46 @@
 				alNum:0,
 				resultData:'',
 				allMap: new Map(),
-				
+				queryParams:''
+
 			}
 		},
 		onLoad(e) {
 			this.warehouseId = e.warehouseId
+		},
+		onShow() {
+			let queryParams = this.$map.get('stockInQueryParams') || {}
+			console.log('queryParams')
+			console.log(queryParams)
+			this.queryParams = queryParams
 			this.initData()
 			this.getData();
+		},
+		async onPullDownRefresh() {
+			this.$map.delete('stockInQueryParams')
+			this.queryParams = {}
+			this.initData()
+			await this.getList()
+			uni.stopPullDownRefresh()
+			this.$refs.uToast.show({
+				title:'刷新成功'
+			})
+		},
+		onUnload() {
+			this.$map.delete('stockInQueryParams')
+		},
+		async onReachBottom() {
+			if (parseInt(this.total) === this.list_orders.length) {
+				this.status = 'nomore'
+				return
+			}
+			this.status = 'loading'
+			await this.getList();
 		},
 		methods: {
 			initData() {
 				this.finished = false
-				this.pageNo = 0
+				this.pageNo = 1
 				this.pageSize = 10
 				this.total = 0
 				this.status = 'loadmore'
@@ -192,15 +220,14 @@
 			},
 			popClose() {
 				this.allMap = new Map()
-				console.log('弹出关闭')
 			},
 			delQuery() {
-			
+
 			},
 			valChange(e) {
 				let a = 0
 				for (var i = 0; i < this.specList.length; i++) {
-					a = a + this.specList[i].num 
+					a = a + this.specList[i].num
 				}
 				this.colorArr[this.temp_colorIndex].allNum = a
 				let alNum = 0
@@ -210,8 +237,6 @@
 				this.alNum = alNum
 			},
 			labelBtn(item, index) {
-				console.log('item===========')
-				console.log(this.colorArr[index])
 				if(this.temp_colorIndex === index) {
 					console.log('重复了')
 					return
@@ -223,10 +248,39 @@
 					this.temp_colorIndex = index
 				})
 			},
+			async loadmore() {
+				if (parseInt(this.total) === this.list_orders.length) {
+					this.status = 'nomore'
+					return
+				}
+				this.status = 'loading'
+				await this.getList()
+			},
+			async getList() {
+				if (this.finished) return;
+				this.pageNo++;
+				let queryData = {
+					pageNo: this.pageNo, // 传入页码
+					pageSize: this.pageSize// 传入每页条数
+				}
+				console.log(queryData)
+				let result = await this.$myRequest({
+					url: '/product-spu/search',
+					data: queryData
+				})
+				this.list_orders = [...this.list_orders, ...result.items]
+				this.total = result.count;
+				if (this.list_orders.length == this.total) {
+					this.finished = true;
+					this.status = 'nomore'
+				}
+				console.log(this.total)
+				console.log(this.list_orders.length)
+			},
 			submit() {
 				let Arr = [];
 				let that = this;
-				
+
 				let productArr = []
 				for (var i = 0; i < this.colorArr.length; i++) {
 					if(this.colorArr[i].allNum > 0) {
@@ -238,11 +292,12 @@
 							spec: this.specArr[i],
 							productName: this.resultData[i].productName,
 							productNo: this.resultData[i].productNo,
-							settlePricee:this.resultData[0].price
+							settlePricee:this.resultData[0].price,
 						})
 					}
 				}
 				console.log(productArr)
+
 				// return
 				this.goodsShow = false
 				uni.setStorage({
@@ -255,13 +310,11 @@
 			},
 			checkboxChange: function(e) {
 				this.temp_color = e.detail.value
-
 			},
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/'+ this.warehouseId + '/' + e.id
 				})
-
 				this.settlePricee = result1[0].price
 				this.resultData = result1
 				this.goodsShow = true
@@ -275,6 +328,7 @@
 						allNum: 0
 					})
 					specArr.push(result1[i].productSkuIdWithSpecificationVOList)
+
 				}
 				colorArr[0].checked = true
 				this.colorArr = colorArr
@@ -286,11 +340,11 @@
 				let result = await this.$myRequest({
 					url: '/product-spu/search',
 					data: {
-						pageNo: 0,
+						pageNo: this.pageNo,
 						pageSize: 10,
+						total: 0,
 					}
 				})
-				console.log(result)
 				this.list_orders = result.items
 			},
 		}
@@ -309,7 +363,7 @@
 		width: 50rpx;
 		height: 50rpx;
 		background-color: #ff0000;
-		color: #ffffff; 
+		color: #ffffff;
 		text-align: center;
 		font-size: 35rpx;
 		position: absolute;
@@ -349,9 +403,9 @@
 	}
 	.text_cla{
 		text-align: center;
-		font-size: 1rpx; 
-		color: #ffffff; 
-		background-color: #ffaa00; 
+		font-size: 1rpx;
+		color: #ffffff;
+		background-color: #ffaa00;
 		border: 1px solid #ffffff;
 		position: absolute;
 		right: -10rpx;
@@ -361,9 +415,9 @@
 	}
 	.text_cla1{
 		text-align: center;
-		font-size: 25rpx; 
-		color: #ffaa00; 
-		background-color: #e7e7e7; 
+		font-size: 25rpx;
+		color: #ffaa00;
+		background-color: #e7e7e7;
 		border: 1px solid #ffffff;
 		position: absolute;
 		right: -10rpx;
@@ -430,7 +484,7 @@
 		border-radius: 0upx;
 		font-size: 8upx;
 	}
-	
+
 	.all_orders_1 .orders .item {
 		white-space: normal;
 		width: 702upx;
@@ -444,7 +498,7 @@
 		border-radius: 0upx;
 		font-size: 8upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 {
 		white-space: normal;
 		width: 571upx;
@@ -457,7 +511,7 @@
 		border-radius: 0upx;
 		font-size: 8upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_7 {
 		white-space: normal;
 		width: 563upx;
@@ -472,7 +526,7 @@
 		font-size: 24upx;
 		line-height: 26upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_7 .all_orders_8 {
 		white-space: normal;
 		width: 22upx;
@@ -486,7 +540,7 @@
 		font-size: 20upx;
 		line-height: 22upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_7 .address_from {
 		white-space: normal;
 		width: 529upx;
@@ -501,7 +555,7 @@
 		font-size: 25upx;
 		line-height: 26upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_10 {
 		white-space: normal;
 		width: 4upx;
@@ -516,7 +570,7 @@
 		font-size: 38upx;
 		line-height: 40upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_11 {
 		white-space: normal;
 		width: 563upx;
@@ -531,7 +585,7 @@
 		font-size: 26upx;
 		line-height: 27upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_11 .all_orders_12 {
 		white-space: normal;
 		width: 22upx;
@@ -545,7 +599,7 @@
 		font-size: 20upx;
 		line-height: 22upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_11 .address_to {
 		white-space: normal;
 		width: 529upx;
@@ -560,7 +614,7 @@
 		font-size: 25upx;
 		line-height: 27upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_14 {
 		white-space: normal;
 		width: 563upx;
@@ -575,7 +629,7 @@
 		font-size: 24upx;
 		line-height: 25upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_14 .all_orders_15 {
 		white-space: normal;
 		width: auto;
@@ -590,7 +644,7 @@
 		font-size: 22upx;
 		line-height: 25upx;
 	}
-	
+
 	.all_orders_1 .orders .item .all_orders_5 .all_orders_14 .orderNo {
 		white-space: normal;
 		width: auto;

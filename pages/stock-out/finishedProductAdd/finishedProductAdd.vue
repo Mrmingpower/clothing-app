@@ -163,7 +163,7 @@
 
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" color="#00aaff">
+					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" @click="toScan" color="#00aaff">
 					</u-icon>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
@@ -679,6 +679,11 @@
 				}
 
 			},
+			toScan(){
+				uni.navigateTo({
+					url: 'scan'
+				});
+			}
 
 		},
 

@@ -163,8 +163,8 @@
 
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-field  v-model="show" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" :focus="true"
-						@click="focus" @confirm="scanConfirm" @focus="focus" color="#00aaff">
+					<u-field v-model="show" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60"
+						:focus="true" @click="focus" @confirm="scanConfirm" @focus="focus" color="#00aaff">
 					</u-field>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
@@ -341,7 +341,7 @@
 				allNum: 0,
 				tempProductArr: [],
 				spec: [],
-				
+
 			}
 		},
 		onShow() {
@@ -381,7 +381,7 @@
 							if (that.tempProductArr.indexOf(only) > -1) {
 								let index = that.tempProductArr.indexOf(only)
 								console.log(index)
-								
+
 								that.productArr[index].allNum = res.data[j].allNum
 								for (var s = 0; s < that.productArr[index].spec.length; s++) {
 									that.productArr[index].spec[s].num = res.data[j].spec[s].num
@@ -400,7 +400,7 @@
 									allNum: res.data[j].allNum,
 									totalPrice: res.data[j].totalPrice
 								})
-								
+
 
 							}
 
@@ -468,7 +468,7 @@
 			toDel(index) {
 				console.log(this.productArr)
 				this.productArr.splice(index, 1)
-				this.tempProductArr.splice(index, 1)	
+				this.tempProductArr.splice(index, 1)
 			},
 			toEdit(item) {
 				this.editShow = true
@@ -693,130 +693,90 @@
 				});
 			},
 			scanConfirm(index) {
-				if (index === 0) {
-					this.show = true
-					this.tempUrl = this.url
-				} else if (index === 1) {
-					this.itemNumber = ''
-					this.description = ''
-					this.inventoryItemId = ''
-					this.invCategory = ''
-					this.status = ''
-					this.primaryUomCode = ''
-					this.itemType = ''
-					this.lastUpdateDate = ''
-					this.weightUomCode = ''
-					this.unitWeight = ''
-					this.volumeUomCode = ''
-					this.unitVolume = ''
-					this.dimensionUomCode = ''
-					this.unitLength = ''
-					this.unitWidth = ''
-					this.unitHeight = ''
-					uni.scanCode({
-						scanType: ['qrCode'],
-						success: (res) => {
-							let that = this
-							console.log('条码类型：' + res.scanType);
-							console.log('条码内容：' + res.result);
-							let barCord = res.result
-							uni.showLoading({
-								title: '加载中',
-								mask: true
-							});
-							
-							this.$myRequest({
-								url:111,
-								data:{
-									barCord:barCord
-								}
-							})
-							uni.request({
-								header: {
-									"Content-Type": 'application/x-www-form-urlencoded'
-								},
-								url: that.url + "/item/by-item-number",
-								method: 'GET',
-								data: {
-									itemNumber: itemNumber
-								},
-								success: (res) => {
-									let result = res.data
-									console.log(that.url)
-									console.log(result)
-									if (result.code === 200) {
-										uni.hideLoading();
-										uni.showToast({
-											title: '扫描成功',
-											icon: 'success'
-										})
-										that.itemNumber = result.result.itemNumber
-										that.description = result.result.description
-										that.inventoryItemId = result.result.inventoryItemId
-										that.invCategory = result.result.invCategory
-										that.status = result.result.status
-										that.primaryUomCode = result.result.primaryUomCode
-										that.itemType = result.result.itemType
-										that.lastUpdateDate = result.result.lastUpdateDate
-										that.weightUomCode = result.result.weightUomCode
-										that.unitWeight = result.result.unitWeight
-										that.volumeUomCode = result.result.volumeUomCode
-										that.unitVolume = result.result.unitVolume
-										that.dimensionUomCode = result.result.dimensionUomCode
-										that.unitLength = result.result.unitLength
-										that.unitWidth = result.result.unitWidth
-										that.unitHeight = result.result.unitHeight
-									} else {
-										uni.hideLoading();
-										if (this.$u.test.isEmpty(result.code)) {
-											uni.showToast({
-												title: result.message ||
-													'请配置正确的服务器地址并保证连接正确',
-												icon: 'none'
-											})
-											this.show = true
-											this.tempUrl = this.url
-										} else {
-											uni.showToast({
-												title: result.message || '扫描错误',
-												icon: 'none'
-											})
-										}
-									}
-								},
-								fail: (err) => {
+
+				uni.scanCode({
+					scanType: ['qrCode'],
+					success: (res) => {
+						let that = this
+						console.log('条码类型：' + res.scanType);
+						console.log('条码内容：' + res.result);
+						let barCord = res.result
+						uni.showLoading({
+							title: '加载中',
+							mask: true
+						});
+
+						this.$myRequest({
+							url: 111,
+							data: {
+								barCord: barCord
+							}
+						})
+						uni.request({
+							header: {
+								"Content-Type": 'application/x-www-form-urlencoded'
+							},
+							url: that.url + "/item/by-item-number",
+							method: 'GET',
+							data: {
+								itemNumber: itemNumber
+							},
+							success: (res) => {
+								let result = res.data
+								console.log(that.url)
+								console.log(result)
+								if (result.code === 200) {
 									uni.hideLoading();
 									uni.showToast({
-										title: '请配置正确的服务器地址并保证连接正确',
-										icon: 'none'
+										title: '扫描成功',
+										icon: 'success'
 									})
-									this.show = true
-									this.tempUrl = this.url
+									that.itemNumber = result.result.itemNumber
+									that.description = result.result.description
+									that.inventoryItemId = result.result.inventoryItemId
+									that.invCategory = result.result.invCategory
+									that.status = result.result.status
+									that.primaryUomCode = result.result.primaryUomCode
+									that.itemType = result.result.itemType
+									that.lastUpdateDate = result.result.lastUpdateDate
+									that.weightUomCode = result.result.weightUomCode
+									that.unitWeight = result.result.unitWeight
+									that.volumeUomCode = result.result.volumeUomCode
+									that.unitVolume = result.result.unitVolume
+									that.dimensionUomCode = result.result.dimensionUomCode
+									that.unitLength = result.result.unitLength
+									that.unitWidth = result.result.unitWidth
+									that.unitHeight = result.result.unitHeight
+								} else {
+									uni.hideLoading();
+									if (this.$u.test.isEmpty(result.code)) {
+										uni.showToast({
+											title: result.message ||
+												'请配置正确的服务器地址并保证连接正确',
+											icon: 'none'
+										})
+										this.show = true
+										this.tempUrl = this.url
+									} else {
+										uni.showToast({
+											title: result.message || '扫描错误',
+											icon: 'none'
+										})
+									}
 								}
-							})
-						}
-					});
-				} else {
-					// this.itemNumber = ''
-					// this.description = ''
-					// this.inventoryItemId = ''
-					// this.invCategory = ''
-					// this.status = ''
-					// this.primaryUomCode = ''
-					// this.itemType = ''
-					// this.lastUpdateDate = ''
-					// this.weightUomCode = ''
-					// this.unitWeight = ''
-					// this.volumeUomCode = ''
-					// this.unitVolume = ''
-					// this.dimensionUomCode = ''
-					// this.unitLength = ''
-					// this.unitWidth = ''
-					// this.unitHeight = ''
-					uni.redirectTo({
-						url: 'scan'
-					})
-				}
+							},
+							fail: (err) => {
+								uni.hideLoading();
+								uni.showToast({
+									title: '请配置正确的服务器地址并保证连接正确',
+									icon: 'none'
+								})
+								this.show = true
+								this.tempUrl = this.url
+							}
+						})
+					}
+				});
 			}
 		},
 
@@ -941,5 +901,4 @@
 		font-size: 30rpx;
 		color: #FF0000;
 	}
-
 </style>

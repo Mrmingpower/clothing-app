@@ -285,7 +285,8 @@
 							spec: this.specArr[i],
 							productName: this.resultData[i].productName,
 							productNo: this.resultData[i].productNo,
-							settlePricee: this.resultData[0].salePrice
+							settlePricee: this.resultData[0].salePrice,
+							totalPrice: this.resultData[0].salePrice * this.colorArr[i].allNum
 						})
 					}
 				}

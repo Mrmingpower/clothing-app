@@ -147,7 +147,7 @@
 									style="color: #FF0000;margin-left: 40rpx"
 									v-model="allNum">{{item.allNum}}</text></text>
 							<text style="color:#000000;font-size: 32rpx;float: right;">金额:
-								<text style="color: #FF0000;">￥{{total[index]}}</text>
+								<text style="color: #FF0000;">￥{{item.totalPrice}}</text>
 							</text>
 						</view>
 						<view class="footer-box">
@@ -163,9 +163,9 @@
 
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<input type="text" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" :focus="true"
+					<u-field  v-model="show" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" :focus="true"
 						@click="focus" @confirm="scanConfirm" @focus="focus" color="#00aaff">
-					</input>
+					</u-field>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
 				</view>
@@ -341,7 +341,7 @@
 				allNum: 0,
 				tempProductArr: [],
 				spec: [],
-				count: 0
+				
 			}
 		},
 		onShow() {
@@ -381,10 +381,11 @@
 							if (that.tempProductArr.indexOf(only) > -1) {
 								let index = that.tempProductArr.indexOf(only)
 								console.log(index)
-								that.total[index] = res.data[j].allNum * res.data[j].settlePricee
+								
 								that.productArr[index].allNum = res.data[j].allNum
 								for (var s = 0; s < that.productArr[index].spec.length; s++) {
 									that.productArr[index].spec[s].num = res.data[j].spec[s].num
+									that.productArr[index].totalPrice = res.data[j].totalPrice
 									console.log(that.tempProductArr)
 								}
 							} else {
@@ -396,10 +397,10 @@
 									spec: res.data[j].spec,
 									color: res.data[j].color,
 									showw: true,
-									allNum: res.data[j].allNum
+									allNum: res.data[j].allNum,
+									totalPrice: res.data[j].totalPrice
 								})
-								that.total[that.count] = res.data[j].allNum * res.data[j].settlePricee
-								that.count++
+								
 
 							}
 
@@ -465,12 +466,9 @@
 				this.productList.splice(index, 1)
 			},
 			toDel(index) {
-
-				let that = this
+				console.log(this.productArr)
 				this.productArr.splice(index, 1)
-				this.tempProductArr.splice(index, 1)
-				this.count=0
-				console.log('删除执行了')
+				this.tempProductArr.splice(index, 1)	
 			},
 			toEdit(item) {
 				this.editShow = true
@@ -721,11 +719,18 @@
 							let that = this
 							console.log('条码类型：' + res.scanType);
 							console.log('条码内容：' + res.result);
-							let itemNumber = res.result
+							let barCord = res.result
 							uni.showLoading({
 								title: '加载中',
 								mask: true
 							});
+							
+							this.$myRequest({
+								url:111,
+								data:{
+									barCord:barCord
+								}
+							})
 							uni.request({
 								header: {
 									"Content-Type": 'application/x-www-form-urlencoded'
@@ -937,14 +942,4 @@
 		color: #FF0000;
 	}
 
-	textarea:focus,
-	input[type="text"]:focus,
-	input[type="datetime"]:focus {
-		border-color: rgba(82, 168, 236, 0.8);
-		outline: 0;
-		outline: thin dotted \9;
-		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-		-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-		box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
-	}
 </style>

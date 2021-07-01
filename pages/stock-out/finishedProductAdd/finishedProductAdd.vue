@@ -343,9 +343,7 @@
 								that.total[that.count] = res.data[j].allNum * res.data[j].settlePricee
 								that.count++
 							}
-
 						}
-
 					})
 					uni.removeStorage({
 						key: 'out-finishedProduct'
@@ -408,6 +406,7 @@
 				let that = this
 				this.productArr.splice(index, 1)
 				this.tempProductArr.splice(index,1)
+				this.count = 0
 				console.log('删除执行了')
 			},
 			toEdit(item) {
@@ -558,8 +557,6 @@
 					})
 					return
 				}
-
-
 				let params = {
 					date: this.date,
 					sourceTypeName: this.sourceTypeName,

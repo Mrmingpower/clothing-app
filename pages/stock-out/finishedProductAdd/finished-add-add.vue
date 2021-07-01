@@ -318,7 +318,6 @@
 				let colorArr = []
 				let specArr = []
 
-
 				for (let i = 0; i < result1.length; i++) {
 					colorArr.push({
 						colorId: result1[i].colorId,
@@ -329,12 +328,12 @@
 					})
 					specArr.push(result1[i].productSkuIdWithSpecificationVOList)
 				}
-
 				for (let i = 0; i < colorArr.length; i++) {
 					for (let j = 0; j < this.finishedProductAddTofinishedAdd.length; j++) {
 						if (this.resultData[i].productNo === this.finishedProductAddTofinishedAdd[j].productNo &&
 							colorArr[i].color === this.finishedProductAddTofinishedAdd[j].color) {
 							colorArr[i].allNum = this.finishedProductAddTofinishedAdd[j].allNum
+							this.unitPrice = this.finishedProductAddTofinishedAdd[j].settlePricee
 						}
 					}
 				}
@@ -350,15 +349,11 @@
 						}
 					}
 				}
-
 				colorArr[0].checked = true
 				this.colorArr = colorArr
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-
-
-
 			},
 
 			labelBtn(item, index) {

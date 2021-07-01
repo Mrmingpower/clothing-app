@@ -339,7 +339,8 @@
 				total: [],
 				allNum: 0,
 				tempProductArr: [],
-				spec: []
+				spec: [],
+				count: 0
 			}
 		},
 		onShow() {
@@ -371,6 +372,7 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
+
 					console.log('res')
 					console.log(res)
 					that.$nextTick(() => {
@@ -379,10 +381,11 @@
 							if (that.tempProductArr.indexOf(only) > -1) {
 								let index = that.tempProductArr.indexOf(only)
 								console.log(index)
+								that.total[index] = res.data[j].allNum * res.data[j].settlePricee
 								that.productArr[index].allNum = res.data[j].allNum
 								for (var s = 0; s < that.productArr[index].spec.length; s++) {
 									that.productArr[index].spec[s].num = res.data[j].spec[s].num
-									console.log(that.productArr[index].spec[s].num)
+									console.log(that.tempProductArr)
 								}
 							} else {
 								that.tempProductArr.push(only)
@@ -395,19 +398,14 @@
 									showw: true,
 									allNum: res.data[j].allNum
 								})
+								that.total[that.count] = res.data[j].allNum * res.data[j].settlePricee
+								that.count++
+
 							}
 
 						}
+
 					})
-					console.log(that.tempProductArr)
-					
-
-
-
-					for (var i = 0; i < res.data.length; i++) {
-						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
-					}
-
 
 					uni.removeStorage({
 						key: 'out-finishedProduct'
@@ -466,7 +464,13 @@
 			toDel(index) {
 				this.productList.splice(index, 1)
 			},
-			
+			toDel(index) {
+				
+				let that = this
+				this.productArr.splice(index, 1)
+				this.tempProductArr.splice(index,1)
+				console.log('删除执行了')
+			},
 			toEdit(item) {
 				this.editShow = true
 				this.editRow = item
@@ -679,8 +683,8 @@
 		},
 
 		watch: {
-			
-			productArr:function(){
+
+			productArr: function() {
 				console.log("aa")
 			}
 		}

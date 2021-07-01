@@ -191,7 +191,6 @@
 				key: 'finishedProductAddTofinishedAdd',
 				success(res) {
 					that.finishedProductAddTofinishedAdd = res.data
-					console.log(that.finishedProductAddTofinishedAdd)
 					uni.removeStorage({
 						key: 'finishedProductAddTofinishedAdd'
 					})
@@ -293,13 +292,7 @@
 				})
 			},
 
-			// checkboxChange: function(e) {
-			// 	this.temp_color = e.detail.value
-			// 	console.log(e.detail.value)
-			// 	console.log(e)
-			// 	console.log('checkbox发生change事件，携带value值为：' + e.detail.value)
-			// 	console.log(this.temp_color, "temp_color")
-			// },
+		
 			async toSubmit(e) {
 				let result1 = await this.$myRequest({
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
@@ -310,7 +303,6 @@
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
 				this.goodsShow = true
-				console.log(result1)
 				let colorArr = []
 				let specArr = []
 
@@ -346,18 +338,13 @@
 						}
 					}
 				}
-				console.log(specArr)
+
 				colorArr[0].checked = true
 				this.colorArr = colorArr
 				this.specArr = specArr
 				this.specList = specArr[0]
 				this.temp_colorIndex = 0
-				// this.colorList = result1
-				// this.dataList = result1
-				// console.log('item')
-				// console.log(result1)
-				// console.log(result1[0].color)
-				// console.log(this.specList)
+
 
 
 			},

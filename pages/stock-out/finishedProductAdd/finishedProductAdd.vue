@@ -183,7 +183,8 @@
 			</u-field>
 		</view>
 		<view>
-			<u-button throttle-time="2000" type="primary" :ripple="true" :plain="true" @click="submit">确认开单</u-button>
+			<u-button class="confirmOK" throttle-time="2000" type="primary" :ripple="true" :plain="true"
+				@click="submit">确认开单</u-button>
 		</view>
 		<view>
 			<u-toast ref="uToast" />
@@ -377,14 +378,10 @@
 							let only = res.data[j].productNo + '-' + res.data[j].color
 							if (that.tempProductArr.indexOf(only) > -1) {
 								let index = that.tempProductArr.indexOf(only)
-								console.log(that.productArr[index])
-								that.productArr[index].allNum = /* that.productArr[index].allNum */ res
-									.data[index]
-									.allNum
+								console.log(index)
+								that.productArr[index].allNum = res.data[j].allNum
 								for (var s = 0; s < that.productArr[index].spec.length; s++) {
-									that.productArr[index].spec[s]
-										.num = /* that.productArr[index].spec[s].num + */ res
-										.data[index].spec[s].num
+									that.productArr[index].spec[s].num = res.data[j].spec[s].num
 									console.log(that.productArr[index].spec[s].num)
 								}
 							} else {
@@ -402,12 +399,15 @@
 
 						}
 					})
+					console.log(that.tempProductArr)
+					
 
 
 
 					for (var i = 0; i < res.data.length; i++) {
 						that.total[i] = res.data[i].allNum * res.data[i].settlePricee
 					}
+
 
 					uni.removeStorage({
 						key: 'out-finishedProduct'
@@ -466,6 +466,7 @@
 			toDel(index) {
 				this.productList.splice(index, 1)
 			},
+			
 			toEdit(item) {
 				this.editShow = true
 				this.editRow = item
@@ -656,7 +657,6 @@
 				}
 			},
 			toAddProduct() {
-				console.log(this.productArr)
 				if (this.sourceType === 2 && this.warehouseName !== '') {
 					if (this.productArr != '') {
 						uni.setStorage({
@@ -676,6 +676,13 @@
 
 			},
 
+		},
+
+		watch: {
+			
+			productArr:function(){
+				console.log("aa")
+			}
 		}
 	}
 </script>

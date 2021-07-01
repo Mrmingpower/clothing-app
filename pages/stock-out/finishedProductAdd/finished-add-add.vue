@@ -190,7 +190,7 @@
 		},
 		onLoad(e) {
 			this.warehouseId = e.warehouseId
-			this.initData()
+			this.initData();
 			this.getData();
 		},
 
@@ -206,6 +206,11 @@
 					})
 				}
 			})
+		},
+		async onPullDownRefresh() {
+			this.initData()
+			await this.getData()
+			uni.stopPullDownRefresh()
 		},
 
 		async onReachBottom() {
@@ -243,6 +248,8 @@
 				this.status = 'loadmore'
 				this.searchText = ''
 				this.list_orders = []
+				this.specArr = []
+				this.colorArr = []
 			},
 			delQuery() {
 
@@ -298,9 +305,10 @@
 			},
 
 		
-			async toSubmit(e) {
+			async toSubmit(list_orders) {
+				console.log(list_orders)
 				let result1 = await this.$myRequest({
-					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
+					url: '/product-spu/group-color/' + this.warehouseId + '/' + list_orders.id
 				})
 
 				

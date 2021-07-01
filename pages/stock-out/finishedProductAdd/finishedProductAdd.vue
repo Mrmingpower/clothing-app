@@ -18,101 +18,6 @@
 			<view class="u-border-bottom" style="background-color: #FFFFFF;text-align: center;">
 				<text style="font-size: 50rpx;">成品信息</text>
 			</view>
-			<view v-for="(item,index) in productList" :key="index" :index="index">
-				<u-card :border="false" margin="0rpx 0rpx" :thumb="thumb" @head-click="headClick(item)" thumb-width="40"
-					:title-size="35" border-radius="0" :title="item.productName" :sub-title="item.productNo">
-					<view slot="body" v-if="item.show">
-						<view style="width: 350rpx;" class="u-border-right">
-							<view style="width: 380rpx;">
-								<u-row gutter="8">
-									<u-col span="5">
-										<view class="flex-item-20">名称</view>
-									</u-col>
-									<u-col span="3">
-										<view style="width: 180rpx;">{{item.productName}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2" style="width: 380rpx;">
-								<u-row gutter="8">
-									<u-col span="5">
-										<view class="flex-item-20">编号</view>
-									</u-col>
-									<u-col span="3">
-										<view style="width: 180rpx;">{{item.productNo}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2" style="width: 400rpx;">
-								<u-row gutter="7">
-									<u-col span="5">
-										<view class="flex-item-20">单位</view>
-									</u-col>
-									<u-col span="2">
-										<view style="width: 180rpx;">{{item.unit}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2">
-								<u-row gutter="7">
-									<u-col span="5">
-										<view class="flex-item-20">颜色</view>
-									</u-col>
-									<u-col span="2" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.color}}</view>
-									</u-col>
-								</u-row>
-							</view>
-						</view>
-						<view style="position: absolute;right: 80rpx;top: 120rpx;">
-							<view class="line-cla2">
-								<u-row gutter="7">
-									<u-col span="6">
-										<view class="flex-item-20">尺码</view>
-									</u-col>
-									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.specification}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2">
-								<u-row gutter="7">
-									<u-col span="6">
-										<view class="flex-item-20">数量</view>
-									</u-col>
-									<u-col span="1" style="margin-left: 30rpx;">
-										<view style="width: 100rpx;">{{item.quantity}}</view>
-									</u-col>
-								</u-row>
-							</view>
-							<view class="line-cla2">
-								<u-row gutter="7">
-									<u-col span="5">
-										<view class="flex-item-20">单价</view>
-									</u-col>
-									<u-col span="2">
-										<view style="width: 180rpx;color: #ff0000;">{{item.price}}</view>
-									</u-col>
-								</u-row>
-							</view>
-						</view>
-					</view>
-					<view slot="foot">
-						<view class="footer-box">
-							<view class="my-iconfont text-blue" @tap="toEdit(item)">
-								<u-icon name="more-circle" color="#2979ff" size="28" label="修改" label-color="#2979ff">
-								</u-icon>
-							</view>
-							<view class="my-iconfont text-blue" @tap="toDel(index)">
-								<u-icon name="close-circle" color="#e54d42" size="28" label="删除" label-color="#e54d42">
-								</u-icon>
-							</view>
-						</view>
-					</view>
-				</u-card>
-			</view>
-
-
 			<view v-for="(item,index) in productArr" :index="index" :key="index">
 				<u-card :title="item.productNo" :sub-title="item.color" title-size="40" border-radius="0"
 					:border="false" @head-click="headClick(item)">
@@ -313,7 +218,6 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-
 					console.log('res')
 					console.log(res)
 					that.$nextTick(() => {
@@ -353,7 +257,6 @@
 					})
 				}
 			})
-
 			uni.getStorage({
 				key: 'out-add-order',
 				success(res) {
@@ -427,6 +330,9 @@
 				this.quantityShow = true
 			},
 			selectcommand(e) {
+				uni.setStorage({
+					key:deliveryWarehouseId
+				})
 				uni.navigateTo({
 					url: 'searchOrder'
 				})

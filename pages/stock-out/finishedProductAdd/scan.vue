@@ -2,8 +2,9 @@
 	<view>
 		<view class="u-page">
 			<!-- 所有内容的容器 -->
-			<view style="" class="u-border-bottom">	
-				<u-field icon="scan" v-model="tempNum" :focus="true" @click="focus" @confirm="confirm" @focus="focus"  label-width="230" input-align="right" label="当前扫描物料:">
+			<view style="" class="u-border-bottom">
+				<u-field icon="scan" v-model="tempNum" :focus="true" @click="focus" @confirm="confirm" @focus="focus"
+					label-width="230" input-align="right" label="当前扫描物料:">
 				</u-field>
 			</view>
 			<view class="wrap" style="margin-top: 15rpx;">
@@ -117,8 +118,9 @@
 		},
 		onLoad() {
 			let url = uni.getStorageSync('url')
+
 			if (this.$u.test.isEmpty(url)) {
-				this.url = 'http://192.168.0.98:8081'
+				this.url = 'http://192.144.230.237:21616'
 			} else {
 				this.url = url
 			}
@@ -128,14 +130,14 @@
 		},
 		methods: {
 			focus(e) {
-				uni.hideKeyboard()
+				
 				// uni.onKeyboardHeightChange((res) => {
 				// 	console.log('坚挺了')
 				// 	if(res.height > 0) {
 				// 		uni.hideKeyboard()
 				// 	}
 				// 	uni.offKeyboardHeightChange(res =>{
-						
+
 				// 	})
 				// })
 			},
@@ -157,7 +159,7 @@
 				this.unitWidth = ''
 				this.unitHeight = ''
 				uni.showLoading({
-				    title: '加载中',
+					title: '加载中',
 					mask: true
 				});
 				uni.request({
@@ -196,7 +198,7 @@
 							this.unitHeight = result.result.unitHeight
 						} else {
 							uni.hideLoading();
-							if(this.$u.test.isEmpty(result.code)) {
+							if (this.$u.test.isEmpty(result.code)) {
 								uni.showToast({
 									title: result.message || '请配置正确的服务器地址并保证连接正确并保证连接正确',
 									icon: 'none'
@@ -232,39 +234,25 @@
 			testConnect() {
 				let that = this
 				uni.showLoading({
-				    title: '加载中',
+					title: '加载中',
 					mask: true
 				});
-				uni.request({
-					url: that.tempUrl + "/material/test-connecting",
-					success: (res) => {
-						uni.hideLoading()
-						if(res.data.code === 200) {
-							uni.showToast({
-								title: '连接成功',
-								icon: 'success'
-							})
-							that.url = that.tempUrl
-							uni.setStorageSync('url', that.tempUrl)
-							that.show = false
-						} else {
-							uni.showToast({
-								title: '连接失败',
-								icon: 'none'
-							})
-						}
-					},
-					fail: (err) => {
-						uni.hideLoading()
-						console.log(that.tempUrl)
-						console.log('err')
-						console.log(err)
-						uni.showToast({
-							title: '连接失败',
-							icon: 'none'
-						})
-					}
+				let result = this.$myRequest({
+					url: '/product-spu/group-color/13/50'
 				})
+
+				if (result !== '') {
+					uni.hideLoading()
+					that.url = that.tempUrl
+					console.log(result)
+				} else {
+					uni.showToast({
+						title: '错误'
+					})
+				}
+
+
+
 			},
 			submitPop() {
 				this.testConnect()
@@ -304,7 +292,7 @@
 							console.log('条码内容：' + res.result);
 							let itemNumber = res.result
 							uni.showLoading({
-							    title: '加载中',
+								title: '加载中',
 								mask: true
 							});
 							uni.request({
@@ -321,7 +309,7 @@
 									console.log(that.url)
 									console.log(result)
 									if (result.code === 200) {
-									    uni.hideLoading();
+										uni.hideLoading();
 										uni.showToast({
 											title: '扫描成功',
 											icon: 'success'
@@ -344,9 +332,10 @@
 										that.unitHeight = result.result.unitHeight
 									} else {
 										uni.hideLoading();
-										if(this.$u.test.isEmpty(result.code)) {
+										if (this.$u.test.isEmpty(result.code)) {
 											uni.showToast({
-												title: result.message || '请配置正确的服务器地址并保证连接正确',
+												title: result.message ||
+													'请配置正确的服务器地址并保证连接正确',
 												icon: 'none'
 											})
 											this.show = true
@@ -389,11 +378,9 @@
 					// this.unitWidth = ''
 					// this.unitHeight = ''
 					uni.redirectTo({
-						url: 'index'
+						url: 'scan'
 					})
 				}
-
-
 			}
 		}
 	}

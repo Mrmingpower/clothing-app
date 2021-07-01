@@ -17,13 +17,13 @@
 				"navigationBarTitleText": "首页",
 				"navigationBarTextStyle": "white"
 			}
-		},
+		}, 
 		{
 		    "path" : "pages/stock-out/finishedProductAdd/scan",
-		    "style" :
+		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "扫描",
-
+				
 		        "enablePullDownRefresh": false
 		    }
 		},
@@ -198,7 +198,7 @@
 			"path": "pages/stock-out/finishedProductAdd/finished-add-add",
 			"style": {
 				"navigationBarTitleText": "选择成品",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": true
 			}
 
 		}, {
@@ -309,7 +309,7 @@
 			"path": "pages/stock-in/finishedProductAdd/finished-add-add",
 			"style": {
 				"navigationBarTitleText": "成品入库",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": true
 			}
 
 		}

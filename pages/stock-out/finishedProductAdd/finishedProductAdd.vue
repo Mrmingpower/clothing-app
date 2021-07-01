@@ -163,8 +163,9 @@
 
 			<view style="background-color: #FFFFFF;" class="u-border-top">
 				<view style="padding-top: 20rpx;padding-bottom: 20rpx;">
-					<u-icon name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" @click="toScan" color="#00aaff">
-					</u-icon>
+					<input type="text" name="saomiao" class="saomiao_cla" custom-prefix="custom-icon" size="60" :focus="true"
+						@click="focus" @confirm="scanConfirm" @focus="focus" color="#00aaff">
+					</input>
 					<u-icon name="icon-test" class="add_cla" custom-prefix="custom-icon" size="60" @click="toAddProduct"
 						color="#00aaff"></u-icon>
 				</view>
@@ -372,7 +373,6 @@
 			uni.getStorage({
 				key: 'out-finishedProduct',
 				success(res) {
-
 					console.log('res')
 					console.log(res)
 					that.$nextTick(() => {
@@ -465,10 +465,11 @@
 				this.productList.splice(index, 1)
 			},
 			toDel(index) {
-				
+
 				let that = this
 				this.productArr.splice(index, 1)
-				this.tempProductArr.splice(index,1)
+				this.tempProductArr.splice(index, 1)
+				this.count=0
 				console.log('删除执行了')
 			},
 			toEdit(item) {
@@ -575,7 +576,7 @@
 			dateClick() {
 				this.calendarShow = true
 			},
-		
+
 			headClick(item) {
 				item.show = !item.show
 			},
@@ -585,10 +586,8 @@
 				})
 			},
 			sourceTypeClick() {
-
 				this.sourceTypeShow = true
 				this.productList = [];
-
 			},
 			async sourceTypeConfirm(e) {
 				this.sourceTypeName = e[0].label
@@ -629,7 +628,6 @@
 					})
 					return
 				}
-
 
 				let params = {
 					date: this.date,
@@ -676,17 +674,148 @@
 							url: 'finished-add-add?warehouseId=' + this.warehouseId
 						});
 					}
-
+				} else if (this.sourceType === '') {
+					this.$refs.uToast.show({
+						title: '请选择出库类型',
+						type: 'error',
+						url: ''
+					})
+				} else if (this.warehouseName === '') {
+					this.$refs.uToast.show({
+						title: '请选择仓库',
+						type: 'error',
+						url: ''
+					})
 				}
 
 			},
-			toScan(){
+			toScan() {
 				uni.navigateTo({
 					url: 'scan'
 				});
+			},
+			scanConfirm(index) {
+				if (index === 0) {
+					this.show = true
+					this.tempUrl = this.url
+				} else if (index === 1) {
+					this.itemNumber = ''
+					this.description = ''
+					this.inventoryItemId = ''
+					this.invCategory = ''
+					this.status = ''
+					this.primaryUomCode = ''
+					this.itemType = ''
+					this.lastUpdateDate = ''
+					this.weightUomCode = ''
+					this.unitWeight = ''
+					this.volumeUomCode = ''
+					this.unitVolume = ''
+					this.dimensionUomCode = ''
+					this.unitLength = ''
+					this.unitWidth = ''
+					this.unitHeight = ''
+					uni.scanCode({
+						scanType: ['qrCode'],
+						success: (res) => {
+							let that = this
+							console.log('条码类型：' + res.scanType);
+							console.log('条码内容：' + res.result);
+							let itemNumber = res.result
+							uni.showLoading({
+								title: '加载中',
+								mask: true
+							});
+							uni.request({
+								header: {
+									"Content-Type": 'application/x-www-form-urlencoded'
+								},
+								url: that.url + "/item/by-item-number",
+								method: 'GET',
+								data: {
+									itemNumber: itemNumber
+								},
+								success: (res) => {
+									let result = res.data
+									console.log(that.url)
+									console.log(result)
+									if (result.code === 200) {
+										uni.hideLoading();
+										uni.showToast({
+											title: '扫描成功',
+											icon: 'success'
+										})
+										that.itemNumber = result.result.itemNumber
+										that.description = result.result.description
+										that.inventoryItemId = result.result.inventoryItemId
+										that.invCategory = result.result.invCategory
+										that.status = result.result.status
+										that.primaryUomCode = result.result.primaryUomCode
+										that.itemType = result.result.itemType
+										that.lastUpdateDate = result.result.lastUpdateDate
+										that.weightUomCode = result.result.weightUomCode
+										that.unitWeight = result.result.unitWeight
+										that.volumeUomCode = result.result.volumeUomCode
+										that.unitVolume = result.result.unitVolume
+										that.dimensionUomCode = result.result.dimensionUomCode
+										that.unitLength = result.result.unitLength
+										that.unitWidth = result.result.unitWidth
+										that.unitHeight = result.result.unitHeight
+									} else {
+										uni.hideLoading();
+										if (this.$u.test.isEmpty(result.code)) {
+											uni.showToast({
+												title: result.message ||
+													'请配置正确的服务器地址并保证连接正确',
+												icon: 'none'
+											})
+											this.show = true
+											this.tempUrl = this.url
+										} else {
+											uni.showToast({
+												title: result.message || '扫描错误',
+												icon: 'none'
+											})
+										}
+									}
+								},
+								fail: (err) => {
+									uni.hideLoading();
+									uni.showToast({
+										title: '请配置正确的服务器地址并保证连接正确',
+										icon: 'none'
+									})
+									this.show = true
+									this.tempUrl = this.url
+								}
+							})
+						}
+					});
+				} else {
+					// this.itemNumber = ''
+					// this.description = ''
+					// this.inventoryItemId = ''
+					// this.invCategory = ''
+					// this.status = ''
+					// this.primaryUomCode = ''
+					// this.itemType = ''
+					// this.lastUpdateDate = ''
+					// this.weightUomCode = ''
+					// this.unitWeight = ''
+					// this.volumeUomCode = ''
+					// this.unitVolume = ''
+					// this.dimensionUomCode = ''
+					// this.unitLength = ''
+					// this.unitWidth = ''
+					// this.unitHeight = ''
+					uni.redirectTo({
+						url: 'scan'
+					})
+				}
 			}
-
 		},
+
+
 
 		watch: {
 
@@ -806,5 +935,16 @@
 		margin-top: 30rpx;
 		font-size: 30rpx;
 		color: #FF0000;
+	}
+
+	textarea:focus,
+	input[type="text"]:focus,
+	input[type="datetime"]:focus {
+		border-color: rgba(82, 168, 236, 0.8);
+		outline: 0;
+		outline: thin dotted \9;
+		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
+		-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
 	}
 </style>

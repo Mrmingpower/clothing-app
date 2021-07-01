@@ -137,7 +137,7 @@
 							<text>数量</text>
 							<view v-for="(itemm,index) in item.spec ">
 								<text style="margin-left: 50rpx;width: 30rpx;
-								text-align: center;display: inline-block;" @tap="toEdit(itemm)">
+								text-align: center;display: inline-block;">
 									{{itemm.num}}
 								</text>
 							</view>
@@ -194,65 +194,6 @@
 			<u-calendar v-model="calendarShow" mode="date" @change="calendarChange"></u-calendar>
 			<u-select v-model="pickOrderShow" :list="pickOrderList" @confirm="pickOrderConfirm"></u-select>
 			<u-select v-model="pickCustomerShow" :list="pickCustomerList" @confirm="pickCustomerConfirm"></u-select>
-			<u-popup v-model="editShow" mode="bottom" border-radius="14" length="70%" @close="popClose">
-				<view class="u-demo-wrap">
-					<view style="height: 50rpx;"></view>
-					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">单匹重量 & 匹数</view>
-					<view style="margin-top: 20rpx;">
-						<u-cell-group>
-							<u-field v-model="editRow.productName" label="成品名称" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.productNo" label="成品编号" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field>
-							<u-field v-model="editRow.unit" label="单位" label-width="150" :clearable="false" disabled
-								:required="false" type="text"></u-field>
-							<!-- <u-field v-model="editRow.deliveryDate" label="副计量单位" label-width="150" :clearable="false"
-								disabled :required="false" type="text"></u-field> -->
-							<u-table>
-								<u-tr>
-									<u-th>名称</u-th>
-									<u-th>数量</u-th>
-								</u-tr>
-								<view v-for="(item,index) in productList" :key="index">
-									<u-tr>
-										<u-td>
-											<view>
-												<text>{{item.productName}}{{item.color}}{{item.specification}}</text>
-											</view>
-										</u-td>
-										<u-td>
-											<view style="height:38rpx;" @click="tempClick(item)">
-												<text>{{item.quantity}}</text>
-											</view>
-										</u-td>
-									</u-tr>
-								</view>
-							</u-table>
-						</u-cell-group>
-					</view>
-					<u-divider>没有更多了</u-divider>
-				</view>
-			</u-popup>
-
-			<u-popup v-model="quantityShow" mode="center" border-radius="14" width="80%" height="400rpx">
-				<view>
-					<view style="height: 50rpx;"></view>
-					<view style="text-align: center;font-size: 38rpx;line-height: 50rpx;">数量</view>
-					<view style="margin-top: 30rpx;">
-						<u-cell-group>
-							<u-field v-model="quantity" label="数量" label-width="150" :clearable="false"
-								:required="false" type="text"></u-field>
-						</u-cell-group>
-						<view class="close-btn">
-							<u-button @tap="submitPop" size="medium" type="primary">确定</u-button>
-							<u-button @tap="quantityShow = false" size="medium">取消</u-button>
-						</view>
-					</view>
-				</view>
-			</u-popup>
-			<u-popup v-model="seeShow" mode="center" border-radius="14" length="70%" :closeable="true"
-				@close="seeShow = false">
-			</u-popup>
 		</view>
 	</view>
 </template>
@@ -340,7 +281,7 @@
 				allNum: 0,
 				tempProductArr: [],
 				spec: [],
-				count: 0
+				count: 0,
 			}
 		},
 		onShow() {
@@ -392,7 +333,8 @@
 								that.productArr.push({
 									productName: res.data[j].productName,
 									productNo: res.data[j].productNo,
-									settlePricee: res.data[j].settlePricee,
+									settlePricee: res.data[j].settlePricee
+									,
 									spec: res.data[j].spec,
 									color: res.data[j].color,
 									showw: true,
@@ -400,13 +342,11 @@
 								})
 								that.total[that.count] = res.data[j].allNum * res.data[j].settlePricee
 								that.count++
-
 							}
 
 						}
 
 					})
-
 					uni.removeStorage({
 						key: 'out-finishedProduct'
 					})
@@ -465,7 +405,6 @@
 				this.productList.splice(index, 1)
 			},
 			toDel(index) {
-				
 				let that = this
 				this.productArr.splice(index, 1)
 				this.tempProductArr.splice(index,1)
@@ -473,7 +412,9 @@
 			},
 			toEdit(item) {
 				this.editShow = true
-				this.editRow = item
+				this.up = item
+				console.log(this.up.settlePricee)
+				console.log(item)
 			},
 			popClose() {
 				this.tempExchangeRate = []
@@ -482,17 +423,6 @@
 				this.tempRow = e
 				this.quantity = e.quantity
 				this.quantityShow = true
-			},
-			submitPop() {
-				if (!this.$u.test.digits(this.quantity)) {
-					uni.showToast({
-						title: '只能输入整数',
-						icon: 'none'
-					})
-					return
-				}
-				this.tempRow.quantity = parseInt(this.quantity)
-				this.quantityShow = false
 			},
 			selectcommand(e) {
 				uni.navigateTo({
@@ -575,7 +505,6 @@
 			dateClick() {
 				this.calendarShow = true
 			},
-		
 			headClick(item) {
 				item.show = !item.show
 			},
@@ -689,7 +618,6 @@
 		},
 
 		watch: {
-
 			productArr: function() {
 				console.log("aa")
 			}

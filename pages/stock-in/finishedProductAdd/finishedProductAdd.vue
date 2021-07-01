@@ -72,7 +72,6 @@
 			</view>
 		</view>
 		<u-popup v-model="show" mode="center" length="90%" :closeable="true" height="300rpx">
-
 				<view style="text-align: center;"  v-for="(item,index) in productArr" :index="index" :key="index" >
 					<text style="font-size: 30rpx;">请输入数量</text>
 					<u-input v-model="sp.num" :type="type" :border="border" style="margin-top: 40rpx;" />
@@ -96,7 +95,7 @@
 				show:false,
 				value: '',
 				type: 'text',
-				border: true,
+				
 				sp:'',
 				calendarShow: false,
 				fieldStyle: {

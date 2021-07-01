@@ -187,7 +187,23 @@
 				"enablePullDownRefresh": false
 			}
 
-		}, {
+		},
+		{
+			"path": "pages/stock-in/add/materilPurchaseOrder",
+			"style": {
+				"navigationBarTitleText": "选择采购单",
+				"enablePullDownRefresh": false
+			}
+		
+		},
+		{
+			"path": "pages/stock-in/accessoryAdd/accessoryPurchaseOrder",
+			"style": {
+				"navigationBarTitleText": "选择采购单",
+				"enablePullDownRefresh": false
+			}
+		
+		},{
 			"path": "pages/stock-out/add/material-add-add",
 			"style": {
 				"navigationBarTitleText": "选择面料",

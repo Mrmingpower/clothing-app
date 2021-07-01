@@ -62,8 +62,8 @@
 					<view class="price-content">
 						<text class="sign">¥</text>
 						<text class="price">{{ unitPrice }}</text>
-						<!-- <u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
-							size="35"></u-icon> -->
+						<u-icon @click="editSettlePrice" style="margin-left: 5rpx;" name="edit-pen" color="#55aaff"
+							size="35"></u-icon>
 					</view>
 					<!-- <view class="inventory">
 						<view style="display: inline;">成本价:
@@ -133,6 +133,13 @@
 				</view>
 			</view>
 		</u-popup>
+		<u-popup v-model="revisePrice" mode="center" length="80%" :closeable="true" height="300rpx">
+			<view style="text-align: center;">
+				<text style="font-size: 30rpx;">请输入新的价格</text>
+				<u-input v-model="unitPrice" :type="type" :border="border" style="margin-top: 40rpx;width: 80%;margin: 50rpx auto;" />
+				<u-button @tap="submitPop" size="medium" type="primary" >确定</u-button>
+			</view>
+		</u-popup>
 		<u-loadmore :status="status" @loadmore="loadmore" :load-text="loadText" />
 
 	</view>
@@ -176,6 +183,9 @@
 				unitPrice: '',
 				navigateToFinishedProductAddInfo: [],
 				finishedProductAddTofinishedAdd: [],
+				revisePrice:false,
+				type:'text',
+				border: true,
 			}
 		},
 		onLoad(e) {
@@ -206,8 +216,6 @@
 			this.status = 'loading'
 
 			await this.getData();
-
-
 		},
 
 		methods: {
@@ -223,10 +231,10 @@
 			},
 
 			checkboxChange: function(e) {
-				
-
 			},
-
+			editSettlePrice(){
+				this.revisePrice = true
+			},
 			initData() {
 				this.finished = false
 				this.pageNo = 0
@@ -239,30 +247,28 @@
 			delQuery() {
 
 			},
+			submitPop(){
+			if (!this.$u.test.digits(this.unitPrice)) {
+				uni.showToast({
+					title: '只能输入整数',
+					icon: 'none'
+				})
+				this.unitPrice = 0
+				return
+			}
+			this.revisePrice = false
+			},
 			valChange(e) {
 				let a = 0
 				for (var i = 0; i < this.specList.length; i++) {
 					a = a + this.specList[i].num
 				}
 				this.colorArr[this.temp_colorIndex].allNum = a
-				// this.colorArr[e].checked = true
-				// let spec_list = []
-				// for (var i = 0; i < this.specList.length; i++) {
-				// 	spec_list.push({
-				// 		checked: this.specList[i].checked,
-				// 		specDisabled: this.specList[i].specDisabled,
-				// 		num: this.specList[i].num,
-				// 		specId: this.specList[i].specId,
-				// 		specName: this.specList[i].specName,
-				// 		quantity: this.specList[i].quantity
-				// 	})
-				// }
 				let alNum = 0
 				for (var i = 0; i < this.colorArr.length; i++) {
 					alNum = alNum + this.colorArr[i].allNum
 				}
 				this.alNum = alNum
-				// this.allMap.set(this.temp_colorIndex,spec_list)
 
 			},
 
@@ -278,11 +284,10 @@
 							spec: this.specArr[i],
 							productName: this.resultData[i].productName,
 							productNo: this.resultData[i].productNo,
-							settlePricee: this.resultData[0].salePrice
+							settlePricee: this.unitPrice
 						})
 					}
 				}
-
 				uni.setStorage({
 					key: 'out-finishedProduct',
 					data: this.navigateToFinishedProductAddInfo
@@ -298,7 +303,6 @@
 					url: '/product-spu/group-color/' + this.warehouseId + '/' + e.id
 				})
 
-				// this.specList = result1[0].productSkuIdWithSpecificationVOList
 				
 				this.resultData = result1
 				this.unitPrice = result1[0].salePrice
